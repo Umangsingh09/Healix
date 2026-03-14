@@ -158,3 +158,14 @@ INFO 2026-03-14 23:20:46,499 log 20964 10772 "GET /dashboard/doctor/ HTTP/1.1" 2
 INFO 2026-03-14 23:20:51,362 log 20964 10772 "GET /auth/login/ HTTP/1.1" 200 31203
 INFO 2026-03-14 23:21:46,503 log 20964 10772 "GET /dashboard/doctor/ HTTP/1.1" 200 31601
 INFO 2026-03-14 23:23:05,807 log 20964 25320 "GET /triage/ HTTP/1.1" 200 22541
+INFO 2026-03-15 00:20:21,724 autoreload 18544 3180 Watching for file changes with StatReloader
+INFO 2026-03-15 00:34:02,164 autoreload 15744 22608 C:\Users\rajum\healix\healix\settings.py changed, reloading.
+INFO 2026-03-15 00:34:02,661 autoreload 18132 9544 C:\Users\rajum\healix\healix\settings.py changed, reloading.
+INFO 2026-03-15 00:34:02,713 autoreload 24068 23372 C:\Users\rajum\healix\healix\settings.py changed, reloading.
+INFO 2026-03-15 00:34:02,732 autoreload 23752 24868 C:\Users\rajum\healix\healix\settings.py changed, reloading.
+INFO 2026-03-15 00:34:02,751 autoreload 18544 3180 C:\Users\rajum\healix\healix\settings.py changed, reloading.
+INFO 2026-03-15 00:34:03,293 autoreload 23368 14248 Watching for file changes with StatReloader
+INFO 2026-03-15 00:34:03,669 autoreload 6948 12436 Watching for file changes with StatReloader
+INFO 2026-03-15 00:34:03,672 autoreload 24184 9040 Watching for file changes with StatReloader
+INFO 2026-03-15 00:34:03,693 autoreload 17844 7160 Watching for file changes with StatReloader
+INFO 2026-03-15 00:34:03,710 autoreload 24192 10248 Watching for file changes with StatReloader
