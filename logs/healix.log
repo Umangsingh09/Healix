@@ -169,3 +169,18 @@ INFO 2026-03-15 00:34:03,669 autoreload 6948 12436 Watching for file changes wit
 INFO 2026-03-15 00:34:03,672 autoreload 24184 9040 Watching for file changes with StatReloader
 INFO 2026-03-15 00:34:03,693 autoreload 17844 7160 Watching for file changes with StatReloader
 INFO 2026-03-15 00:34:03,710 autoreload 24192 10248 Watching for file changes with StatReloader
+INFO 2026-03-15 01:47:28,461 autoreload 24192 10248 C:\Users\rajum\healix\healix\settings.py changed, reloading.
+INFO 2026-03-15 01:47:28,463 autoreload 23368 14248 C:\Users\rajum\healix\healix\settings.py changed, reloading.
+INFO 2026-03-15 01:47:28,463 autoreload 24184 9040 C:\Users\rajum\healix\healix\settings.py changed, reloading.
+INFO 2026-03-15 01:47:28,484 autoreload 17844 7160 C:\Users\rajum\healix\healix\settings.py changed, reloading.
+INFO 2026-03-15 01:47:29,582 autoreload 17964 23612 Watching for file changes with StatReloader
+INFO 2026-03-15 01:47:29,583 autoreload 18264 24644 Watching for file changes with StatReloader
+INFO 2026-03-15 01:47:29,584 autoreload 15344 25576 Watching for file changes with StatReloader
+INFO 2026-03-15 01:48:06,629 autoreload 6800 13396 C:\Users\rajum\healix\healix\settings.py changed, reloading.
+INFO 2026-03-15 01:48:06,637 autoreload 18264 24644 C:\Users\rajum\healix\healix\settings.py changed, reloading.
+INFO 2026-03-15 01:48:06,638 autoreload 15344 25576 C:\Users\rajum\healix\healix\settings.py changed, reloading.
+INFO 2026-03-15 01:48:06,638 autoreload 17964 23612 C:\Users\rajum\healix\healix\settings.py changed, reloading.
+INFO 2026-03-15 01:48:07,406 autoreload 12936 24156 Watching for file changes with StatReloader
+INFO 2026-03-15 01:48:07,411 autoreload 18244 20200 Watching for file changes with StatReloader
+INFO 2026-03-15 01:48:07,411 autoreload 3940 12964 Watching for file changes with StatReloader
+INFO 2026-03-15 01:48:07,411 autoreload 11096 24100 Watching for file changes with StatReloader
