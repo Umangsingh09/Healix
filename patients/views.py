@@ -22,3 +22,33 @@ def create_patient(request):
         return Response(serializer.data)
 
     return Response(serializer.errors)
+
+
+# GET single patient
+@api_view(['GET'])
+def get_patient(request, pk):
+    patient = Patient.objects.get(id=pk)
+    serializer = PatientSerializer(patient)
+    return Response(serializer.data)
+
+
+# PUT update patient
+@api_view(['PUT'])
+def update_patient(request, pk):
+    patient = Patient.objects.get(id=pk)
+    serializer = PatientSerializer(instance=patient, data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+
+    return Response(serializer.errors)
+
+
+# DELETE patient
+@api_view(['DELETE'])
+def delete_patient(request, pk):
+    patient = Patient.objects.get(id=pk)
+    patient.delete()
+
+    return Response("Patient deleted successfully")
