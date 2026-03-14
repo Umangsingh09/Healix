@@ -1,7 +1,12 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
 from .models import Patient
-from .serializers import PatientSerializer
+from .serializers import PatientSerializer, TriageHistorySerializer
+from triage.models import TriageResult
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 # GET all patients
@@ -27,7 +32,16 @@ def create_patient(request):
 # GET single patient
 @api_view(['GET'])
 def get_patient(request, pk):
-    patient = Patient.objects.get(id=pk)
+    try:
+        patient = Patient.objects.get(id=pk)
+        logger.info(f"Retrieved patient: {patient.name} (ID: {pk})")
+    except Patient.DoesNotExist:
+        logger.warning(f"Patient not found: ID {pk}")
+        return Response({"error": "Patient not found"}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        logger.error(f"Error retrieving patient {pk}: {str(e)}")
+        return Response({"error": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
     serializer = PatientSerializer(patient)
     return Response(serializer.data)
 
@@ -35,20 +49,55 @@ def get_patient(request, pk):
 # PUT update patient
 @api_view(['PUT'])
 def update_patient(request, pk):
-    patient = Patient.objects.get(id=pk)
+    try:
+        patient = Patient.objects.get(id=pk)
+    except Patient.DoesNotExist:
+        logger.warning(f"Patient not found for update: ID {pk}")
+        return Response({"error": "Patient not found"}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        logger.error(f"Error retrieving patient {pk} for update: {str(e)}")
+        return Response({"error": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
     serializer = PatientSerializer(instance=patient, data=request.data)
-
     if serializer.is_valid():
         serializer.save()
+        logger.info(f"Updated patient: {patient.name} (ID: {pk})")
         return Response(serializer.data)
-
-    return Response(serializer.errors)
+    
+    logger.warning(f"Invalid data for patient update (ID: {pk}): {serializer.errors}")
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # DELETE patient
 @api_view(['DELETE'])
 def delete_patient(request, pk):
-    patient = Patient.objects.get(id=pk)
-    patient.delete()
+    try:
+        patient = Patient.objects.get(id=pk)
+        patient_name = patient.name
+        patient.delete()
+        logger.info(f"Deleted patient: {patient_name} (ID: {pk})")
+        return Response({"message": "Patient deleted successfully"})
+    except Patient.DoesNotExist:
+        logger.warning(f"Patient not found for deletion: ID {pk}")
+        return Response({"error": "Patient not found"}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        logger.error(f"Error deleting patient {pk}: {str(e)}")
+        return Response({"error": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    return Response("Patient deleted successfully")
+
+# GET patient triage history
+@api_view(['GET'])
+def get_patient_triage_history(request, pk):
+    try:
+        patient = Patient.objects.get(id=pk)
+    except Patient.DoesNotExist:
+        logger.warning(f"Patient not found for triage history: ID {pk}")
+        return Response({"error": "Patient not found"}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        logger.error(f"Error retrieving patient {pk} for triage history: {str(e)}")
+        return Response({"error": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    triage_results = TriageResult.objects.filter(patient=patient).order_by('-created_at')
+    serializer = TriageHistorySerializer(triage_results, many=True)
+    logger.info(f"Retrieved triage history for patient: {patient.name} (ID: {pk}), {len(triage_results)} results")
+    return Response(serializer.data)
