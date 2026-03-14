@@ -1,6 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import AllowAny
+from rest_framework.throttling import AnonRateThrottle
 from .serializers import TriageAnalyzeSerializer, TriageResultSerializer
 from .models import TriageResult
 from .services.triage_engine import TriageEngine
@@ -10,6 +12,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 class AnalyzeTriageView(APIView):
+    permission_classes = [AllowAny]
+    throttle_classes = [AnonRateThrottle]
+
     def post(self, request):
         serializer = TriageAnalyzeSerializer(data=request.data)
         if serializer.is_valid():
@@ -44,9 +49,20 @@ class AnalyzeTriageView(APIView):
             # Return response
             if risk_level == 'Critical':
                 logger.warning(f"Critical triage result: {recommendation}")
-                return Response({"risk_level": risk_level, "alert": recommendation}, status=status.HTTP_200_OK)
+                alert_data = {
+                    "risk_level": risk_level,
+                    "alert": "Emergency symptoms detected - Immediate medical attention required",
+                    "recommended_action": recommendation,
+                    "emergency_contact": "Call emergency services (911) immediately",
+                    "triage_id": triage_result.id
+                }
+                return Response(alert_data, status=status.HTTP_200_OK)
             else:
-                return Response({"risk_level": risk_level, "recommendation": recommendation}, status=status.HTTP_200_OK)
+                return Response({
+                    "risk_level": risk_level,
+                    "recommendation": recommendation,
+                    "triage_id": triage_result.id
+                }, status=status.HTTP_200_OK)
         
         logger.warning(f"Invalid triage request data: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

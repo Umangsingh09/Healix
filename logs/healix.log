@@ -5,3 +5,91 @@ INFO 2026-03-14 14:48:32,273 autoreload 19144 4956 Watching for file changes wit
 INFO 2026-03-14 14:48:39,637 autoreload 6588 4224 C:\Users\Rexxon\Desktop\Healix\Healix\patients\models.py changed, reloading.
 INFO 2026-03-14 14:48:39,661 autoreload 19144 4956 C:\Users\Rexxon\Desktop\Healix\Healix\healix\settings.py changed, reloading.
 INFO 2026-03-14 14:48:39,687 autoreload 20072 24184 C:\Users\Rexxon\Desktop\Healix\Healix\healix\settings.py changed, reloading.
+WARNING 2026-03-14 17:10:19,976 log 2908 13976 Unauthorized: /api/auth/login/
+ERROR 2026-03-14 17:10:21,879 log 2908 13976 Internal Server Error: /api/auth/register/
+Traceback (most recent call last):
+  File "C:\Users\rajum\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\rajum\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\rajum\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\rajum\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\views\generic\base.py", line 106, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rajum\AppData\Local\Programs\Python\Python313\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\rajum\AppData\Local\Programs\Python\Python313\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\rajum\AppData\Local\Programs\Python\Python313\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\rajum\AppData\Local\Programs\Python\Python313\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\rajum\AppData\Local\Programs\Python\Python313\Lib\site-packages\rest_framework\generics.py", line 194, in post
+    return self.create(request, *args, **kwargs)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rajum\healix\accounts\views.py", line 16, in create
+    user = serializer.save()
+  File "C:\Users\rajum\AppData\Local\Programs\Python\Python313\Lib\site-packages\rest_framework\serializers.py", line 210, in save
+    self.instance = self.create(validated_data)
+                    ~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\rajum\healix\accounts\serializers.py", line 39, in create
+    user = User.objects.create_user(**validated_data)
+  File "C:\Users\rajum\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\models.py", line 175, in create_user
+    return self._create_user(username, email, password, **extra_fields)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rajum\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\models.py", line 162, in _create_user
+    user = self._create_user_object(username, email, password, **extra_fields)
+  File "C:\Users\rajum\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\models.py", line 154, in _create_user_object
+    user = self.model(username=username, email=email, **extra_fields)
+  File "C:\Users\rajum\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\base.py", line 590, in __init__
+    raise TypeError(
+    ...<2 lines>...
+    )
+TypeError: User() got unexpected keyword arguments: 'password2'
+WARNING 2026-03-14 17:10:30,412 log 436 12052 Unauthorized: /api/auth/login/
+INFO 2026-03-14 17:15:48,728 autoreload 14768 7388 Watching for file changes with StatReloader
+INFO 2026-03-14 17:17:34,103 autoreload 12628 18036 Watching for file changes with StatReloader
+WARNING 2026-03-14 17:17:51,813 log 12628 2156 Unauthorized: /
+WARNING 2026-03-14 17:17:51,814 log 12628 2156 "GET / HTTP/1.1" 401 9731
+INFO 2026-03-14 17:17:51,849 log 12628 2156 "GET /static/rest_framework/css/bootstrap.min.css HTTP/1.1" 304 0
+INFO 2026-03-14 17:17:51,852 log 12628 21412 "GET /static/rest_framework/css/bootstrap-tweaks.css HTTP/1.1" 304 0
+INFO 2026-03-14 17:17:51,856 log 12628 6680 "GET /static/rest_framework/css/prettify.css HTTP/1.1" 304 0
+INFO 2026-03-14 17:17:51,858 log 12628 21412 "GET /static/rest_framework/js/bootstrap.min.js HTTP/1.1" 304 0
+INFO 2026-03-14 17:17:51,858 log 12628 14432 "GET /static/rest_framework/css/default.css HTTP/1.1" 304 0
+INFO 2026-03-14 17:17:51,858 log 12628 22640 "GET /static/rest_framework/js/jquery-3.7.1.min.js HTTP/1.1" 304 0
+INFO 2026-03-14 17:17:51,859 log 12628 2156 "GET /static/rest_framework/js/csrf.js HTTP/1.1" 304 0
+INFO 2026-03-14 17:17:51,864 log 12628 21024 "GET /static/rest_framework/js/ajax-form.js HTTP/1.1" 304 0
+INFO 2026-03-14 17:17:51,865 log 12628 6680 "GET /static/rest_framework/js/prettify-min.js HTTP/1.1" 304 0
+INFO 2026-03-14 17:17:51,868 log 12628 14432 "GET /static/rest_framework/js/load-ajax-form.js HTTP/1.1" 304 0
+INFO 2026-03-14 17:17:51,868 log 12628 21412 "GET /static/rest_framework/js/default.js HTTP/1.1" 304 0
+INFO 2026-03-14 17:17:51,870 log 12628 6680 "GET /static/rest_framework/img/grid.png HTTP/1.1" 304 0
+WARNING 2026-03-14 17:17:51,918 log 12628 6680 Not Found: /favicon.ico
+WARNING 2026-03-14 17:17:51,919 log 12628 6680 "GET /favicon.ico HTTP/1.1" 404 4513
+INFO 2026-03-14 17:23:52,493 autoreload 12628 18036 C:\Users\rajum\healix\healix\views.py changed, reloading.
+INFO 2026-03-14 17:23:53,324 autoreload 132 11080 Watching for file changes with StatReloader
+INFO 2026-03-14 17:24:02,917 autoreload 132 11080 C:\Users\rajum\healix\healix\urls.py changed, reloading.
+INFO 2026-03-14 17:24:03,645 autoreload 23348 19936 Watching for file changes with StatReloader
+INFO 2026-03-14 17:24:29,593 autoreload 21208 19688 Watching for file changes with StatReloader
+INFO 2026-03-14 17:25:06,958 autoreload 22704 23544 Watching for file changes with StatReloader
+INFO 2026-03-14 17:27:41,021 autoreload 20348 19900 Watching for file changes with StatReloader
+INFO 2026-03-14 17:28:07,886 autoreload 10484 13744 Watching for file changes with StatReloader
+INFO 2026-03-14 17:28:18,074 log 22704 15052 "GET / HTTP/1.1" 200 50745
+INFO 2026-03-14 17:29:10,284 log 22704 15052 "GET /dashboard HTTP/1.1" 301 0
+INFO 2026-03-14 17:29:10,287 log 22704 15052 "GET /dashboard/ HTTP/1.1" 200 11658
+WARNING 2026-03-14 17:29:14,438 log 22704 15052 Not Found: /api/patients/patients/
+WARNING 2026-03-14 17:29:14,438 log 22704 15052 "GET /api/patients/patients/ HTTP/1.1" 404 6932
+INFO 2026-03-14 17:29:20,171 log 22704 15052 "GET /triage/ HTTP/1.1" 200 22423
+INFO 2026-03-14 17:29:29,981 log 22704 15052 "GET /dashboard/ HTTP/1.1" 200 11658
+WARNING 2026-03-14 17:29:30,013 log 22704 15052 Not Found: /api/patients/patients/
+WARNING 2026-03-14 17:29:30,014 log 22704 15052 "GET /api/patients/patients/ HTTP/1.1" 404 6932
+INFO 2026-03-14 17:31:08,368 log 22704 15052 "GET /dashboard/ HTTP/1.1" 200 11658
+WARNING 2026-03-14 17:31:08,395 log 22704 15052 Not Found: /api/patients/patients/
+WARNING 2026-03-14 17:31:08,396 log 22704 15052 "GET /api/patients/patients/ HTTP/1.1" 404 6932
+INFO 2026-03-14 17:36:02,283 log 22704 15052 "GET /login HTTP/1.1" 301 0
+INFO 2026-03-14 17:36:02,287 log 22704 15052 "GET /login/ HTTP/1.1" 302 0
+INFO 2026-03-14 17:36:02,293 log 22704 15052 "GET /auth/login/ HTTP/1.1" 200 31203
+INFO 2026-03-14 17:36:02,655 log 22704 9124 "GET /auth/login/ HTTP/1.1" 200 31203
+WARNING 2026-03-14 17:36:23,876 log 22704 9124 Not Found: /favicon.ico
+WARNING 2026-03-14 17:36:23,878 log 22704 9124 "GET /favicon.ico HTTP/1.1" 404 4685

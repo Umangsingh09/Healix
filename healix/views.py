@@ -1,9 +1,4 @@
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
+from django.shortcuts import render
 
-@api_view(['GET'])
 def home(request):
-    return Response({
-        "message": "Healix API is running",
-        "status": "success"
-    })
+    return render(request, 'landing/index.html')

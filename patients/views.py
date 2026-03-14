@@ -1,6 +1,9 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import ListAPIView
+from rest_framework.pagination import PageNumberPagination
 from .models import Patient
 from .serializers import PatientSerializer, TriageHistorySerializer
 from triage.models import TriageResult
@@ -9,8 +12,23 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+class PatientPagination(PageNumberPagination):
+    page_size = 20
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
+
 # GET all patients
+class PatientListView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = PatientSerializer
+    pagination_class = PatientPagination
+    queryset = Patient.objects.all().order_by('-created_at')
+
+
+# GET all patients (legacy function-based view for compatibility)
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_patients(request):
     patients = Patient.objects.all()
     serializer = PatientSerializer(patients, many=True)
@@ -19,6 +37,7 @@ def get_patients(request):
 
 # POST create patient
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_patient(request):
     serializer = PatientSerializer(data=request.data)
 
@@ -31,6 +50,7 @@ def create_patient(request):
 
 # GET single patient
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_patient(request, pk):
     try:
         patient = Patient.objects.get(id=pk)
@@ -48,6 +68,7 @@ def get_patient(request, pk):
 
 # PUT update patient
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_patient(request, pk):
     try:
         patient = Patient.objects.get(id=pk)
@@ -70,6 +91,7 @@ def update_patient(request, pk):
 
 # DELETE patient
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_patient(request, pk):
     try:
         patient = Patient.objects.get(id=pk)
@@ -87,6 +109,7 @@ def delete_patient(request, pk):
 
 # GET patient triage history
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_patient_triage_history(request, pk):
     try:
         patient = Patient.objects.get(id=pk)

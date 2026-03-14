@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    get_patients,
+    PatientListView,
     create_patient,
     get_patient,
     update_patient,
@@ -9,10 +9,10 @@ from .views import (
 )
 
 urlpatterns = [
-    path('patients/', get_patients),
-    path('patients/create/', create_patient),
-    path('patients/<int:pk>/', get_patient),
-    path('patients/update/<int:pk>/', update_patient),
-    path('patients/delete/<int:pk>/', delete_patient),
-    path('patients/<int:pk>/triage-history/', get_patient_triage_history),
+    path('', PatientListView.as_view(), name='patient-list'),
+    path('create/', create_patient, name='patient-create'),
+    path('<int:pk>/', get_patient, name='patient-detail'),
+    path('update/<int:pk>/', update_patient, name='patient-update'),
+    path('delete/<int:pk>/', delete_patient, name='patient-delete'),
+    path('<int:pk>/triage-history/', get_patient_triage_history, name='patient-triage-history'),
 ]
