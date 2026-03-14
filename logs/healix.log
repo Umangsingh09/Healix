@@ -93,3 +93,68 @@ INFO 2026-03-14 17:36:02,293 log 22704 15052 "GET /auth/login/ HTTP/1.1" 200 312
 INFO 2026-03-14 17:36:02,655 log 22704 9124 "GET /auth/login/ HTTP/1.1" 200 31203
 WARNING 2026-03-14 17:36:23,876 log 22704 9124 Not Found: /favicon.ico
 WARNING 2026-03-14 17:36:23,878 log 22704 9124 "GET /favicon.ico HTTP/1.1" 404 4685
+INFO 2026-03-14 23:01:31,750 autoreload 22704 23544 C:\Users\rajum\healix\patients\views.py changed, reloading.
+INFO 2026-03-14 23:01:33,813 autoreload 2196 20308 Watching for file changes with StatReloader
+INFO 2026-03-14 23:03:14,491 autoreload 19120 20700 Watching for file changes with StatReloader
+INFO 2026-03-14 23:06:00,904 autoreload 19120 20700 C:\Users\rajum\healix\patients\urls.py changed, reloading.
+INFO 2026-03-14 23:06:01,405 autoreload 2196 20308 C:\Users\rajum\healix\patients\urls.py changed, reloading.
+INFO 2026-03-14 23:06:01,498 autoreload 25332 8572 Watching for file changes with StatReloader
+INFO 2026-03-14 23:06:01,976 autoreload 20840 17384 Watching for file changes with StatReloader
+INFO 2026-03-14 23:06:09,556 autoreload 20840 17384 C:\Users\rajum\healix\patients\urls.py changed, reloading.
+INFO 2026-03-14 23:06:10,152 autoreload 18460 1556 Watching for file changes with StatReloader
+INFO 2026-03-14 23:06:10,204 autoreload 25332 8572 C:\Users\rajum\healix\patients\urls.py changed, reloading.
+INFO 2026-03-14 23:06:10,896 autoreload 25328 12136 Watching for file changes with StatReloader
+INFO 2026-03-14 23:06:14,986 autoreload 24628 21456 Watching for file changes with StatReloader
+INFO 2026-03-14 23:11:14,665 autoreload 24628 21456 C:\Users\rajum\healix\triage\urls.py changed, reloading.
+INFO 2026-03-14 23:11:14,808 autoreload 25328 12136 C:\Users\rajum\healix\triage\urls.py changed, reloading.
+INFO 2026-03-14 23:11:15,081 autoreload 18460 1556 C:\Users\rajum\healix\triage\urls.py changed, reloading.
+INFO 2026-03-14 23:11:15,345 autoreload 23644 24028 Watching for file changes with StatReloader
+INFO 2026-03-14 23:11:15,501 autoreload 12704 6424 Watching for file changes with StatReloader
+INFO 2026-03-14 23:11:15,723 autoreload 10252 3652 Watching for file changes with StatReloader
+INFO 2026-03-14 23:11:24,497 autoreload 10252 3652 C:\Users\rajum\healix\triage\urls.py changed, reloading.
+INFO 2026-03-14 23:11:24,669 autoreload 12704 6424 C:\Users\rajum\healix\triage\urls.py changed, reloading.
+INFO 2026-03-14 23:11:25,081 autoreload 11672 20516 Watching for file changes with StatReloader
+INFO 2026-03-14 23:11:25,163 autoreload 23644 24028 C:\Users\rajum\healix\triage\urls.py changed, reloading.
+INFO 2026-03-14 23:11:25,346 autoreload 7056 11340 Watching for file changes with StatReloader
+INFO 2026-03-14 23:11:25,740 autoreload 22956 2772 Watching for file changes with StatReloader
+INFO 2026-03-14 23:17:25,116 autoreload 7056 11340 C:\Users\rajum\healix\patients\urls.py changed, reloading.
+INFO 2026-03-14 23:17:25,267 autoreload 22956 2772 C:\Users\rajum\healix\patients\urls.py changed, reloading.
+INFO 2026-03-14 23:17:25,828 autoreload 24756 18820 Watching for file changes with StatReloader
+INFO 2026-03-14 23:17:25,852 autoreload 23644 17016 Watching for file changes with StatReloader
+INFO 2026-03-14 23:17:25,910 autoreload 11672 20516 C:\Users\rajum\healix\patients\urls.py changed, reloading.
+INFO 2026-03-14 23:17:26,490 autoreload 15248 24520 Watching for file changes with StatReloader
+INFO 2026-03-14 23:17:36,164 autoreload 15248 24520 C:\Users\rajum\healix\accounts\views.py changed, reloading.
+INFO 2026-03-14 23:17:36,231 autoreload 24756 18820 C:\Users\rajum\healix\accounts\models.py changed, reloading.
+INFO 2026-03-14 23:17:36,637 autoreload 23644 17016 C:\Users\rajum\healix\healix\settings.py changed, reloading.
+INFO 2026-03-14 23:17:36,812 autoreload 11144 7060 Watching for file changes with StatReloader
+INFO 2026-03-14 23:17:36,919 autoreload 18676 22876 Watching for file changes with StatReloader
+INFO 2026-03-14 23:17:37,258 autoreload 20348 10248 Watching for file changes with StatReloader
+INFO 2026-03-14 23:19:11,342 autoreload 19048 4488 Watching for file changes with StatReloader
+INFO 2026-03-14 23:19:31,179 autoreload 20348 10248 C:\Users\rajum\healix\triage\urls.py changed, reloading.
+INFO 2026-03-14 23:19:31,522 autoreload 19048 4488 C:\Users\rajum\healix\triage\urls.py changed, reloading.
+INFO 2026-03-14 23:19:31,807 autoreload 21368 16216 Watching for file changes with StatReloader
+INFO 2026-03-14 23:19:31,856 autoreload 11144 7060 C:\Users\rajum\healix\triage\urls.py changed, reloading.
+INFO 2026-03-14 23:19:32,177 autoreload 23816 5980 Watching for file changes with StatReloader
+INFO 2026-03-14 23:19:32,189 autoreload 18676 22876 C:\Users\rajum\healix\triage\urls.py changed, reloading.
+INFO 2026-03-14 23:19:32,514 autoreload 23692 8804 Watching for file changes with StatReloader
+INFO 2026-03-14 23:19:32,856 autoreload 14200 6428 Watching for file changes with StatReloader
+INFO 2026-03-14 23:19:36,113 autoreload 13284 2908 Watching for file changes with StatReloader
+INFO 2026-03-14 23:19:43,057 autoreload 23816 5980 C:\Users\rajum\healix\triage\urls.py changed, reloading.
+INFO 2026-03-14 23:19:43,220 autoreload 14200 6428 C:\Users\rajum\healix\triage\urls.py changed, reloading.
+INFO 2026-03-14 23:19:43,376 autoreload 23692 8804 C:\Users\rajum\healix\triage\urls.py changed, reloading.
+INFO 2026-03-14 23:19:43,664 autoreload 18132 9544 Watching for file changes with StatReloader
+INFO 2026-03-14 23:19:43,819 autoreload 21368 16216 C:\Users\rajum\healix\triage\urls.py changed, reloading.
+INFO 2026-03-14 23:19:43,859 autoreload 13284 2908 C:\Users\rajum\healix\triage\urls.py changed, reloading.
+INFO 2026-03-14 23:19:43,911 autoreload 20840 12464 Watching for file changes with StatReloader
+INFO 2026-03-14 23:19:44,032 autoreload 15744 22608 Watching for file changes with StatReloader
+INFO 2026-03-14 23:19:44,567 autoreload 24068 23372 Watching for file changes with StatReloader
+INFO 2026-03-14 23:19:44,591 autoreload 23752 24868 Watching for file changes with StatReloader
+INFO 2026-03-14 23:19:54,052 log 20964 24052 "GET / HTTP/1.1" 200 50745
+INFO 2026-03-14 23:19:56,751 log 20964 24052 "GET /login/ HTTP/1.1" 302 0
+INFO 2026-03-14 23:19:56,757 log 20964 24052 "GET /auth/login/ HTTP/1.1" 200 31203
+INFO 2026-03-14 23:19:57,093 log 20964 10772 "GET /auth/login/ HTTP/1.1" 200 31203
+INFO 2026-03-14 23:20:25,932 log 20964 10772 "GET /dashboard/doctor/ HTTP/1.1" 200 31601
+INFO 2026-03-14 23:20:46,499 log 20964 10772 "GET /dashboard/doctor/ HTTP/1.1" 200 31601
+INFO 2026-03-14 23:20:51,362 log 20964 10772 "GET /auth/login/ HTTP/1.1" 200 31203
+INFO 2026-03-14 23:21:46,503 log 20964 10772 "GET /dashboard/doctor/ HTTP/1.1" 200 31601
+INFO 2026-03-14 23:23:05,807 log 20964 25320 "GET /triage/ HTTP/1.1" 200 22541

@@ -1,4 +1,5 @@
 from django.urls import path
+from . import views
 from .views import (
     PatientListView,
     create_patient,
