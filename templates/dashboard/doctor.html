@@ -192,225 +192,407 @@
         /* Main content */
         .main {
             margin-left: 220px;
-            padding: 32px 36px;
+            padding: 24px 32px 32px;
         }
 
         .page-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 32px;
+            margin-bottom: 20px;
         }
 
         .page-title {
-            font-family: var(--font-serif);
-            font-size: 28px;
-            letter-spacing: -0.02em;
+            font-family: var(--font-sans);
+            font-size: 22px;
+            font-weight: 600;
         }
 
         .page-sub {
             font-size: 13px;
             color: var(--muted2);
-            font-family: var(--font-mono);
         }
 
-        .header-actions {
+        .header-right {
             display: flex;
-            gap: 10px;
+            align-items: center;
+            gap: 12px;
         }
 
-        .btn-sm {
-            padding: 8px 18px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
+        .pill-updated {
+            padding: 6px 16px;
+            border-radius: 999px;
+            background: #022c22;
+            border: 1px solid #22c55e;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: #bbf7d0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pill-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 999px;
+            background: #22c55e;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.8);
+        }
+
+        .btn-chip {
+            padding: 7px 16px;
+            border-radius: 999px;
             border: 1px solid var(--border2);
-            background: transparent;
+            background: rgba(15, 23, 42, 0.9);
             color: var(--muted2);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             transition: all 0.2s;
-            font-family: var(--font-sans);
         }
 
-        .btn-sm:hover {
+        .btn-chip.primary {
+            background: linear-gradient(135deg, #fb7185, #f97316);
+            border-color: transparent;
+            color: #0b0f19;
+            box-shadow: 0 0 22px rgba(248, 113, 113, 0.6);
+        }
+
+        .btn-chip:hover {
             border-color: var(--teal);
             color: var(--teal);
         }
 
-        .btn-sm.primary {
-            background: var(--teal);
-            color: #04342c;
-            border-color: var(--teal);
-        }
-
-        .btn-sm.primary:hover {
-            background: #00b897;
+        .btn-chip.primary:hover {
+            opacity: 0.95;
         }
 
         /* Stats row */
         .stats-row {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 16px;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
         .stat-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
+            position: relative;
+            background: radial-gradient(circle at top left, rgba(248, 113, 113, 0.14), transparent 55%), #020617;
+            border-radius: 18px;
+            border: 1px solid rgba(30, 64, 175, 0.6);
+            padding: 16px 16px 14px;
+        }
+
+        .stat-card:nth-child(2) {
+            background: radial-gradient(circle at top left, rgba(251, 191, 36, 0.14), transparent 55%), #020617;
+        }
+
+        .stat-card:nth-child(3) {
+            background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.14), transparent 55%), #020617;
+        }
+
+        .stat-card:nth-child(4) {
+            background: radial-gradient(circle at top left, rgba(52, 211, 153, 0.14), transparent 55%), #020617;
         }
 
         .stat-label {
-            font-family: var(--font-mono);
             font-size: 11px;
             color: var(--muted2);
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 8px;
+            letter-spacing: 0.12em;
+            margin-bottom: 4px;
         }
 
         .stat-value {
-            font-family: var(--font-serif);
-            font-size: 32px;
-            color: var(--text);
-            line-height: 1;
+            font-size: 26px;
+            font-weight: 700;
         }
 
-        .stat-change {
-            font-size: 12px;
+        .stat-sub {
+            font-size: 11px;
             color: var(--muted2);
-            margin-top: 4px;
         }
 
-        /* Patient queue */
-        .section-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 16px;
+        .stat-badge {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(148, 163, 184, 0.5);
+            color: var(--muted2);
+            font-family: var(--font-mono);
+        }
+
+        /* Main grid */
+        .grid-main {
+            display: grid;
+            grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.1fr);
+            gap: 18px;
+        }
+
+        .card-shell {
+            background: #020617;
+            border-radius: 18px;
+            border: 1px solid rgba(30, 64, 175, 0.7);
+            padding: 16px 18px 14px;
+        }
+
+        .card-header-row {
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: space-between;
+            margin-bottom: 10px;
         }
 
-        .live-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: var(--red);
-            animation: pulse-dot 1.5s infinite;
+        .card-title-main {
+            font-size: 14px;
+            font-weight: 600;
         }
 
-        @keyframes pulse-dot {
+        .card-sub {
+            font-size: 11px;
+            color: var(--muted2);
+        }
 
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1)
-            }
+        .pill-filter-group {
+            display: inline-flex;
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 999px;
+            padding: 3px;
+            border: 1px solid rgba(51, 65, 85, 0.9);
+            gap: 4px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+        }
 
-            50% {
-                opacity: 0.5;
-                transform: scale(0.8)
-            }
+        .pill-filter {
+            padding: 3px 8px;
+            border-radius: 999px;
+            color: var(--muted2);
+            cursor: pointer;
+        }
+
+        .pill-filter.active {
+            background: #ef4444;
+            color: #0b0f19;
         }
 
         .queue-table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 13px;
         }
 
         .queue-table th {
             text-align: left;
-            font-family: var(--font-mono);
             font-size: 11px;
             color: var(--muted);
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            padding: 10px 16px;
-            border-bottom: 1px solid var(--border);
+            padding: 8px 4px;
+            border-bottom: 1px solid rgba(30, 64, 175, 0.6);
         }
 
         .queue-table td {
-            padding: 14px 16px;
-            border-bottom: 1px solid var(--border);
-            font-size: 14px;
-        }
-
-        .queue-table tr:last-child td {
-            border-bottom: none;
+            padding: 10px 4px;
+            border-bottom: 1px solid rgba(15, 23, 42, 0.9);
         }
 
         .queue-table tr:hover td {
-            background: var(--surface2);
+            background: rgba(15, 23, 42, 0.9);
+        }
+
+        .patient-name {
+            font-weight: 500;
+        }
+
+        .patient-meta {
+            font-size: 11px;
+            color: var(--muted2);
+            font-family: var(--font-mono);
         }
 
         .triage-pill {
-            display: inline-block;
-            padding: 3px 12px;
-            border-radius: 6px;
-            font-family: var(--font-mono);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px;
+            border-radius: 999px;
             font-size: 11px;
-            font-weight: 500;
-            letter-spacing: 0.06em;
+            font-family: var(--font-mono);
         }
 
-        /* New triage input */
-        .new-triage-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 14px;
+        .triage-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 999px;
+        }
+
+        .triage-critical {
+            background: rgba(248, 113, 113, 0.16);
+            color: #fecaca;
+        }
+
+        .triage-critical .triage-dot {
+            background: #f97316;
+        }
+
+        .triage-high {
+            background: rgba(251, 191, 36, 0.16);
+            color: #facc15;
+        }
+
+        .triage-medium {
+            background: rgba(129, 140, 248, 0.16);
+            color: #a5b4fc;
+        }
+
+        .triage-low {
+            background: rgba(45, 212, 191, 0.16);
+            color: #6ee7b7;
+        }
+
+        .btn-table {
+            padding: 4px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            background: transparent;
+            color: var(--muted2);
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        /* Right column cards */
+        .donut-card {
+            text-align: center;
+        }
+
+        .donut {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            margin: 10px auto 6px;
+            background:
+                radial-gradient(circle at center, #020617 58%, transparent 60%),
+                conic-gradient(#ef4444 0 90deg,
+                    #f97316 90deg 180deg,
+                    #3b82f6 180deg 260deg,
+                    #22c55e 260deg 360deg);
+            box-shadow: 0 0 30px rgba(30, 64, 175, 0.8);
+        }
+
+        .donut-number {
+            position: relative;
+            top: -92px;
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        .donut-label {
+            position: relative;
+            top: -86px;
+            font-size: 11px;
+            color: var(--muted2);
+        }
+
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 4px 12px;
+            margin-top: -70px;
+            font-size: 11px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--muted2);
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+        }
+
+        .meter-row {
+            margin-bottom: 8px;
+        }
+
+        .meter-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--muted2);
+            margin-bottom: 3px;
+        }
+
+        .meter-bar {
+            width: 100%;
+            height: 5px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.9);
             overflow: hidden;
-            margin-top: 28px;
         }
 
-        .card-header {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border);
+        .meter-fill {
+            height: 100%;
+            border-radius: inherit;
+        }
+
+        .activity-list {
+            margin-top: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 12px;
+        }
+
+        .activity-item {
             display: flex;
             align-items: center;
             gap: 8px;
-        }
-
-        .card-title {
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .card-body {
-            padding: 20px;
-        }
-
-        .triage-textarea {
-            width: 100%;
-            min-height: 100px;
-            background: var(--bg2);
-            border: 1px solid var(--border);
+            padding: 6px 8px;
             border-radius: 10px;
-            padding: 14px;
-            color: var(--text);
-            font-family: var(--font-mono);
-            font-size: 13px;
-            line-height: 1.6;
-            resize: vertical;
-            outline: none;
-            transition: border-color 0.2s;
+            background: rgba(15, 23, 42, 0.9);
         }
 
-        .triage-textarea:focus {
-            border-color: var(--teal);
-        }
-
-        .triage-textarea::placeholder {
-            color: var(--muted);
-        }
-
-        .card-footer {
+        .activity-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
             display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 12px;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+        }
+
+        .activity-meta {
+            margin-left: auto;
+            font-size: 11px;
+            color: var(--muted2);
+        }
+
+        @media (max-width: 960px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .grid-main {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -424,10 +606,11 @@
             <span class="role-chip">DR</span>
         </div>
         <a class="nav-item active" href="#"><span>📊</span> Dashboard</a>
-        <a class="nav-item" href="#"><span>🚨</span> Triage Queue</a>
+        <a class="nav-item" href="/triage/"><span>➕</span> New Triage</a>
+        <a class="nav-item" href="/dashboard/"><span>🧍</span> Patient Queue</a>
         <a class="nav-item" href="#"><span>🧑‍⚕️</span> My Patients</a>
-        <a class="nav-item" href="#"><span>🧬</span> Run Triage</a>
-        <a class="nav-item" href="#"><span>📋</span> Reports</a>
+        <a class="nav-item" href="#"><span>📜</span> Triage History</a>
+        <a class="nav-item" href="#"><span>📈</span> Analytics</a>
         <a class="nav-item" href="#"><span>⚙️</span> Settings</a>
 
         <div class="sidebar-footer">
@@ -446,128 +629,254 @@
         <div class="page-header">
             <div>
                 <h1 class="page-title">Clinical Dashboard</h1>
-                <p class="page-sub" id="greetingText">Good morning, Doctor</p>
+                <p class="page-sub" id="greetingText">Good evening, Doctor</p>
             </div>
-            <div class="header-actions">
-                <button class="btn-sm">Export PDF</button>
-                <button class="btn-sm primary" onclick="document.getElementById('newTriageInput').focus()">+ New
-                    Triage</button>
+            <div class="header-right">
+                <div class="pill-updated">
+                    <span class="pill-dot"></span>
+                    <span>Updated <span id="updatedTime">19:42</span></span>
+                </div>
+                <button class="btn-chip" type="button" onclick="location.reload()">⟳ Refresh</button>
+                <button class="btn-chip primary" type="button"
+                    onclick="document.getElementById('newTriageInput').focus()">+ New Triage</button>
             </div>
         </div>
 
         <!-- Stats -->
         <div class="stats-row">
             <div class="stat-card">
-                <div class="stat-label">Active Patients</div>
-                <div class="stat-value" style="color:var(--text)">24</div>
-                <div class="stat-change">↑ 3 since yesterday</div>
+                <div class="stat-label">Critical cases</div>
+                <div class="stat-value" style="color:#fecaca">2</div>
+                <div class="stat-sub">Immediate attention</div>
+                <div class="stat-badge">2 now</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Critical Cases</div>
-                <div class="stat-value" style="color:var(--red)">3</div>
-                <div class="stat-change">Requires immediate action</div>
+                <div class="stat-label">High priority</div>
+                <div class="stat-value" style="color:#fed7aa">2</div>
+                <div class="stat-sub">Within 10 minutes</div>
+                <div class="stat-badge">2 wait</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Avg. Triage Time</div>
-                <div class="stat-value" style="color:var(--teal)">6.2s</div>
-                <div class="stat-change">AI processing time</div>
+                <div class="stat-label">Total patients</div>
+                <div class="stat-value" style="color:#bfdbfe">8</div>
+                <div class="stat-sub">8 patients registered</div>
+                <div class="stat-badge">in system</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Resolved Today</div>
-                <div class="stat-value">11</div>
-                <div class="stat-change">↑ 2 vs yesterday</div>
+                <div class="stat-label">Avg triage time</div>
+                <div class="stat-value" style="color:#6ee7b7">6.2s</div>
+                <div class="stat-sub">5 AI agents · realtime</div>
+                <div class="stat-badge">fast</div>
             </div>
         </div>
 
-        <!-- Patient Queue -->
-        <div class="section-title">
-            <div class="live-dot"></div> Live Patient Queue
-        </div>
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;">
-            <table class="queue-table">
-                <thead>
-                    <tr>
-                        <th>Patient</th>
-                        <th>Chief Complaint</th>
-                        <th>Triage Level</th>
-                        <th>Wait Time</th>
-                        <th>Assigned</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <div style="font-weight:500">Sharma, Raj</div>
-                            <div style="font-size:12px;color:var(--muted2);font-family:var(--font-mono)">#0042 · 58M
-                            </div>
-                        </td>
-                        <td>Chest pain, sweating, dizziness</td>
-                        <td><span class="triage-pill" style="background:var(--red-soft);color:var(--red)">●
-                                CRITICAL</span></td>
-                        <td style="font-family:var(--font-mono);font-size:13px">2 min</td>
-                        <td style="color:var(--muted2);font-size:13px">Dr. You</td>
-                        <td><button class="btn-sm" style="padding:5px 12px;font-size:12px">View →</button></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div style="font-weight:500">Mehta, Priya</div>
-                            <div style="font-size:12px;color:var(--muted2);font-family:var(--font-mono)">#0041 · 34F
-                            </div>
-                        </td>
-                        <td>Severe headache, nausea, light sensitivity</td>
-                        <td><span class="triage-pill" style="background:var(--amber-soft);color:var(--amber)">●
-                                HIGH</span></td>
-                        <td style="font-family:var(--font-mono);font-size:13px">8 min</td>
-                        <td style="color:var(--muted2);font-size:13px">Unassigned</td>
-                        <td><button class="btn-sm" style="padding:5px 12px;font-size:12px">View →</button></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div style="font-weight:500">Verma, Anil</div>
-                            <div style="font-size:12px;color:var(--muted2);font-family:var(--font-mono)">#0040 · 22M
-                            </div>
-                        </td>
-                        <td>Ankle pain after sports fall</td>
-                        <td><span class="triage-pill" style="background:rgba(123,104,238,0.15);color:#7b68ee">●
-                                MEDIUM</span></td>
-                        <td style="font-family:var(--font-mono);font-size:13px">22 min</td>
-                        <td style="color:var(--muted2);font-size:13px">Unassigned</td>
-                        <td><button class="btn-sm" style="padding:5px 12px;font-size:12px">View →</button></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div style="font-weight:500">Singh, Kavya</div>
-                            <div style="font-size:12px;color:var(--muted2);font-family:var(--font-mono)">#0039 · 8F
-                            </div>
-                        </td>
-                        <td>Mild fever, routine check</td>
-                        <td><span class="triage-pill" style="background:var(--teal-soft);color:var(--teal)">● LOW</span>
-                        </td>
-                        <td style="font-family:var(--font-mono);font-size:13px">45 min</td>
-                        <td style="color:var(--muted2);font-size:13px">Unassigned</td>
-                        <td><button class="btn-sm" style="padding:5px 12px;font-size:12px">View →</button></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- New Triage Input -->
-        <div class="new-triage-card">
-            <div class="card-header">
-                <span>⚡</span>
-                <span class="card-title">Quick Triage — Enter Patient Data</span>
-                <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted2);margin-left:auto">AI agents
-                    will process in ~6s</span>
-            </div>
-            <div class="card-body">
-                <textarea class="triage-textarea" id="newTriageInput"
-                    placeholder="Patient age: 45&#10;Symptoms: shortness of breath, chest tightness&#10;Duration: 1 hour&#10;&#10;Paste any format — doctor notes, transcripts, or free text..."></textarea>
-                <div class="card-footer">
-                    <button class="btn-sm">Save Draft</button>
-                    <button class="btn-sm primary" onclick="runTriage()">⚡ Run AI Triage</button>
+        <div class="grid-main">
+            <!-- Live queue (left) -->
+            <section class="card-shell">
+                <div class="card-header-row">
+                    <div>
+                        <div class="card-title-main">Live Patient Queue</div>
+                        <div class="card-sub">8 patients waiting · sorted by severity</div>
+                    </div>
+                    <div class="pill-filter-group">
+                        <div class="pill-filter active">All</div>
+                        <div class="pill-filter">Critical</div>
+                        <div class="pill-filter">High</div>
+                    </div>
                 </div>
-            </div>
+                <table class="queue-table">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Chief complaint</th>
+                            <th>Level</th>
+                            <th>Wait</th>
+                            <th>Assigned</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="patient-name">Raj Sharma</div>
+                                <div class="patient-meta">#0001 · 58yrs</div>
+                            </td>
+                            <td>Chest pain, sweating, dizziness</td>
+                            <td>
+                                <span class="triage-pill triage-critical">
+                                    <span class="triage-dot"></span>Critical
+                                </span>
+                            </td>
+                            <td class="patient-meta">2 min</td>
+                            <td class="patient-meta">You</td>
+                            <td><button class="btn-table">View →</button></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="patient-name">Priya Mehta</div>
+                                <div class="patient-meta">#0002 · 34yrs</div>
+                            </td>
+                            <td>Severe headache, nausea</td>
+                            <td>
+                                <span class="triage-pill triage-high">
+                                    <span class="triage-dot"></span>High
+                                </span>
+                            </td>
+                            <td class="patient-meta">8 min</td>
+                            <td class="patient-meta">Unassigned</td>
+                            <td><button class="btn-table">View →</button></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="patient-name">Anita Desai</div>
+                                <div class="patient-meta">#0003 · 71yrs</div>
+                            </td>
+                            <td>Difficulty breathing, wheeze</td>
+                            <td>
+                                <span class="triage-pill triage-high">
+                                    <span class="triage-dot"></span>High
+                                </span>
+                            </td>
+                            <td class="patient-meta">15 min</td>
+                            <td class="patient-meta">On call</td>
+                            <td><button class="btn-table">View →</button></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="patient-name">Vikram Singh</div>
+                                <div class="patient-meta">#0004 · 45yrs</div>
+                            </td>
+                            <td>Severe abdominal pain</td>
+                            <td>
+                                <span class="triage-pill triage-medium">
+                                    <span class="triage-dot"></span>Medium
+                                </span>
+                            </td>
+                            <td class="patient-meta">22 min</td>
+                            <td class="patient-meta">Unassigned</td>
+                            <td><button class="btn-table">View →</button></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="patient-name">Kavya Reddy</div>
+                                <div class="patient-meta">#0007 · 8yrs</div>
+                            </td>
+                            <td>Mild fever, runny nose</td>
+                            <td>
+                                <span class="triage-pill triage-low">
+                                    <span class="triage-dot"></span>Low
+                                </span>
+                            </td>
+                            <td class="patient-meta">1 h</td>
+                            <td class="patient-meta">Unassigned</td>
+                            <td><button class="btn-table">View →</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Right column (risk + breakdown + recent) -->
+            <section class="right-column">
+                <div class="card-shell donut-card">
+                    <div class="card-header-row" style="margin-bottom:6px">
+                        <div>
+                            <div class="card-title-main">Risk Distribution</div>
+                            <div class="card-sub">8 triages</div>
+                        </div>
+                    </div>
+                    <div class="donut"></div>
+                    <div class="donut-number">8</div>
+                    <div class="donut-label">patients</div>
+                    <div class="legend">
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background:#ef4444;"></span>
+                            <span>Critical (2)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background:#f97316;"></span>
+                            <span>High (2)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background:#3b82f6;"></span>
+                            <span>Medium (2)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background:#22c55e;"></span>
+                            <span>Low (2)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-shell" style="margin-top:12px">
+                    <div class="card-header-row" style="margin-bottom:10px">
+                        <div class="card-title-main">Queue Breakdown</div>
+                    </div>
+                    <div class="meter-row">
+                        <div class="meter-label"><span>Critical</span><span>2</span></div>
+                        <div class="meter-bar">
+                            <div class="meter-fill" style="width:40%;background:#ef4444;"></div>
+                        </div>
+                    </div>
+                    <div class="meter-row">
+                        <div class="meter-label"><span>High</span><span>2</span></div>
+                        <div class="meter-bar">
+                            <div class="meter-fill" style="width:35%;background:#f97316;"></div>
+                        </div>
+                    </div>
+                    <div class="meter-row">
+                        <div class="meter-label"><span>Medium</span><span>2</span></div>
+                        <div class="meter-bar">
+                            <div class="meter-fill" style="width:25%;background:#3b82f6;"></div>
+                        </div>
+                    </div>
+                    <div class="meter-row">
+                        <div class="meter-label"><span>Low</span><span>2</span></div>
+                        <div class="meter-bar">
+                            <div class="meter-fill" style="width:20%;background:#22c55e;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-shell" style="margin-top:12px">
+                    <div class="card-header-row" style="margin-bottom:8px">
+                        <div class="card-title-main">Recent Activity</div>
+                    </div>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background:#451a30;color:#fecaca;">⚠</div>
+                            <div>
+                                <div>Raj Sharma</div>
+                                <div class="patient-meta">Critical · Chest pain</div>
+                            </div>
+                            <div class="activity-meta">just now</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background:#422006;color:#fed7aa;">⚠</div>
+                            <div>
+                                <div>Priya Mehta</div>
+                                <div class="patient-meta">High · Headache</div>
+                            </div>
+                            <div class="activity-meta">8 min ago</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background:#1f2937;color:#e5e7eb;">ℹ</div>
+                            <div>
+                                <div>Anita Desai</div>
+                                <div class="patient-meta">High · Breathlessness</div>
+                            </div>
+                            <div class="activity-meta">15 min ago</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background:#022c22;color:#bbf7d0;">✓</div>
+                            <div>
+                                <div>Kavya Reddy</div>
+                                <div class="patient-meta">Low · Mild fever</div>
+                            </div>
+                            <div class="activity-meta">1 h ago</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
     </main>
 

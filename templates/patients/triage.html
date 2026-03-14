@@ -25,9 +25,6 @@
             font-family: 'Outfit', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-primary);
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
             background-image: radial-gradient(circle at top, #162032 0%, #0b0f19 70%);
             overflow-x: hidden;
@@ -36,10 +33,10 @@
         .container {
             width: 90%;
             max-width: 1000px;
+            margin: 96px auto 32px;
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 2rem;
-            padding: 2rem 0;
         }
 
         .card {
@@ -285,15 +282,19 @@
         }
 
         .navbar {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            padding: 1.5rem 2rem;
+            padding: 1.2rem 2rem;
             box-sizing: border-box;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            z-index: 20;
+            background: rgba(11, 15, 25, 0.9);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
         }
 
         .logo {
@@ -335,6 +336,7 @@
         @media(max-width: 768px) {
             .container {
                 grid-template-columns: 1fr;
+                margin-top: 88px;
             }
         }
     </style>

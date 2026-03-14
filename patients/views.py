@@ -33,7 +33,8 @@ def get_patients(request):
     patients = Patient.objects.all()
     serializer = PatientSerializer(patients, many=True)
     return Response(serializer.data)
-
+def health_agent(request):
+    return render(request, 'patients/health_agent.html')
 
 # POST create patient
 @api_view(['POST'])

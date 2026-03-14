@@ -9,6 +9,7 @@ from .views import (
 )
 
 urlpatterns = [
+    path('health-agent/', views.health_agent, name='health_agent'),
     path('', PatientListView.as_view(), name='patient-list'),
     path('create/', create_patient, name='patient-create'),
     path('<int:pk>/', get_patient, name='patient-detail'),
