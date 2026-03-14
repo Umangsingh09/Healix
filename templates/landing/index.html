@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Healix — Agentic Healthcare Triage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #070b0f;
+            --bg2: #0d1318;
+            --bg3: #111820;
+            --surface: #161e27;
+            --border: rgba(255, 255, 255, 0.07);
+            --border2: rgba(255, 255, 255, 0.12);
+            --text: #e8edf2;
+            --muted: #5a6b7a;
+            --muted2: #8a9baa;
+            --red: #e84c3d;
+            --red-soft: rgba(232, 76, 61, 0.12);
+            --amber: #f0a500;
+            --amber-soft: rgba(240, 165, 0, 0.12);
+            --teal: #00c9a7;
+            --teal-soft: rgba(0, 201, 167, 0.1);
+            --blue: #4a9eff;
+            --blue-soft: rgba(74, 158, 255, 0.1);
+            --glow-red: rgba(232, 76, 61, 0.15);
+            --glow-teal: rgba(0, 201, 167, 0.1);
+            --font-serif: 'DM Serif Display', Georgia, serif;
+            --font-mono: 'DM Mono', 'Courier New', monospace;
+            --font-sans: 'Instrument Sans', system-ui, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-sans);
+            font-size: 16px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ── NOISE TEXTURE ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.025;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-size: 180px;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 48px;
+            height: 64px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(7, 11, 15, 0.85);
+            backdrop-filter: blur(16px);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--red);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .nav-logo-icon::before {
+            content: '+';
+            color: white;
+            font-size: 20px;
+            font-weight: 300;
+            line-height: 1;
+        }
+
+        .nav-logo-text {
+            font-family: var(--font-serif);
+            font-size: 22px;
+            color: var(--text);
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--muted2);
+            font-size: 14px;
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-weight: 300;
+            letter-spacing: 0.02em;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .nav-cta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-ghost {
+            padding: 8px 20px;
+            background: transparent;
+            border: 1px solid var(--border2);
+            border-radius: 8px;
+            color: var(--muted2);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 400;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        .btn-primary {
+            padding: 8px 20px;
+            background: var(--red);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #d43e30;
+            transform: translateY(-1px);
+        }
+
+        /* ── HERO ── */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 48px 80px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        /* Radial glow background */
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 400px;
+            background: radial-gradient(ellipse, var(--glow-red) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* ECG line decoration */
+        .hero-ecg {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            opacity: 0.04;
+            pointer-events: none;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 100px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--muted2);
+            letter-spacing: 0.05em;
+            margin-bottom: 40px;
+            animation: fadeUp 0.6s ease both;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--teal);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(0.8);
+            }
+        }
+
+        .hero-eyebrow {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 400;
+            color: var(--red);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            animation: fadeUp 0.6s ease 0.1s both;
+        }
+
+        .hero-title {
+            font-family: var(--font-serif);
+            font-size: clamp(52px, 7vw, 96px);
+            line-height: 1.0;
+            letter-spacing: -0.03em;
+            color: var(--text);
+            max-width: 900px;
+            margin-bottom: 28px;
+            animation: fadeUp 0.7s ease 0.15s both;
+        }
+
+        .hero-title em {
+            font-style: italic;
+            color: var(--teal);
+        }
+
+        .hero-sub {
+            font-size: 18px;
+            line-height: 1.7;
+            color: var(--muted2);
+            max-width: 560px;
+            margin-bottom: 52px;
+            animation: fadeUp 0.7s ease 0.25s both;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeUp 0.7s ease 0.35s both;
+        }
+
+        .btn-large {
+            padding: 14px 32px;
+            background: var(--red);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-family: var(--font-sans);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 0 40px rgba(232, 76, 61, 0.3);
+        }
+
+        .btn-large:hover {
+            background: #d43e30;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 50px rgba(232, 76, 61, 0.4);
+        }
+
+        .btn-large-outline {
+            padding: 14px 32px;
+            background: transparent;
+            border: 1px solid var(--border2);
+            border-radius: 10px;
+            color: var(--muted2);
+            font-family: var(--font-sans);
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-large-outline:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        /* Hero stats bar */
+        .hero-stats {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin-top: 80px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--surface);
+            animation: fadeUp 0.7s ease 0.45s both;
+        }
+
+        .hero-stat {
+            padding: 20px 36px;
+            border-right: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .hero-stat:last-child {
+            border-right: none;
+        }
+
+        .hero-stat-value {
+            font-family: var(--font-serif);
+            font-size: 28px;
+            color: var(--text);
+            display: block;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .hero-stat-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* ── TRIAGE DEMO SECTION ── */
+        .demo-section {
+            padding: 100px 48px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--teal);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-family: var(--font-serif);
+            font-size: clamp(32px, 4vw, 52px);
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+        }
+
+        .section-sub {
+            font-size: 16px;
+            color: var(--muted2);
+            line-height: 1.7;
+            max-width: 500px;
+        }
+
+        /* Triage levels showcase */
+        .triage-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-top: 60px;
+        }
+
+        .triage-card {
+            background: var(--bg2);
+            padding: 32px 28px;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.3s;
+            cursor: default;
+        }
+
+        .triage-card:hover {
+            background: var(--bg3);
+        }
+
+        .triage-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .triage-card.critical::before {
+            background: var(--red);
+        }
+
+        .triage-card.high::before {
+            background: var(--amber);
+        }
+
+        .triage-card.medium::before {
+            background: #7b68ee;
+        }
+
+        .triage-card.low::before {
+            background: var(--teal);
+        }
+
+        .triage-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .critical .triage-badge {
+            background: var(--red-soft);
+            color: var(--red);
+        }
+
+        .high .triage-badge {
+            background: var(--amber-soft);
+            color: var(--amber);
+        }
+
+        .medium .triage-badge {
+            background: rgba(123, 104, 238, 0.15);
+            color: #7b68ee;
+        }
+
+        .low .triage-badge {
+            background: var(--teal-soft);
+            color: var(--teal);
+        }
+
+        .triage-time {
+            font-family: var(--font-serif);
+            font-size: 36px;
+            color: var(--text);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .triage-time-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 0.05em;
+            margin-bottom: 20px;
+        }
+
+        .triage-desc {
+            font-size: 13px;
+            color: var(--muted2);
+            line-height: 1.6;
+        }
+
+        /* ── AGENT WORKFLOW SECTION ── */
+        .workflow-section {
+            padding: 100px 48px;
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .workflow-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .workflow-agents {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .agent-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.25s;
+            position: relative;
+        }
+
+        .agent-row:hover {
+            border-color: var(--border2);
+            transform: translateX(4px);
+        }
+
+        .agent-row.active {
+            border-color: var(--teal);
+            background: var(--bg);
+        }
+
+        .agent-row.active .agent-icon {
+            background: var(--teal-soft);
+            color: var(--teal);
+        }
+
+        .agent-step {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--muted);
+            width: 20px;
+            flex-shrink: 0;
+        }
+
+        .agent-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+            transition: all 0.25s;
+        }
+
+        .agent-info {
+            flex: 1;
+        }
+
+        .agent-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+
+        .agent-desc {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .agent-connector {
+            position: absolute;
+            left: 34px;
+            bottom: -13px;
+            width: 1px;
+            height: 13px;
+            background: var(--border);
+        }
+
+        .agent-row:last-child .agent-connector {
+            display: none;
+        }
+
+        /* Live output preview */
+        .output-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .output-card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface);
+        }
+
+        .output-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .output-card-title {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--muted2);
+            margin-left: 4px;
+        }
+
+        .output-body {
+            padding: 24px 20px;
+        }
+
+        .output-field {
+            margin-bottom: 20px;
+        }
+
+        .output-field:last-child {
+            margin-bottom: 0;
+        }
+
+        .output-key {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 6px;
+        }
+
+        .output-val {
+            font-size: 14px;
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        .output-badge-critical {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 6px;
+            background: var(--red-soft);
+            color: var(--red);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+        }
+
+        .output-conditions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .output-condition {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .output-prob-bar {
+            height: 4px;
+            background: var(--surface);
+            border-radius: 2px;
+            flex: 1;
+        }
+
+        .output-prob-fill {
+            height: 100%;
+            border-radius: 2px;
+            background: var(--teal);
+        }
+
+        .output-prob-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--muted);
+            min-width: 36px;
+            text-align: right;
+        }
+
+        /* ── FEATURES SECTION ── */
+        .features-section {
+            padding: 100px 48px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 60px;
+        }
+
+        .feature-card {
+            padding: 32px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 0% 0%, var(--glow-teal), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--border2);
+            transform: translateY(-4px);
+        }
+
+        .feature-card:hover::after {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .feature-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .feature-desc {
+            font-size: 14px;
+            color: var(--muted2);
+            line-height: 1.7;
+        }
+
+        /* ── INPUT DEMO SECTION ── */
+        .input-section {
+            padding: 100px 48px;
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+        }
+
+        .input-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .triage-form {
+            margin-top: 48px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .form-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .form-title {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--muted2);
+            margin-left: auto;
+        }
+
+        .form-body {
+            padding: 24px;
+        }
+
+        .form-textarea {
+            width: 100%;
+            min-height: 120px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-textarea:focus {
+            border-color: var(--teal);
+        }
+
+        .form-textarea::placeholder {
+            color: var(--muted);
+        }
+
+        .form-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 16px;
+        }
+
+        .form-hint {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .form-submit {
+            padding: 10px 24px;
+            background: var(--red);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-submit:hover {
+            background: #d43e30;
+            transform: translateY(-1px);
+        }
+
+        /* Quick fill examples */
+        .examples {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .example-chip {
+            padding: 6px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 12px;
+            color: var(--muted2);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--font-mono);
+        }
+
+        .example-chip:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            padding: 48px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .footer-text {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+        }
+
+        .footer-links a {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--text);
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .observe-fade {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: all 0.6s ease;
+        }
+
+        .observe-fade.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── LIVE TICKER ── */
+        .ticker-bar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0 48px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            overflow: hidden;
+            font-family: var(--font-mono);
+            font-size: 12px;
+        }
+
+        .ticker-label {
+            color: var(--red);
+            letter-spacing: 0.1em;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ticker-scroll {
+            display: flex;
+            gap: 48px;
+            animation: ticker 30s linear infinite;
+            white-space: nowrap;
+        }
+
+        .ticker-item {
+            color: var(--muted2);
+        }
+
+        .ticker-item span {
+            color: var(--teal);
+        }
+
+        @keyframes ticker {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* ECG SVG */
+        .ecg-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: ecg-draw 3s ease forwards 0.5s;
+        }
+
+        @keyframes ecg-draw {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            nav {
+                padding: 0 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 100px 20px 60px;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+            }
+
+            .hero-stat {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .triage-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .workflow-inner {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .demo-section,
+            .features-section,
+            .input-section,
+            footer {
+                padding: 60px 20px;
+            }
+
+            .workflow-section {
+                padding: 60px 20px;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Live ticker -->
+    <div class="ticker-bar" style="margin-top: 64px; display: none;" id="ticker">
+        <div class="ticker-label">
+            <span
+                style="width:6px;height:6px;background:var(--red);border-radius:50%;display:inline-block;animation:pulse-dot 1s infinite;"></span>
+            LIVE
+        </div>
+        <div class="ticker-scroll" id="tickerScroll">
+            <span class="ticker-item">Patient #0042 — <span>CRITICAL</span> — Chest pain 58M — Routing to ER</span>
+            <span class="ticker-item">Patient #0041 — <span style="color:var(--amber)">HIGH</span> — Severe headache 34F
+                — Fast-track</span>
+            <span class="ticker-item">Patient #0040 — <span style="color:#7b68ee">MEDIUM</span> — Ankle sprain 22M —
+                Queue 3</span>
+            <span class="ticker-item">Patient #0039 — <span>CRITICAL</span> — Difficulty breathing 71F — ICU
+                alert</span>
+            <span class="ticker-item">Patient #0038 — <span style="color:var(--teal)">LOW</span> — Mild fever 8M —
+                Waiting room</span>
+            <!-- duplicate for loop -->
+            <span class="ticker-item">Patient #0042 — <span>CRITICAL</span> — Chest pain 58M — Routing to ER</span>
+            <span class="ticker-item">Patient #0041 — <span style="color:var(--amber)">HIGH</span> — Severe headache 34F
+                — Fast-track</span>
+            <span class="ticker-item">Patient #0040 — <span style="color:#7b68ee">MEDIUM</span> — Ankle sprain 22M —
+                Queue 3</span>
+            <span class="ticker-item">Patient #0039 — <span>CRITICAL</span> — Difficulty breathing 71F — ICU
+                alert</span>
+            <span class="ticker-item">Patient #0038 — <span style="color:var(--teal)">LOW</span> — Mild fever 8M —
+                Waiting room</span>
+        </div>
+    </div>
+
+    <!-- Nav -->
+    <nav>
+        <a href="/" class="nav-logo">
+            <div class="nav-logo-icon"></div>
+            <span class="nav-logo-text">Healix</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="#how-it-works">How it works</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#demo">Demo</a></li>
+        </ul>
+        <div class="nav-cta">
+            <a href="/login" class="btn-ghost">Sign in</a>
+            <a href="/dashboard" class="btn-primary">Open Dashboard →</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <!-- ECG background -->
+        <svg class="hero-ecg" viewBox="0 0 1440 200" preserveAspectRatio="none" height="200">
+            <path class="ecg-path"
+                d="M0,100 L200,100 L240,100 L260,20 L280,180 L300,100 L320,100 L360,100 L400,100 L420,100 L440,20 L460,180 L480,100 L500,100 L540,100 L580,100 L600,100 L620,20 L640,180 L660,100 L680,100 L720,100 L760,100 L780,100 L800,20 L820,180 L840,100 L860,100 L900,100 L940,100 L960,100 L980,20 L1000,180 L1020,100 L1040,100 L1080,100 L1120,100 L1140,100 L1160,20 L1180,180 L1200,100 L1220,100 L1440,100"
+                fill="none" stroke="var(--red)" stroke-width="1.5" />
+        </svg>
+
+        <div class="status-pill">
+            <span class="status-dot"></span>
+            Multi-agent AI system · 5 specialized agents
+        </div>
+
+        <p class="hero-eyebrow">Healthcare triage · Decision support · Explainable AI</p>
+
+        <h1 class="hero-title">
+            Triage faster.<br />
+            Decide <em>smarter.</em><br />
+            Save lives.
+        </h1>
+
+        <p class="hero-sub">
+            Healix converts unstructured patient input into structured triage decisions in seconds — powered by a
+            multi-agent AI pipeline with explainable reasoning.
+        </p>
+
+        <div class="hero-actions">
+            <a href="/dashboard" class="btn-large">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
+                    <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Start Triage
+            </a>
+            <a href="#how-it-works" class="btn-large-outline">
+                See how it works ↓
+            </a>
+        </div>
+
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <span class="hero-stat-value">5</span>
+                <span class="hero-stat-label">AI Agents</span>
+            </div>
+            <div class="hero-stat">
+                <span class="hero-stat-value">&lt; 8s</span>
+                <span class="hero-stat-label">Avg. Response</span>
+            </div>
+            <div class="hero-stat">
+                <span class="hero-stat-value">4</span>
+                <span class="hero-stat-label">Triage Levels</span>
+            </div>
+            <div class="hero-stat">
+                <span class="hero-stat-value">100%</span>
+                <span class="hero-stat-label">Explainable</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Triage Levels -->
+    <section class="demo-section" id="how-it-works">
+        <div class="observe-fade">
+            <p class="section-label">Triage classification</p>
+            <h2 class="section-title">Every second counts.</h2>
+            <p class="section-sub">Healix categorizes patients into four urgency levels based on ESI protocols, giving
+                your team instant clarity.</p>
+        </div>
+
+        <div class="triage-grid observe-fade">
+            <div class="triage-card critical">
+                <div class="triage-badge">Critical</div>
+                <div class="triage-time">&lt; 1<span style="font-size:18px;color:var(--muted)">min</span></div>
+                <div class="triage-time-label">Response window</div>
+                <div class="triage-desc">Life-threatening. Immediate physician intervention required. Examples: cardiac
+                    arrest, severe respiratory distress, major trauma.</div>
+            </div>
+            <div class="triage-card high">
+                <div class="triage-badge">High</div>
+                <div class="triage-time">10<span style="font-size:18px;color:var(--muted)">min</span></div>
+                <div class="triage-time-label">Response window</div>
+                <div class="triage-desc">Potentially life-threatening. Rapid assessment required. Examples: chest pain,
+                    altered mental status, severe pain.</div>
+            </div>
+            <div class="triage-card medium">
+                <div class="triage-badge">Medium</div>
+                <div class="triage-time">30<span style="font-size:18px;color:var(--muted)">min</span></div>
+                <div class="triage-time-label">Response window</div>
+                <div class="triage-desc">Urgent but stable. Can tolerate a brief wait. Examples: moderate pain,
+                    vomiting, minor fractures.</div>
+            </div>
+            <div class="triage-card low">
+                <div class="triage-badge">Low</div>
+                <div class="triage-time">2<span style="font-size:18px;color:var(--muted)">hr</span></div>
+                <div class="triage-time-label">Response window</div>
+                <div class="triage-desc">Non-urgent. Routine care. Examples: minor cuts, mild cold, prescription refill,
+                    follow-up.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Agent Workflow -->
+    <section class="workflow-section">
+        <div class="workflow-inner">
+            <div class="observe-fade">
+                <p class="section-label">Multi-agent pipeline</p>
+                <h2 class="section-title">5 agents. One diagnosis.</h2>
+                <p class="section-sub" style="margin-bottom: 40px;">
+                    Each agent is a specialist. They work in sequence, passing enriched context downstream to build a
+                    complete clinical picture.
+                </p>
+                <div class="workflow-agents" id="agentList">
+                    <div class="agent-row active" data-idx="0">
+                        <span class="agent-step">01</span>
+                        <div class="agent-icon">🔍</div>
+                        <div class="agent-info">
+                            <div class="agent-name">Symptom Extraction Agent</div>
+                            <div class="agent-desc">Parses raw input into structured patient data</div>
+                        </div>
+                        <div class="agent-connector"></div>
+                    </div>
+                    <div class="agent-row" data-idx="1">
+                        <span class="agent-step">02</span>
+                        <div class="agent-icon">🚨</div>
+                        <div class="agent-info">
+                            <div class="agent-name">Triage Decision Agent</div>
+                            <div class="agent-desc">Classifies urgency using ESI protocols</div>
+                        </div>
+                        <div class="agent-connector"></div>
+                    </div>
+                    <div class="agent-row" data-idx="2">
+                        <span class="agent-step">03</span>
+                        <div class="agent-icon">🧬</div>
+                        <div class="agent-info">
+                            <div class="agent-name">Medical Knowledge Agent</div>
+                            <div class="agent-desc">Suggests top 3 differential diagnoses</div>
+                        </div>
+                        <div class="agent-connector"></div>
+                    </div>
+                    <div class="agent-row" data-idx="3">
+                        <span class="agent-step">04</span>
+                        <div class="agent-icon">📋</div>
+                        <div class="agent-info">
+                            <div class="agent-name">Recommendation Agent</div>
+                            <div class="agent-desc">Generates tests, referrals, and action plans</div>
+                        </div>
+                        <div class="agent-connector"></div>
+                    </div>
+                    <div class="agent-row" data-idx="4">
+                        <span class="agent-step">05</span>
+                        <div class="agent-icon">💡</div>
+                        <div class="agent-info">
+                            <div class="agent-name">Explanation Agent</div>
+                            <div class="agent-desc">Provides XAI rationale for every decision</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live output card -->
+            <div class="output-card observe-fade" id="outputCard">
+                <div class="output-card-header">
+                    <div class="output-dot" style="background:#e84c3d"></div>
+                    <div class="output-dot" style="background:#f0a500"></div>
+                    <div class="output-dot" style="background:#00c9a7"></div>
+                    <span class="output-card-title">healix_triage_output.json</span>
+                </div>
+                <div class="output-body">
+                    <div class="output-field">
+                        <div class="output-key">Patient summary</div>
+                        <div class="output-val">58M presenting with chest pain, diaphoresis, and dizziness for 2 hours.
+                            Denies prior cardiac history.</div>
+                    </div>
+                    <div class="output-field">
+                        <div class="output-key">Triage level</div>
+                        <div class="output-val"><span class="output-badge-critical">● CRITICAL</span></div>
+                    </div>
+                    <div class="output-field">
+                        <div class="output-key">Possible conditions</div>
+                        <div class="output-conditions">
+                            <div class="output-condition">
+                                <div style="font-size:13px;color:var(--text);min-width:160px">Acute MI (STEMI)</div>
+                                <div class="output-prob-bar">
+                                    <div class="output-prob-fill" style="width:87%"></div>
+                                </div>
+                                <div class="output-prob-label">87%</div>
+                            </div>
+                            <div class="output-condition">
+                                <div style="font-size:13px;color:var(--text);min-width:160px">Unstable Angina</div>
+                                <div class="output-prob-bar">
+                                    <div class="output-prob-fill" style="width:60%"></div>
+                                </div>
+                                <div class="output-prob-label">60%</div>
+                            </div>
+                            <div class="output-condition">
+                                <div style="font-size:13px;color:var(--text);min-width:160px">Aortic Dissection</div>
+                                <div class="output-prob-bar">
+                                    <div class="output-prob-fill" style="width:32%"></div>
+                                </div>
+                                <div class="output-prob-label">32%</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="output-field">
+                        <div class="output-key">Recommended actions</div>
+                        <div class="output-val" style="font-size:13px;line-height:1.7">
+                            12-lead ECG immediately · Troponin I &amp; T · CXR · IV access + aspirin 325mg · Cardiology
+                            consult
+                        </div>
+                    </div>
+                    <div class="output-field">
+                        <div class="output-key">Explanation</div>
+                        <div class="output-val" style="font-size:13px;color:var(--muted2);font-style:italic">
+                            "Classic ACS triad in 58M — chest pain + sweating + dizziness for 2h exceeds ESI Level 1
+                            threshold. Age and symptom duration are primary escalators."
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features-section" id="features">
+        <div class="observe-fade">
+            <p class="section-label">Why Healix</p>
+            <h2 class="section-title">Built for real clinical environments.</h2>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card observe-fade">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-title">Real-time streaming output</div>
+                <div class="feature-desc">Watch each agent process live via SSE. No waiting for a black-box response —
+                    see exactly what's happening and when.</div>
+            </div>
+            <div class="feature-card observe-fade">
+                <div class="feature-icon">🧠</div>
+                <div class="feature-title">Explainable AI decisions</div>
+                <div class="feature-desc">Every triage level comes with a plain-language explanation citing the specific
+                    symptoms that drove the decision. No blind trust required.</div>
+            </div>
+            <div class="feature-card observe-fade">
+                <div class="feature-icon">🔗</div>
+                <div class="feature-title">Shared agent memory</div>
+                <div class="feature-desc">Agents share context via CrewAI memory. Downstream agents build on upstream
+                    output — no redundant LLM calls, faster results.</div>
+            </div>
+            <div class="feature-card observe-fade">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">Patient queue dashboard</div>
+                <div class="feature-desc">A live ER board showing all active patients sorted by severity. Color-coded,
+                    updated in real-time, shareable with your team.</div>
+            </div>
+            <div class="feature-card observe-fade">
+                <div class="feature-icon">🗣️</div>
+                <div class="feature-title">Voice input support</div>
+                <div class="feature-desc">Doctors can speak symptoms directly into Healix using Web Speech API. Converts
+                    instantly to a triage report — no typing required.</div>
+            </div>
+            <div class="feature-card observe-fade">
+                <div class="feature-icon">📁</div>
+                <div class="feature-title">Unstructured input — any format</div>
+                <div class="feature-desc">Paste doctor notes, conversation transcripts, or raw symptom lists. Healix
+                    normalizes everything before analysis begins.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Try it section -->
+    <section class="input-section" id="demo">
+        <div class="input-inner">
+            <div class="observe-fade">
+                <p class="section-label">Live demo</p>
+                <h2 class="section-title">Try it yourself.</h2>
+                <p class="section-sub" style="margin: 0 auto; text-align:center">
+                    Paste any patient description below. Healix will extract, triage, and explain — in under 10 seconds.
+                </p>
+            </div>
+
+            <div class="triage-form observe-fade">
+                <div class="form-header">
+                    <div class="form-dot" style="background:#e84c3d"></div>
+                    <div class="form-dot" style="background:#f0a500"></div>
+                    <div class="form-dot" style="background:#00c9a7"></div>
+                    <span class="form-title">patient_input.txt — Healix Triage Engine</span>
+                </div>
+                <div class="form-body">
+                    <div class="examples">
+                        <span class="example-chip" onclick="fillExample(0)">Chest pain · 58M</span>
+                        <span class="example-chip" onclick="fillExample(1)">Headache · 34F</span>
+                        <span class="example-chip" onclick="fillExample(2)">Ankle sprain · 22M</span>
+                        <span class="example-chip" onclick="fillExample(3)">Difficulty breathing · 71F</span>
+                    </div>
+                    <textarea class="form-textarea" id="patientInput"
+                        placeholder="Patient age: 58&#10;Symptoms: chest pain, sweating, dizziness&#10;Duration: 2 hours&#10;&#10;Or paste doctor notes, transcripts, or any unstructured input..."></textarea>
+                    <div class="form-footer">
+                        <span class="form-hint">↑ Any format accepted — structured or unstructured</span>
+                        <button class="form-submit" onclick="submitTriage()">
+                            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white"
+                                stroke-width="2.5">
+                                <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            Run Triage
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-left">
+            <div
+                style="width:24px;height:24px;background:var(--red);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:300;color:white;">
+                +</div>
+            <span class="footer-text">Healix · Agentic Healthcare Triage · Built with CrewAI + Django</span>
+        </div>
+        <ul class="footer-links">
+            <li><a href="#">GitHub</a></li>
+            <li><a href="#">API Docs</a></li>
+            <li><a href="#">Dashboard</a></li>
+        </ul>
+    </footer>
+
+    <script>
+        // Scroll reveal
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach((e, i) => {
+                if (e.isIntersecting) {
+                    setTimeout(() => e.target.classList.add('visible'), i * 80);
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.observe-fade').forEach(el => observer.observe(el));
+
+        // Agent row cycling
+        const agentRows = document.querySelectorAll('.agent-row');
+        let activeIdx = 0;
+        setInterval(() => {
+            agentRows.forEach(r => r.classList.remove('active'));
+            activeIdx = (activeIdx + 1) % agentRows.length;
+            agentRows[activeIdx].classList.add('active');
+        }, 1800);
+        agentRows.forEach(r => r.addEventListener('click', () => {
+            agentRows.forEach(x => x.classList.remove('active'));
+            r.classList.add('active');
+        }));
+
+        // Show ticker after load
+        setTimeout(() => {
+            document.getElementById('ticker').style.display = 'flex';
+        }, 1000);
+
+        // Example fills
+        const examples = [
+            "Patient age: 58\nGender: Male\nSymptoms: chest pain, sweating, dizziness\nDuration: 2 hours\nHistory: none reported",
+            "Patient age: 34\nGender: Female\nSymptoms: severe throbbing headache, nausea, light sensitivity\nDuration: 6 hours\nHistory: migraines",
+            "Patient age: 22\nGender: Male\nSymptoms: ankle pain, mild swelling after fall during sports\nDuration: 30 minutes\nHistory: none",
+            "Patient age: 71\nGender: Female\nSymptoms: difficulty breathing, wheezing, confusion\nDuration: 3 hours\nHistory: COPD, hypertension"
+        ];
+        function fillExample(i) {
+            document.getElementById('patientInput').value = examples[i];
+            document.getElementById('patientInput').focus();
+        }
+
+        function submitTriage() {
+            const input = document.getElementById('patientInput').value.trim();
+            if (!input) return;
+            const encoded = encodeURIComponent(input);
+            window.location.href = `/triage/?input=${encoded}`;
+        }
+
+        // Parallax on hero ECG
+        window.addEventListener('scroll', () => {
+            const ecg = document.querySelector('.hero-ecg');
+            if (ecg) ecg.style.transform = `translateY(calc(-50% + ${window.scrollY * 0.15}px))`;
+        });
+    </script>
+</body>
+
+</html>

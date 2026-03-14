@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healix | Triage Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --surface-color: rgba(26, 31, 44, 0.7);
+            --accent-color: #00f2fe;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --critical-color: #ff4757;
+            --high-color: #ff7f50;
+            --medium-color: #ffa502;
+            --low-color: #2ed573;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            background-image: radial-gradient(circle at top right, #162032 0%, #0b0f19 80%);
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            border-radius: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .btn-new-triage {
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            color: #000;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .btn-new-triage:hover {
+            transform: translateY(-2px);
+        }
+
+        .dashboard-header {
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-title {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 600;
+            background: linear-gradient(90deg, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Stats row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--surface-color);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .stat-critical::before {
+            background: var(--critical-color);
+        }
+
+        .stat-high::before {
+            background: var(--high-color);
+        }
+
+        .stat-medium::before {
+            background: var(--medium-color);
+        }
+
+        .stat-low::before {
+            background: var(--low-color);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        /* Queue Table */
+        .queue-container {
+            background: var(--surface-color);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .queue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .queue-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        th {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            font-size: 1rem;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+            cursor: pointer;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-CRITICAL {
+            background: rgba(255, 71, 87, 0.2);
+            color: var(--critical-color);
+            border: 1px solid var(--critical-color);
+        }
+
+        .badge-HIGH {
+            background: rgba(255, 127, 80, 0.2);
+            color: var(--high-color);
+            border: 1px solid var(--high-color);
+        }
+
+        .badge-MEDIUM {
+            background: rgba(255, 165, 2, 0.2);
+            color: var(--medium-color);
+            border: 1px solid var(--medium-color);
+        }
+
+        .badge-LOW {
+            background: rgba(46, 213, 115, 0.2);
+            color: var(--low-color);
+            border: 1px solid var(--low-color);
+        }
+
+        .symptoms-preview {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="logo">
+            <div class="logo-icon"></div>
+            Healix AI
+        </a>
+        <div class="nav-links">
+            <a href="/triage/" class="btn-new-triage">+ New Triage Eval</a>
+        </div>
+    </nav>
+
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">Live Triage Queue</h1>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-card stat-critical">
+            <span class="stat-label">Critical</span>
+            <span class="stat-value" id="count-critical">0</span>
+        </div>
+        <div class="stat-card stat-high">
+            <span class="stat-label">High Priority</span>
+            <span class="stat-value" id="count-high">0</span>
+        </div>
+        <div class="stat-card stat-medium">
+            <span class="stat-label">Medium Priority</span>
+            <span class="stat-value" id="count-medium">0</span>
+        </div>
+        <div class="stat-card stat-low">
+            <span class="stat-label">Low Priority</span>
+            <span class="stat-value" id="count-low">0</span>
+        </div>
+    </div>
+
+    <div class="queue-container">
+        <div class="queue-header">
+            <h2 class="queue-title">Waiting Patients</h2>
+        </div>
+
+        <table id="patientsTable">
+            <thead>
+                <tr>
+                    <th>Triage Level</th>
+                    <th>Patient Name</th>
+                    <th>Age</th>
+                    <th>Symptoms Snippet</th>
+                    <th>Admitted Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="patientsBody">
+                <tr>
+                    <td colspan="6" style="text-align:center; padding: 2rem; color: var(--text-secondary);">
+                        Loading patients...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', loadPatients);
+
+        const levelOrder = { 'CRITICAL': 1, 'HIGH': 2, 'MEDIUM': 3, 'LOW': 4 };
+
+        async function loadPatients() {
+            try {
+                const response = await fetch('/api/patients/patients/');
+                const data = await response.json();
+
+                // Sort by triage level priority
+                data.sort((a, b) => {
+                    const levelA = a.triage_level || a.risk_level || 'LOW';
+                    const levelB = b.triage_level || b.risk_level || 'LOW';
+                    return (levelOrder[levelA] || 5) - (levelOrder[levelB] || 5);
+                });
+
+                renderTable(data);
+                updateStats(data);
+            } catch (e) {
+                console.error('Error fetching patients:', e);
+                document.getElementById('patientsBody').innerHTML = '<tr><td colspan="6" style="text-align:center;color:red;">Failed to load data.</td></tr>';
+            }
+        }
+
+        function renderTable(patients) {
+            const tbody = document.getElementById('patientsBody');
+            tbody.innerHTML = '';
+
+            if (patients.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No patients currently in queue.</td></tr>';
+                return;
+            }
+
+            patients.forEach(p => {
+                const tr = document.createElement('tr');
+                const level = p.triage_level || p.risk_level || 'LOW';
+
+                if (!p.name) return; // skip partial data
+
+                // Format date string beautifully if backend provides it
+                const dateStr = p.created_at ? new Date(p.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now';
+                const status = p.status || 'Waiting';
+
+                tr.innerHTML = `
+                    <td><span class="badge badge-${level}">${level}</span></td>
+                    <td style="font-weight: 500;">${p.name}</td>
+                    <td>${p.age}</td>
+                    <td class="symptoms-preview">${p.symptoms || 'No details provided'}</td>
+                    <td>${dateStr}</td>
+                    <td><span style="color:var(--text-secondary)">${status}</span></td>
+                `;
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateStats(patients) {
+            let counts = { CRITICAL: 0, HIGH: 0, MEDIUM: 0, LOW: 0 };
+
+            patients.forEach(p => {
+                const lvl = p.triage_level || p.risk_level;
+                if (counts[lvl] !== undefined) counts[lvl]++;
+            });
+
+            document.getElementById('count-critical').innerText = counts.CRITICAL;
+            document.getElementById('count-high').innerText = counts.HIGH;
+            document.getElementById('count-medium').innerText = counts.MEDIUM;
+            document.getElementById('count-low').innerText = counts.LOW;
+        }
+    </script>
+</body>
+
+</html>

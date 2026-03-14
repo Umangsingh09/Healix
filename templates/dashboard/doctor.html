@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Healix — Doctor Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #070b0f;
+            --bg2: #0d1318;
+            --surface: #111820;
+            --surface2: #161e27;
+            --border: rgba(255, 255, 255, 0.07);
+            --border2: rgba(255, 255, 255, 0.13);
+            --text: #e8edf2;
+            --muted: #4a5a68;
+            --muted2: #8a9baa;
+            --red: #e84c3d;
+            --red-soft: rgba(232, 76, 61, 0.12);
+            --teal: #00c9a7;
+            --teal-soft: rgba(0, 201, 167, 0.1);
+            --amber: #f0a500;
+            --amber-soft: rgba(240, 165, 0, 0.1);
+            --font-serif: 'DM Serif Display', Georgia, serif;
+            --font-mono: 'DM Mono', monospace;
+            --font-sans: 'Instrument Sans', system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-sans);
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 220px;
+            background: var(--bg2);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 24px 0;
+            z-index: 50;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 20px 28px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 12px;
+        }
+
+        .logo-icon {
+            width: 30px;
+            height: 30px;
+            background: var(--teal);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #04342c;
+            font-weight: 700;
+        }
+
+        .logo-text {
+            font-family: var(--font-serif);
+            font-size: 20px;
+        }
+
+        .role-chip {
+            background: var(--teal-soft);
+            color: var(--teal);
+            font-family: var(--font-mono);
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.08em;
+            margin-left: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            margin: 2px 8px;
+            border-radius: 8px;
+            color: var(--muted2);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        .nav-item.active {
+            background: var(--surface2);
+            color: var(--text);
+            border: 1px solid var(--border2);
+        }
+
+        .nav-item span {
+            font-size: 16px;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 16px 12px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .doctor-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .doctor-profile:hover {
+            background: var(--surface);
+        }
+
+        .avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--teal-soft);
+            border: 1px solid var(--teal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--teal);
+            flex-shrink: 0;
+        }
+
+        .profile-name {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .profile-role {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--muted2);
+        }
+
+        .logout-btn {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 14px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .logout-btn:hover {
+            color: var(--red);
+        }
+
+        /* Main content */
+        .main {
+            margin-left: 220px;
+            padding: 32px 36px;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-family: var(--font-serif);
+            font-size: 28px;
+            letter-spacing: -0.02em;
+        }
+
+        .page-sub {
+            font-size: 13px;
+            color: var(--muted2);
+            font-family: var(--font-mono);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-sm {
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid var(--border2);
+            background: transparent;
+            color: var(--muted2);
+            transition: all 0.2s;
+            font-family: var(--font-sans);
+        }
+
+        .btn-sm:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        .btn-sm.primary {
+            background: var(--teal);
+            color: #04342c;
+            border-color: var(--teal);
+        }
+
+        .btn-sm.primary:hover {
+            background: #00b897;
+        }
+
+        /* Stats row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .stat-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--muted2);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-family: var(--font-serif);
+            font-size: 32px;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            color: var(--muted2);
+            margin-top: 4px;
+        }
+
+        /* Patient queue */
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--red);
+            animation: pulse-dot 1.5s infinite;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1)
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(0.8)
+            }
+        }
+
+        .queue-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .queue-table th {
+            text-align: left;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .queue-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .queue-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .queue-table tr:hover td {
+            background: var(--surface2);
+        }
+
+        .triage-pill {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+        }
+
+        /* New triage input */
+        .new-triage-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            margin-top: 28px;
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .triage-textarea {
+            width: 100%;
+            min-height: 100px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            line-height: 1.6;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .triage-textarea:focus {
+            border-color: var(--teal);
+        }
+
+        .triage-textarea::placeholder {
+            color: var(--muted);
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">+</div>
+            <span class="logo-text">Healix</span>
+            <span class="role-chip">DR</span>
+        </div>
+        <a class="nav-item active" href="#"><span>📊</span> Dashboard</a>
+        <a class="nav-item" href="#"><span>🚨</span> Triage Queue</a>
+        <a class="nav-item" href="#"><span>🧑‍⚕️</span> My Patients</a>
+        <a class="nav-item" href="#"><span>🧬</span> Run Triage</a>
+        <a class="nav-item" href="#"><span>📋</span> Reports</a>
+        <a class="nav-item" href="#"><span>⚙️</span> Settings</a>
+
+        <div class="sidebar-footer">
+            <div class="doctor-profile">
+                <div class="avatar" id="doctorInitials">DR</div>
+                <div>
+                    <div class="profile-name" id="doctorName">Dr. Loading...</div>
+                    <div class="profile-role">Physician · Healix</div>
+                </div>
+                <button class="logout-btn" onclick="handleLogout()" title="Sign out">⏏</button>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Clinical Dashboard</h1>
+                <p class="page-sub" id="greetingText">Good morning, Doctor</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn-sm">Export PDF</button>
+                <button class="btn-sm primary" onclick="document.getElementById('newTriageInput').focus()">+ New
+                    Triage</button>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">Active Patients</div>
+                <div class="stat-value" style="color:var(--text)">24</div>
+                <div class="stat-change">↑ 3 since yesterday</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Critical Cases</div>
+                <div class="stat-value" style="color:var(--red)">3</div>
+                <div class="stat-change">Requires immediate action</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Avg. Triage Time</div>
+                <div class="stat-value" style="color:var(--teal)">6.2s</div>
+                <div class="stat-change">AI processing time</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Resolved Today</div>
+                <div class="stat-value">11</div>
+                <div class="stat-change">↑ 2 vs yesterday</div>
+            </div>
+        </div>
+
+        <!-- Patient Queue -->
+        <div class="section-title">
+            <div class="live-dot"></div> Live Patient Queue
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+            <table class="queue-table">
+                <thead>
+                    <tr>
+                        <th>Patient</th>
+                        <th>Chief Complaint</th>
+                        <th>Triage Level</th>
+                        <th>Wait Time</th>
+                        <th>Assigned</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div style="font-weight:500">Sharma, Raj</div>
+                            <div style="font-size:12px;color:var(--muted2);font-family:var(--font-mono)">#0042 · 58M
+                            </div>
+                        </td>
+                        <td>Chest pain, sweating, dizziness</td>
+                        <td><span class="triage-pill" style="background:var(--red-soft);color:var(--red)">●
+                                CRITICAL</span></td>
+                        <td style="font-family:var(--font-mono);font-size:13px">2 min</td>
+                        <td style="color:var(--muted2);font-size:13px">Dr. You</td>
+                        <td><button class="btn-sm" style="padding:5px 12px;font-size:12px">View →</button></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="font-weight:500">Mehta, Priya</div>
+                            <div style="font-size:12px;color:var(--muted2);font-family:var(--font-mono)">#0041 · 34F
+                            </div>
+                        </td>
+                        <td>Severe headache, nausea, light sensitivity</td>
+                        <td><span class="triage-pill" style="background:var(--amber-soft);color:var(--amber)">●
+                                HIGH</span></td>
+                        <td style="font-family:var(--font-mono);font-size:13px">8 min</td>
+                        <td style="color:var(--muted2);font-size:13px">Unassigned</td>
+                        <td><button class="btn-sm" style="padding:5px 12px;font-size:12px">View →</button></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="font-weight:500">Verma, Anil</div>
+                            <div style="font-size:12px;color:var(--muted2);font-family:var(--font-mono)">#0040 · 22M
+                            </div>
+                        </td>
+                        <td>Ankle pain after sports fall</td>
+                        <td><span class="triage-pill" style="background:rgba(123,104,238,0.15);color:#7b68ee">●
+                                MEDIUM</span></td>
+                        <td style="font-family:var(--font-mono);font-size:13px">22 min</td>
+                        <td style="color:var(--muted2);font-size:13px">Unassigned</td>
+                        <td><button class="btn-sm" style="padding:5px 12px;font-size:12px">View →</button></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="font-weight:500">Singh, Kavya</div>
+                            <div style="font-size:12px;color:var(--muted2);font-family:var(--font-mono)">#0039 · 8F
+                            </div>
+                        </td>
+                        <td>Mild fever, routine check</td>
+                        <td><span class="triage-pill" style="background:var(--teal-soft);color:var(--teal)">● LOW</span>
+                        </td>
+                        <td style="font-family:var(--font-mono);font-size:13px">45 min</td>
+                        <td style="color:var(--muted2);font-size:13px">Unassigned</td>
+                        <td><button class="btn-sm" style="padding:5px 12px;font-size:12px">View →</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- New Triage Input -->
+        <div class="new-triage-card">
+            <div class="card-header">
+                <span>⚡</span>
+                <span class="card-title">Quick Triage — Enter Patient Data</span>
+                <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted2);margin-left:auto">AI agents
+                    will process in ~6s</span>
+            </div>
+            <div class="card-body">
+                <textarea class="triage-textarea" id="newTriageInput"
+                    placeholder="Patient age: 45&#10;Symptoms: shortness of breath, chest tightness&#10;Duration: 1 hour&#10;&#10;Paste any format — doctor notes, transcripts, or free text..."></textarea>
+                <div class="card-footer">
+                    <button class="btn-sm">Save Draft</button>
+                    <button class="btn-sm primary" onclick="runTriage()">⚡ Run AI Triage</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Firebase Auth Guard -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMoNdBIWdZNKJOlR7ZV-46OfFHZPwb1Wk", authDomain: "healix-d02c4.firebaseapp.com",
+            projectId: "healix-d02c4", storageBucket: "healix-d02c4.firebasestorage.app",
+            messagingSenderId: "783527967185", appId: "1:783527967185:web:eacf3a3f785121a0ae08f0",
+            measurementId: "G-Z4TD76TGR7"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Auth guard — redirect if not logged in or wrong role
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) { window.location.href = '/auth/login/'; return; }
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            if (!userDoc.exists() || userDoc.data().role !== 'doctor') {
+                window.location.href = '/auth/login/';
+                return;
+            }
+            // Populate UI
+            const name = user.displayName || userDoc.data().name || user.email.split('@')[0];
+            document.getElementById('doctorName').textContent = 'Dr. ' + name;
+            document.getElementById('doctorInitials').textContent = name.slice(0, 2).toUpperCase();
+            const hour = new Date().getHours();
+            const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+            document.getElementById('greetingText').textContent = `${greeting}, Dr. ${name.split(' ')[0]}`;
+        });
+
+        window.handleLogout = async function () {
+            await signOut(auth);
+            window.location.href = '/auth/login/';
+        };
+    </script>
+    <script>
+        function runTriage() {
+            const input = document.getElementById('newTriageInput').value.trim();
+            if (!input) return;
+            window.location.href = `/triage/?input=${encodeURIComponent(input)}`;
+        }
+    </script>
+</body>
+
+</html>

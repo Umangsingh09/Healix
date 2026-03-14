@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Healix — Sign In</title>
+
+    <!-- Fix for Firebase auth/unauthorized-domain block on 127.0.0.1 -->
+    <script>
+        if (window.location.hostname === '127.0.0.1') {
+            window.location.hostname = 'localhost';
+        }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #070b0f;
+            --bg2: #0d1318;
+            --surface: #111820;
+            --surface2: #161e27;
+            --border: rgba(255, 255, 255, 0.07);
+            --border2: rgba(255, 255, 255, 0.13);
+            --text: #e8edf2;
+            --muted: #4a5a68;
+            --muted2: #8a9baa;
+            --red: #e84c3d;
+            --red-soft: rgba(232, 76, 61, 0.12);
+            --teal: #00c9a7;
+            --teal-soft: rgba(0, 201, 167, 0.1);
+            --amber: #f0a500;
+            --amber-soft: rgba(240, 165, 0, 0.1);
+            --blue: #4a9eff;
+            --font-serif: 'DM Serif Display', Georgia, serif;
+            --font-mono: 'DM Mono', monospace;
+            --font-sans: 'Instrument Sans', system-ui, sans-serif;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-sans);
+            display: flex;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ── LEFT PANEL — decorative ── */
+        .left-panel {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 48px;
+            background: var(--bg2);
+            border-right: 1px solid var(--border);
+        }
+
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 30% 40%, rgba(232, 76, 61, 0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, rgba(0, 201, 167, 0.07) 0%, transparent 50%);
+        }
+
+        /* ECG grid lines */
+        .left-panel::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* Floating triage cards */
+        .floating-cards {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -60%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 2;
+        }
+
+        .fcard {
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: 12px;
+            padding: 16px 20px;
+            min-width: 280px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            animation: floatIn 0.7s ease both;
+            backdrop-filter: blur(8px);
+        }
+
+        .fcard:nth-child(1) {
+            animation-delay: 0.1s;
+            transform: rotate(-1.5deg);
+        }
+
+        .fcard:nth-child(2) {
+            animation-delay: 0.25s;
+            transform: rotate(0.5deg);
+        }
+
+        .fcard:nth-child(3) {
+            animation-delay: 0.4s;
+            transform: rotate(-0.8deg);
+        }
+
+        .fcard:nth-child(4) {
+            animation-delay: 0.55s;
+            transform: rotate(1deg);
+        }
+
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px) rotate(var(--r, 0deg));
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .fcard-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .fcard-info {
+            flex: 1;
+        }
+
+        .fcard-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .fcard-detail {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--muted2);
+            margin-top: 2px;
+        }
+
+        .fcard-badge {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            font-weight: 500;
+            padding: 3px 10px;
+            border-radius: 5px;
+            letter-spacing: 0.08em;
+        }
+
+        .left-branding {
+            position: relative;
+            z-index: 2;
+        }
+
+        .left-branding-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--red);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 300;
+            color: white;
+            line-height: 1;
+        }
+
+        .logo-text {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            letter-spacing: -0.02em;
+        }
+
+        .left-tagline {
+            font-size: 14px;
+            color: var(--muted2);
+            line-height: 1.6;
+            max-width: 340px;
+            font-family: var(--font-mono);
+            font-weight: 300;
+        }
+
+        /* ── RIGHT PANEL — auth form ── */
+        .right-panel {
+            width: 480px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px 48px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* Role selector tabs */
+        .role-selector {
+            display: flex;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 36px;
+            gap: 4px;
+        }
+
+        .role-tab {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 9px;
+            background: transparent;
+            color: var(--muted2);
+            font-family: var(--font-sans);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .role-tab.active {
+            background: var(--surface2);
+            color: var(--text);
+            border: 1px solid var(--border2);
+        }
+
+        .role-tab .role-icon {
+            font-size: 16px;
+        }
+
+        /* Form heading */
+        .form-heading {
+            margin-bottom: 32px;
+        }
+
+        .form-title {
+            font-family: var(--font-serif);
+            font-size: 32px;
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+            line-height: 1.1;
+        }
+
+        .form-sub {
+            font-size: 14px;
+            color: var(--muted2);
+            line-height: 1.5;
+        }
+
+        /* Input groups */
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+        .input-label {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--muted2);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 15px;
+            pointer-events: none;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 14px 12px 40px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-family: var(--font-sans);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--teal);
+            background: var(--surface2);
+        }
+
+        .form-input::placeholder {
+            color: var(--muted);
+        }
+
+        /* Doctor-only field (hidden for patient) */
+        .doctor-only {
+            display: none;
+        }
+
+        body.role-doctor .doctor-only {
+            display: block;
+        }
+
+        /* Password toggle */
+        .pw-toggle {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--muted);
+            font-size: 14px;
+            padding: 4px;
+        }
+
+        .pw-toggle:hover {
+            color: var(--text);
+        }
+
+        /* Remember + forgot */
+        .form-extras {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .checkbox-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .checkbox-wrap input {
+            accent-color: var(--teal);
+            width: 15px;
+            height: 15px;
+        }
+
+        .checkbox-label {
+            font-size: 13px;
+            color: var(--muted2);
+        }
+
+        .forgot-link {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--muted2);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .forgot-link:hover {
+            color: var(--teal);
+        }
+
+        /* Submit button */
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 10px;
+            font-family: var(--font-sans);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .btn-submit.doctor-btn {
+            background: var(--teal);
+            color: #04342c;
+            box-shadow: 0 0 30px rgba(0, 201, 167, 0.2);
+        }
+
+        .btn-submit.doctor-btn:hover {
+            background: #00b897;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 40px rgba(0, 201, 167, 0.3);
+        }
+
+        .btn-submit.patient-btn {
+            background: var(--red);
+            color: white;
+            box-shadow: 0 0 30px rgba(232, 76, 61, 0.2);
+        }
+
+        .btn-submit.patient-btn:hover {
+            background: #d43e30;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 40px rgba(232, 76, 61, 0.3);
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .divider-text {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        /* Google sign-in */
+        .btn-google {
+            width: 100%;
+            padding: 11px;
+            background: transparent;
+            border: 1px solid var(--border2);
+            border-radius: 10px;
+            color: var(--muted2);
+            font-family: var(--font-sans);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .btn-google:hover {
+            border-color: var(--text);
+            color: var(--text);
+            background: var(--surface);
+        }
+
+        .google-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Switch role link */
+        .switch-role {
+            text-align: center;
+            font-size: 13px;
+            color: var(--muted2);
+        }
+
+        .switch-role a {
+            color: var(--teal);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .switch-role a:hover {
+            text-decoration: underline;
+        }
+
+        /* Error / success messages */
+        .auth-message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .auth-message.error {
+            background: var(--red-soft);
+            color: #f87168;
+            border: 1px solid rgba(232, 76, 61, 0.2);
+        }
+
+        .auth-message.success {
+            background: var(--teal-soft);
+            color: var(--teal);
+            border: 1px solid rgba(0, 201, 167, 0.2);
+        }
+
+        .auth-message.show {
+            display: block;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading .spinner {
+            display: block;
+        }
+
+        .loading .btn-text {
+            display: none;
+        }
+
+        /* Animations */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .right-panel>* {
+            animation: fadeUp 0.5s ease both;
+        }
+
+        .right-panel>*:nth-child(1) {
+            animation-delay: 0.05s;
+        }
+
+        .right-panel>*:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .right-panel>*:nth-child(3) {
+            animation-delay: 0.15s;
+        }
+
+        .right-panel>*:nth-child(4) {
+            animation-delay: 0.2s;
+        }
+
+        @media (max-width: 900px) {
+            .left-panel {
+                display: none;
+            }
+
+            .right-panel {
+                width: 100%;
+                padding: 40px 24px;
+            }
+        }
+    </style>
+</head>
+
+<body class="role-patient" id="body">
+
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+        <div class="floating-cards">
+            <div class="fcard">
+                <div class="fcard-dot" style="background:#e84c3d"></div>
+                <div class="fcard-info">
+                    <div class="fcard-name">Patient #0042 · Sharma, Raj</div>
+                    <div class="fcard-detail">Chest pain · 58M · 2 hrs</div>
+                </div>
+                <div class="fcard-badge" style="background:var(--red-soft);color:var(--red)">CRITICAL</div>
+            </div>
+            <div class="fcard">
+                <div class="fcard-dot" style="background:#f0a500"></div>
+                <div class="fcard-info">
+                    <div class="fcard-name">Patient #0041 · Mehta, Priya</div>
+                    <div class="fcard-detail">Severe headache · 34F · 6 hrs</div>
+                </div>
+                <div class="fcard-badge" style="background:var(--amber-soft);color:var(--amber)">HIGH</div>
+            </div>
+            <div class="fcard">
+                <div class="fcard-dot" style="background:#7b68ee"></div>
+                <div class="fcard-info">
+                    <div class="fcard-name">Patient #0040 · Verma, Anil</div>
+                    <div class="fcard-detail">Ankle sprain · 22M · 30 min</div>
+                </div>
+                <div class="fcard-badge" style="background:rgba(123,104,238,0.15);color:#7b68ee">MEDIUM</div>
+            </div>
+            <div class="fcard">
+                <div class="fcard-dot" style="background:#00c9a7"></div>
+                <div class="fcard-info">
+                    <div class="fcard-name">Patient #0039 · Singh, Kavya</div>
+                    <div class="fcard-detail">Mild fever · 8F · routine</div>
+                </div>
+                <div class="fcard-badge" style="background:var(--teal-soft);color:var(--teal)">LOW</div>
+            </div>
+        </div>
+
+        <div class="left-branding">
+            <div class="left-branding-logo">
+                <div class="logo-icon">+</div>
+                <span class="logo-text">Healix</span>
+            </div>
+            <p class="left-tagline">
+                Agentic triage decisions in seconds.<br />
+                Backed by 5 specialized AI agents.
+            </p>
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+
+        <!-- Role selector -->
+        <div class="role-selector">
+            <button class="role-tab" id="tabPatient" onclick="switchRole('patient')">
+                <span class="role-icon">🧑‍⚕️</span> I'm a Patient
+            </button>
+            <button class="role-tab active" id="tabDoctor" onclick="switchRole('doctor')">
+                <span class="role-icon">👨‍⚕️</span> I'm a Doctor
+            </button>
+        </div>
+
+        <!-- Heading -->
+        <div class="form-heading">
+            <h1 class="form-title" id="formTitle">Welcome back,<br /><em style="color:var(--teal)">Doctor.</em></h1>
+            <p class="form-sub" id="formSub">Sign in to access the clinical triage dashboard and patient queue.</p>
+        </div>
+
+        <!-- Error/success message -->
+        <div class="auth-message" id="authMessage"></div>
+
+        <!-- Form -->
+        <form id="loginForm" onsubmit="handleLogin(event)">
+
+            <!-- Doctor-only: License ID -->
+            <div class="input-group doctor-only" id="licenseGroup">
+                <label class="input-label">Medical License ID</label>
+                <div class="input-wrap">
+                    <span class="input-icon">🏥</span>
+                    <input class="form-input" type="text" id="licenseId" placeholder="e.g. MCI-2024-XXXXX"
+                        autocomplete="off" />
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="input-group">
+                <label class="input-label">Email Address</label>
+                <div class="input-wrap">
+                    <span class="input-icon">✉️</span>
+                    <input class="form-input" type="email" id="emailInput" placeholder="you@hospital.com" required
+                        autocomplete="email" />
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="input-group">
+                <label class="input-label">Password</label>
+                <div class="input-wrap">
+                    <span class="input-icon">🔒</span>
+                    <input class="form-input" type="password" id="passwordInput" placeholder="••••••••" required
+                        autocomplete="current-password" />
+                    <button type="button" class="pw-toggle" onclick="togglePassword()" id="pwToggle">👁</button>
+                </div>
+            </div>
+
+            <!-- Remember + forgot -->
+            <div class="form-extras">
+                <label class="checkbox-wrap">
+                    <input type="checkbox" id="rememberMe" />
+                    <span class="checkbox-label">Remember me</span>
+                </label>
+                <a href="/auth/forgot-password/" class="forgot-link">Forgot password?</a>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="btn-submit doctor-btn" id="submitBtn">
+                <div class="spinner" id="spinner"></div>
+                <span class="btn-text" id="btnText">Sign in to Dashboard →</span>
+            </button>
+        </form>
+
+        <!-- Divider -->
+        <div class="divider">
+            <div class="divider-line"></div>
+            <span class="divider-text">or continue with</span>
+            <div class="divider-line"></div>
+        </div>
+
+        <!-- Google -->
+        <button class="btn-google" onclick="handleGoogleLogin()">
+            <svg class="google-icon" viewBox="0 0 24 24">
+                <path fill="#4285F4"
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                <path fill="#34A853"
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                <path fill="#FBBC05"
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                <path fill="#EA4335"
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+            </svg>
+            Continue with Google
+        </button>
+
+        <!-- Switch role -->
+        <p class="switch-role" id="switchText">
+            Not a doctor? <a href="#" onclick="switchRole('patient'); return false;">Sign in as Patient</a>
+        </p>
+
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import {
+            getAuth,
+            signInWithEmailAndPassword,
+            signInWithPopup,
+            GoogleAuthProvider,
+            setPersistence,
+            browserLocalPersistence,
+            browserSessionPersistence,
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import {
+            getFirestore,
+            doc,
+            getDoc,
+            setDoc,
+            serverTimestamp,
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        // ── PASTE YOUR FIREBASE CONFIG HERE ──
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMoNdBIWdZNKJOlR7ZV-46OfFHZPwb1Wk",
+            authDomain: "healix-d02c4.firebaseapp.com",
+            projectId: "healix-d02c4",
+            storageBucket: "healix-d02c4.firebasestorage.app",
+            messagingSenderId: "783527967185",
+            appId: "1:783527967185:web:eacf3a3f785121a0ae08f0",
+            measurementId: "G-Z4TD76TGR7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        // ── ROLE ROUTING ──
+        // After login, fetch the user's role from Firestore and redirect
+        async function redirectByRole(user) {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                if (!userDoc.exists()) {
+                    // First time — create profile using selected role tab
+                    const selectedRole = document.body.classList.contains('role-doctor') ? 'doctor' : 'patient';
+                    await setDoc(doc(db, 'users', user.uid), {
+                        uid: user.uid,
+                        email: user.email,
+                        name: user.displayName || '',
+                        role: selectedRole,
+                        createdAt: serverTimestamp(),
+                        lastLogin: serverTimestamp(),
+                    });
+                    window.location.href = selectedRole === 'doctor'
+                        ? '/dashboard/doctor/'
+                        : '/dashboard/patient/';
+                } else {
+                    const role = userDoc.data().role;
+                    // Update last login
+                    await setDoc(doc(db, 'users', user.uid), { lastLogin: serverTimestamp() }, { merge: true });
+                    window.location.href = role === 'doctor'
+                        ? '/dashboard/doctor/'
+                        : '/dashboard/patient/';
+                }
+            } catch (err) {
+                showMessage('error', 'Failed to load user profile. Please try again.');
+                setLoading(false);
+            }
+        }
+
+        // ── EMAIL/PASSWORD LOGIN ──
+        window.handleLogin = async function (e) {
+            e.preventDefault();
+            const email = document.getElementById('emailInput').value.trim();
+            const password = document.getElementById('passwordInput').value;
+            const remember = document.getElementById('rememberMe').checked;
+
+            if (!email || !password) {
+                showMessage('error', 'Please fill in all fields.');
+                return;
+            }
+
+            setLoading(true);
+            hideMessage();
+
+            try {
+                await setPersistence(auth, remember ? browserLocalPersistence : browserSessionPersistence);
+                const credential = await signInWithEmailAndPassword(auth, email, password);
+                showMessage('success', 'Signed in! Redirecting...');
+                await redirectByRole(credential.user);
+            } catch (err) {
+                setLoading(false);
+                const msg = {
+                    'auth/user-not-found': 'No account found with this email.',
+                    'auth/wrong-password': 'Incorrect password. Please try again.',
+                    'auth/invalid-email': 'Please enter a valid email address.',
+                    'auth/too-many-requests': 'Too many attempts. Please wait and try again.',
+                    'auth/user-disabled': 'This account has been disabled.',
+                    'auth/invalid-credential': 'Invalid email or password.',
+                }[err.code] || `Login failed: ${err.message}`;
+                showMessage('error', msg);
+            }
+        };
+
+        // ── GOOGLE LOGIN ──
+        window.handleGoogleLogin = async function () {
+            setLoading(true);
+            hideMessage();
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                showMessage('success', 'Signed in with Google! Redirecting...');
+                await redirectByRole(result.user);
+            } catch (err) {
+                setLoading(false);
+                if (err.code !== 'auth/popup-closed-by-user') {
+                    console.error("Google Auth Error:", err);
+                    showMessage('error', 'Google sign-in failed: ' + (err.message || 'Please try again.'));
+                }
+            }
+        };
+
+        // ── HELPERS ──
+        function setLoading(on) {
+            const btn = document.getElementById('submitBtn');
+            btn.classList.toggle('loading', on);
+            btn.disabled = on;
+            document.getElementById('spinner').style.display = on ? 'block' : 'none';
+            document.getElementById('btnText').style.display = on ? 'none' : 'block';
+        }
+        function showMessage(type, text) {
+            const el = document.getElementById('authMessage');
+            el.textContent = text;
+            el.className = `auth-message ${type} show`;
+        }
+        function hideMessage() {
+            document.getElementById('authMessage').classList.remove('show');
+        }
+
+        // Expose to global (needed for onclick handlers)
+        window._firebaseApp = app;
+        window._firebaseAuth = auth;
+        window._firebaseDb = db;
+    </script>
+
+    <script>
+        // ── ROLE SWITCHING (UI only) ──
+        let currentRole = 'doctor';
+
+        function switchRole(role) {
+            currentRole = role;
+            const body = document.getElementById('body');
+            const tabDoctor = document.getElementById('tabDoctor');
+            const tabPatient = document.getElementById('tabPatient');
+            const title = document.getElementById('formTitle');
+            const sub = document.getElementById('formSub');
+            const submitBtn = document.getElementById('submitBtn');
+            const switchText = document.getElementById('switchText');
+
+            body.className = role === 'doctor' ? 'role-doctor' : 'role-patient';
+
+            tabDoctor.classList.toggle('active', role === 'doctor');
+            tabPatient.classList.toggle('active', role === 'patient');
+
+            if (role === 'doctor') {
+                title.innerHTML = 'Welcome back,<br/><em style="color:var(--teal)">Doctor.</em>';
+                sub.textContent = 'Sign in to access the clinical triage dashboard and patient queue.';
+                submitBtn.className = 'btn-submit doctor-btn';
+                submitBtn.querySelector('.btn-text').textContent = 'Open Clinical Dashboard →';
+                switchText.innerHTML = 'Not a doctor? <a href="#" onclick="switchRole(\'patient\'); return false;">Sign in as Patient</a>';
+            } else {
+                title.innerHTML = 'Hello,<br/><em style="color:var(--red)">Patient.</em>';
+                sub.textContent = 'Sign in to view your triage status, reports, and health summary.';
+                submitBtn.className = 'btn-submit patient-btn';
+                submitBtn.querySelector('.btn-text').textContent = 'View My Health Dashboard →';
+                switchText.innerHTML = 'Are you a doctor? <a href="#" onclick="switchRole(\'doctor\'); return false;">Doctor sign in</a>';
+            }
+
+            document.getElementById('authMessage').classList.remove('show');
+        }
+
+        function togglePassword() {
+            const input = document.getElementById('passwordInput');
+            const btn = document.getElementById('pwToggle');
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                btn.textContent = '👁';
+            }
+        }
+
+        // Init to doctor tab
+        switchRole('doctor');
+    </script>
+</body>
+
+</html>

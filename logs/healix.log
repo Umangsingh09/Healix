@@ -1,1 +1,7 @@
 INFO 2026-03-14 14:33:22,156 autoreload 21520 23516 Watching for file changes with StatReloader
+INFO 2026-03-14 14:48:32,073 autoreload 20072 24184 Watching for file changes with StatReloader
+INFO 2026-03-14 14:48:32,077 autoreload 6588 4224 Watching for file changes with StatReloader
+INFO 2026-03-14 14:48:32,273 autoreload 19144 4956 Watching for file changes with StatReloader
+INFO 2026-03-14 14:48:39,637 autoreload 6588 4224 C:\Users\Rexxon\Desktop\Healix\Healix\patients\models.py changed, reloading.
+INFO 2026-03-14 14:48:39,661 autoreload 19144 4956 C:\Users\Rexxon\Desktop\Healix\Healix\healix\settings.py changed, reloading.
+INFO 2026-03-14 14:48:39,687 autoreload 20072 24184 C:\Users\Rexxon\Desktop\Healix\Healix\healix\settings.py changed, reloading.

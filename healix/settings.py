@@ -58,7 +58,7 @@ ROOT_URLCONF = 'healix.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -159,3 +159,7 @@ LOGGING = {
         },
     },
 }
+
+# Fix for Firebase Google Login Popups
+# Allows the authentication popup to communicate with the main window
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'

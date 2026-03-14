@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Healix — My Health Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #070b0f;
+            --bg2: #0d1318;
+            --surface: #111820;
+            --surface2: #161e27;
+            --border: rgba(255, 255, 255, 0.07);
+            --border2: rgba(255, 255, 255, 0.13);
+            --text: #e8edf2;
+            --muted: #4a5a68;
+            --muted2: #8a9baa;
+            --red: #e84c3d;
+            --red-soft: rgba(232, 76, 61, 0.12);
+            --teal: #00c9a7;
+            --teal-soft: rgba(0, 201, 167, 0.1);
+            --amber: #f0a500;
+            --amber-soft: rgba(240, 165, 0, 0.1);
+            --font-serif: 'DM Serif Display', Georgia, serif;
+            --font-mono: 'DM Mono', monospace;
+            --font-sans: 'Instrument Sans', system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-sans);
+            min-height: 100vh;
+        }
+
+        /* Top nav (simpler for patient) */
+        .topnav {
+            height: 60px;
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .logo-icon {
+            width: 30px;
+            height: 30px;
+            background: var(--red);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: white;
+            font-weight: 700;
+        }
+
+        .logo-text {
+            font-family: var(--font-serif);
+            font-size: 20px;
+        }
+
+        .role-chip {
+            background: var(--red-soft);
+            color: var(--red);
+            font-family: var(--font-mono);
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.08em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 4px;
+            margin-left: 24px;
+        }
+
+        .nav-link {
+            padding: 6px 14px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--muted2);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        .topnav-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--red-soft);
+            border: 1px solid var(--red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--red);
+            cursor: pointer;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            color: var(--muted2);
+            font-size: 12px;
+            padding: 5px 12px;
+            cursor: pointer;
+            font-family: var(--font-mono);
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        /* Content */
+        .page {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 36px 24px;
+        }
+
+        /* Welcome banner */
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(232, 76, 61, 0.08), transparent 70%);
+        }
+
+        .welcome-title {
+            font-family: var(--font-serif);
+            font-size: 26px;
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+        }
+
+        .welcome-sub {
+            font-size: 14px;
+            color: var(--muted2);
+        }
+
+        .report-btn {
+            padding: 10px 22px;
+            background: var(--red);
+            border: none;
+            border-radius: 9px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            transition: all 0.2s;
+        }
+
+        .report-btn:hover {
+            background: #d43e30;
+            transform: translateY(-1px);
+        }
+
+        /* Status card */
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .status-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .status-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--muted2);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 10px;
+        }
+
+        .status-value {
+            font-family: var(--font-serif);
+            font-size: 28px;
+            line-height: 1;
+        }
+
+        /* Current triage status */
+        .triage-status-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 28px;
+        }
+
+        .triage-status-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .triage-badge-large {
+            padding: 6px 18px;
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+        }
+
+        .triage-detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .detail-item {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+        }
+
+        .detail-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--muted2);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
+        }
+
+        .detail-value {
+            font-size: 13px;
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        /* History table */
+        .history-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .history-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 10px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: var(--surface2);
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 5px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Submit symptoms form */
+        .submit-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            margin-top: 24px;
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .textarea {
+            width: 100%;
+            min-height: 90px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            line-height: 1.6;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .textarea:focus {
+            border-color: var(--red);
+        }
+
+        .textarea::placeholder {
+            color: var(--muted);
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 12px;
+        }
+
+        .btn-submit {
+            padding: 9px 22px;
+            background: var(--red);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            transition: all 0.2s;
+        }
+
+        .btn-submit:hover {
+            background: #d43e30;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="topnav">
+        <div class="logo-icon">+</div>
+        <span class="logo-text">Healix</span>
+        <span class="role-chip">PATIENT</span>
+        <div class="nav-links">
+            <a class="nav-link active" href="#">My Health</a>
+            <a class="nav-link" href="#">My Reports</a>
+            <a class="nav-link" href="#">Submit Symptoms</a>
+        </div>
+        <div class="topnav-right">
+            <div class="avatar" id="patientInitials">P</div>
+            <button class="logout-btn" onclick="handleLogout()">Sign out</button>
+        </div>
+    </nav>
+
+    <div class="page">
+
+        <!-- Welcome banner -->
+        <div class="welcome-banner">
+            <div>
+                <h1 class="welcome-title" id="welcomeTitle">Hello, Patient 👋</h1>
+                <p class="welcome-sub">Here's your latest health summary from Healix.</p>
+            </div>
+            <button class="report-btn" onclick="document.getElementById('symptomInput').focus()">+ Report
+                Symptoms</button>
+        </div>
+
+        <!-- Status -->
+        <div class="status-grid">
+            <div class="status-card">
+                <div class="status-label">Current Status</div>
+                <div class="status-value" style="color:var(--teal)">Stable</div>
+                <div style="font-size:12px;color:var(--muted2);margin-top:4px">Last check: today</div>
+            </div>
+            <div class="status-card">
+                <div class="status-label">Reports This Month</div>
+                <div class="status-value">3</div>
+                <div style="font-size:12px;color:var(--muted2);margin-top:4px">All reviewed</div>
+            </div>
+            <div class="status-card">
+                <div class="status-label">Assigned Doctor</div>
+                <div style="font-size:16px;font-weight:600;margin-top:4px">Dr. Sharma</div>
+                <div style="font-size:12px;color:var(--teal);margin-top:2px">Available</div>
+            </div>
+        </div>
+
+        <!-- Latest triage result -->
+        <div class="triage-status-card">
+            <div class="triage-status-header">
+                <span class="section-title">Your Latest Triage Result</span>
+                <span class="triage-badge-large" style="background:var(--teal-soft);color:var(--teal)">● LOW —
+                    Routine</span>
+            </div>
+            <div class="triage-detail">
+                <div class="detail-item">
+                    <div class="detail-label">Reported Symptoms</div>
+                    <div class="detail-value">Mild fever, fatigue, slight headache</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">AI Assessment</div>
+                    <div class="detail-value">Likely viral infection. No red flags detected.</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Recommended Action</div>
+                    <div class="detail-value">Rest, hydration, paracetamol if needed. Follow up in 3 days.</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Doctor's Note</div>
+                    <div class="detail-value" style="color:var(--muted2);font-style:italic">Pending review by Dr.
+                        Sharma.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History -->
+        <div class="history-card">
+            <div class="history-header">
+                <span class="section-title">Triage History</span>
+                <span style="font-family:var(--font-mono);font-size:12px;color:var(--muted2)">3 records</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Chief Complaint</th>
+                        <th>Triage Level</th>
+                        <th>Doctor</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-family:var(--font-mono);font-size:12px">14 Mar 2026</td>
+                        <td>Mild fever, fatigue</td>
+                        <td><span class="pill" style="background:var(--teal-soft);color:var(--teal)">LOW</span></td>
+                        <td style="color:var(--muted2)">Dr. Sharma</td>
+                        <td><span class="pill" style="background:rgba(240,165,0,0.1);color:var(--amber)">Pending</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-family:var(--font-mono);font-size:12px">02 Feb 2026</td>
+                        <td>Ankle pain after fall</td>
+                        <td><span class="pill" style="background:rgba(123,104,238,0.15);color:#7b68ee">MEDIUM</span>
+                        </td>
+                        <td style="color:var(--muted2)">Dr. Patel</td>
+                        <td><span class="pill" style="background:var(--teal-soft);color:var(--teal)">Resolved</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-family:var(--font-mono);font-size:12px">18 Jan 2026</td>
+                        <td>Persistent cough, cold</td>
+                        <td><span class="pill" style="background:var(--teal-soft);color:var(--teal)">LOW</span></td>
+                        <td style="color:var(--muted2)">Dr. Sharma</td>
+                        <td><span class="pill" style="background:var(--teal-soft);color:var(--teal)">Resolved</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Report new symptoms -->
+        <div class="submit-card">
+            <div class="card-header">
+                <span>🩺</span>
+                <span class="card-title">Report New Symptoms</span>
+            </div>
+            <div class="card-body">
+                <textarea class="textarea" id="symptomInput"
+                    placeholder="Describe how you're feeling...&#10;e.g. I have had a headache for 2 days, with mild nausea. No fever."></textarea>
+                <div class="card-footer">
+                    <button class="btn-submit" onclick="submitSymptoms()">Send to Doctor →</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Firebase Auth Guard -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMoNdBIWdZNKJOlR7ZV-46OfFHZPwb1Wk", authDomain: "healix-d02c4.firebaseapp.com",
+            projectId: "healix-d02c4", storageBucket: "healix-d02c4.firebasestorage.app",
+            messagingSenderId: "783527967185", appId: "1:783527967185:web:eacf3a3f785121a0ae08f0",
+            measurementId: "G-Z4TD76TGR7"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) { window.location.href = '/auth/login/'; return; }
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            if (!userDoc.exists() || userDoc.data().role !== 'patient') {
+                window.location.href = '/dashboard/doctor/';
+                return;
+            }
+            const name = user.displayName || userDoc.data().name || 'Patient';
+            document.getElementById('welcomeTitle').textContent = `Hello, ${name.split(' ')[0]} 👋`;
+            document.getElementById('patientInitials').textContent = name.slice(0, 1).toUpperCase();
+        });
+
+        window.handleLogout = async function () {
+            await signOut(auth);
+            window.location.href = '/auth/login/';
+        };
+    </script>
+    <script>
+        function submitSymptoms() {
+            const input = document.getElementById('symptomInput').value.trim();
+            if (!input) return;
+            window.location.href = `/triage/?input=${encodeURIComponent(input)}`;
+        }
+    </script>
+</body>
+
+</html>

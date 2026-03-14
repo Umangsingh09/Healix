@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healix Triage | Live Agent Progress</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --surface-color: rgba(26, 31, 44, 0.7);
+            --accent-color: #00f2fe;
+            --accent-glow: rgba(0, 242, 254, 0.3);
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --critical-color: #ff4757;
+            --high-color: #ff7f50;
+            --medium-color: #ffa502;
+            --low-color: #2ed573;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at top, #162032 0%, #0b0f19 70%);
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .card {
+            background: var(--surface-color);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .glass-panel {
+            position: relative;
+        }
+
+        h2 {
+            margin-top: 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+            background: linear-gradient(90deg, #fff, var(--text-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border-radius: 12px;
+            padding: 1rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            resize: none;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: white;
+            flex: 1;
+            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 114, 255, 0.5);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-voice {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-voice:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-voice.listening {
+            border-color: #ff4757;
+            color: #ff4757;
+            animation: pulse-red 1.5s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 71, 87, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 71, 87, 0);
+            }
+        }
+
+        /* Agents Progress Panel */
+        .agent-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .agent-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 12px;
+            border-left: 4px solid #334155;
+            transition: all 0.5s ease;
+            opacity: 0.5;
+        }
+
+        .agent-item.active {
+            opacity: 1;
+            border-left-color: var(--accent-color);
+            background: rgba(15, 23, 42, 0.8);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .agent-item.completed {
+            opacity: 1;
+            border-left-color: var(--low-color);
+        }
+
+        .agent-status-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .active .agent-status-icon {
+            background: var(--accent-color);
+            box-shadow: 0 0 10px var(--accent-glow);
+            animation: spin 2s linear infinite;
+        }
+
+        .completed .agent-status-icon {
+            background: var(--low-color);
+            color: #000;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .agent-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .agent-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .agent-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .triage-result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            display: none;
+            animation: fadeUp 0.6s ease forwards;
+        }
+
+        .triage-level-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .level-CRITICAL {
+            background: var(--critical-color);
+            color: white;
+            box-shadow: 0 0 15px rgba(255, 71, 87, 0.5);
+        }
+
+        .level-HIGH {
+            background: var(--high-color);
+            color: white;
+            box-shadow: 0 0 15px rgba(255, 127, 80, 0.5);
+        }
+
+        .level-MEDIUM {
+            background: var(--medium-color);
+            color: white;
+            box-shadow: 0 0 15px rgba(255, 165, 2, 0.5);
+        }
+
+        .level-LOW {
+            background: var(--low-color);
+            color: #000;
+            box-shadow: 0 0 15px rgba(46, 213, 115, 0.5);
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .navbar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 2rem;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            border-radius: 8px;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-left: 2rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        /* Markdown styling for explanation */
+        .explanation-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        @media(max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="logo">
+            <div class="logo-icon"></div>
+            Healix AI
+        </a>
+        <div class="nav-links">
+            <a href="/dashboard/">Patient Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Input Panel -->
+        <div class="card glass-panel">
+            <h2>Patient Intake</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">
+                Describe your symptoms, duration, and medical history. Be as detailed as possible to help our AI triage
+                system assist you correctly.
+            </p>
+            <textarea id="patientInput"
+                placeholder="E.g., I've had a severe headache behind my eyes for 3 days, accompanied by slight nausea. I have a history of migraines..."></textarea>
+
+            <div class="controls">
+                <button id="voiceBtn" class="btn-voice" onclick="toggleVoice()">
+                    🎤 <span id="voiceText">Record Voice</span>
+                </button>
+                <button id="submitBtn" class="btn-primary" onclick="startTriage()">
+                    🚀 Run Triage Analysis
+                </button>
+            </div>
+
+            <div id="patientForm" style="display: none; margin-top: 1rem;">
+                <input type="text" id="patientName" placeholder="Patient Name"
+                    style="width:100%; padding:0.8rem; margin-bottom:0.5rem; border-radius:8px; border:none; background: rgba(15, 23, 42, 0.6); color: white;">
+                <input type="number" id="patientAge" placeholder="Age"
+                    style="width:100%; padding:0.8rem; margin-bottom:0.8rem; border-radius:8px; border:none; background: rgba(15, 23, 42, 0.6); color: white;">
+                <button class="btn-primary" onclick="savePatient()" style="width:100%">Save Patient Record</button>
+            </div>
+        </div>
+
+        <!-- AI Progress Panel -->
+        <div class="card glass-panel">
+            <h2>Live AI Triage Progress</h2>
+
+            <div class="agent-list" id="agentList">
+                <div class="agent-item" id="stage-extracting">
+                    <div class="agent-status-icon">1</div>
+                    <div class="agent-info">
+                        <span class="agent-name">Symptom Extractor Agent</span>
+                        <span class="agent-desc" id="desc-extracting">Waiting for input...</span>
+                    </div>
+                </div>
+
+                <div class="agent-item" id="stage-triaging">
+                    <div class="agent-status-icon">2</div>
+                    <div class="agent-info">
+                        <span class="agent-name">Triage Decision Agent</span>
+                        <span class="agent-desc" id="desc-triaging">Pending extraction</span>
+                    </div>
+                </div>
+
+                <div class="agent-item" id="stage-diagnosing">
+                    <div class="agent-status-icon">3</div>
+                    <div class="agent-info">
+                        <span class="agent-name">Medical Knowledge Agent</span>
+                        <span class="agent-desc" id="desc-diagnosing">Pending triage</span>
+                    </div>
+                </div>
+
+                <div class="agent-item" id="stage-recommending">
+                    <div class="agent-status-icon">4</div>
+                    <div class="agent-info">
+                        <span class="agent-name">Recommendation Agent</span>
+                        <span class="agent-desc" id="desc-recommending">Pending diagnosis</span>
+                    </div>
+                </div>
+
+                <div class="agent-item" id="stage-explaining">
+                    <div class="agent-status-icon">5</div>
+                    <div class="agent-info">
+                        <span class="agent-name">XAI Explanation Agent</span>
+                        <span class="agent-desc" id="desc-explaining">Pending recommendations</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Triage Final Result Display -->
+            <div id="triageResult" class="triage-result">
+                <h3 style="margin-top:0;">Triage Summary</h3>
+                <div id="resultLevel" class="triage-level-badge level-MEDIUM">PROCESSING...</div>
+                <div id="resultExplanation" class="explanation-text"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Web Speech API (Voice Recognition) Setup ---
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition;
+        let isListening = false;
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+
+            recognition.onresult = function (event) {
+                let finalTranscript = '';
+                let interimTranscript = '';
+
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+
+                const inputBox = document.getElementById('patientInput');
+                inputBox.value = inputBox.value + ' ' + finalTranscript;
+                if (interimTranscript.length > 0) {
+                    // Could show interim but let's keep it simple
+                }
+            };
+
+            recognition.onerror = function (event) {
+                console.error("Speech recognition error", event.error);
+                stopVoice();
+            };
+
+            recognition.onend = function () {
+                if (isListening) recognition.start(); // keep listening if not explicitly stopped
+            };
+        } else {
+            console.warn("Web Speech API not supported in this browser.");
+            document.getElementById('voiceBtn').style.display = 'none';
+        }
+
+        function toggleVoice() {
+            if (!recognition) return alert('Speech recognition not supported in this browser.');
+
+            const btn = document.getElementById('voiceBtn');
+            const txt = document.getElementById('voiceText');
+
+            if (isListening) {
+                stopVoice();
+            } else {
+                recognition.start();
+                isListening = true;
+                btn.classList.add('listening');
+                btn.innerHTML = '🛑 <span id="voiceText">Stop Recording</span>';
+            }
+        }
+
+        function stopVoice() {
+            if (recognition) recognition.stop();
+            isListening = false;
+            const btn = document.getElementById('voiceBtn');
+            btn.classList.remove('listening');
+            btn.innerHTML = '🎤 <span id="voiceText">Record Voice</span>';
+        }
+
+        // --- Server-Sent Events (SSE) AI Integration ---
+        let currentLevel = 'MEDIUM';
+        let fullAiResult = null;
+
+        async function startTriage() {
+            const input = document.getElementById('patientInput').value.trim();
+            if (!input) return alert("Please describe your symptoms first.");
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '⚙️ Processing...';
+
+            // Reset UI
+            document.querySelectorAll('.agent-item').forEach(el => {
+                el.classList.remove('active', 'completed');
+                const id = el.id.replace('stage-', '');
+                document.getElementById(`desc-${id}`).innerText = 'Pending...';
+            });
+            document.getElementById('triageResult').style.display = 'none';
+            document.getElementById('patientForm').style.display = 'none';
+
+            // Because SSE requires GET and doesn't easily support request bodies via native EventSource,
+            // we will simulate SSE using fetch with response stream reading since the backend expects POST.
+            // Alternatively, adjust the backend or use fetch streams. Your backend views.py uses POST.
+
+            try {
+                const response = await fetch('/api/triage/stream/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ patient_input: input })
+                });
+
+                if (!response.ok) throw new Error("Server error");
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder("utf-8");
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    const chunk = decoder.decode(value, { stream: true });
+                    const lines = chunk.split('\n');
+
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            try {
+                                const data = JSON.parse(line.substring(6));
+                                handleSSEEvent(data);
+                            } catch (e) {
+                                console.error("Error parsing SSE JSON:", e);
+                            }
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error("Triage stream failed:", err);
+                alert("An error occurred during triage processing.");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '🚀 Run Triage Analysis';
+            }
+        }
+
+        function handleSSEEvent(event) {
+            if (event.type === 'stage_start') {
+                const stepId = event.stage;
+                const el = document.getElementById(`stage-${stepId}`);
+                el.classList.add('active');
+
+                document.getElementById(`desc-${stepId}`).innerText = event.message || 'Processing...';
+            }
+            else if (event.type === 'stage_complete') {
+                const stepId = event.stage;
+                const el = document.getElementById(`stage-${stepId}`);
+                el.classList.remove('active');
+                el.classList.add('completed');
+
+                document.getElementById(`desc-${stepId}`).innerText = "✅ Completed";
+                if (stepId === 'triaging' && event.data) {
+                    currentLevel = event.data.level || 'MEDIUM';
+                }
+            }
+            else if (event.type === 'complete') {
+                fullAiResult = event.result || {};
+
+                // Show final result box
+                const rxBox = document.getElementById('triageResult');
+                rxBox.style.display = 'block';
+
+                const levelBadge = document.getElementById('resultLevel');
+                levelBadge.className = `triage-level-badge level-${currentLevel}`;
+                levelBadge.innerText = currentLevel;
+
+                let expText = "Detailed explanation not available.";
+                if (fullAiResult.explanation && fullAiResult.explanation.reasoning) {
+                    expText = fullAiResult.explanation.reasoning;
+                } else if (typeof fullAiResult.explanation === 'string') {
+                    expText = fullAiResult.explanation;
+                }
+
+                document.getElementById('resultExplanation').innerText = expText;
+
+                // Show save form
+                document.getElementById('patientForm').style.display = 'block';
+            }
+            else if (event.type === 'error') {
+                alert("AI Engine Error: " + event.message);
+            }
+        }
+
+        // --- Save Patient to DB ---
+        async function savePatient() {
+            const name = document.getElementById('patientName').value.trim();
+            const age = document.getElementById('patientAge').value.trim();
+            const symptoms = document.getElementById('patientInput').value.trim();
+
+            if (!name || !age) return alert("Enter patient name and age.");
+
+            const payload = {
+                name: name,
+                age: parseInt(age),
+                symptoms: symptoms,
+                triage_level: currentLevel,
+                risk_level: currentLevel,
+                ai_analysis: fullAiResult,
+                status: 'Triaged'
+            };
+
+            try {
+                const res = await fetch('/api/patients/patients/create/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    alert("Patient saved successfully!");
+                    window.location.href = "/dashboard/";
+                } else {
+                    const data = await res.json();
+                    alert("Failed to save: " + JSON.stringify(data));
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Database error.");
+            }
+        }
+    </script>
+</body>
+
+</html>
