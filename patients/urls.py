@@ -1,4 +1,5 @@
 from django.urls import path
+from . import views
 from .views import (
     PatientListView,
     create_patient,
@@ -11,6 +12,7 @@ from .views import (
 )
 
 urlpatterns = [
+    path('health-agent/', views.health_agent, name='health_agent'),
     path('', PatientListView.as_view(), name='patient-list'),
     path('patients/', get_patients),
     path('patients/my/', get_my_patients),

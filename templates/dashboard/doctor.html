@@ -380,10 +380,15 @@
 
         @keyframes pip {
 
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1)
+            .pill-filter-group {
+                display: inline-flex;
+                background: rgba(15, 23, 42, 0.9);
+                border-radius: 999px;
+                padding: 3px;
+                border: 1px solid rgba(51, 65, 85, 0.9);
+                gap: 4px;
+                font-family: var(--font-mono);
+                font-size: 11px;
             }
 
             50% {
@@ -612,17 +617,11 @@
         }
 
         /* ── MAIN GRID ── */
-        .grid {
+        .panel-grid {
             display: grid;
-            grid-template-columns: 1fr 330px;
-            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 24px;
             align-items: start;
-        }
-
-        @media(max-width:1100px) {
-            .grid {
-                grid-template-columns: 1fr;
-            }
         }
 
         /* ── PANEL ── */
@@ -724,6 +723,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 13px;
         }
 
         thead th {
@@ -1173,6 +1173,7 @@
                 grid-template-columns: 1fr 1fr;
             }
         }
+        }
     </style>
 </head>
 
@@ -1185,7 +1186,6 @@
             <span class="logo-name">Healix</span>
             <span class="logo-ver">DOCTOR</span>
         </div>
-
         <div class="sb-sect">Clinical</div>
         <a class="nav-item on" href="/dashboard/doctor/">
             <div class="ni-icon">⬡</div> Dashboard
@@ -1193,10 +1193,6 @@
         <a class="nav-item" href="/triage/">
             <div class="ni-icon">⚡</div> New Triage
             <span class="ni-badge" id="critBadge">0</span>
-        </a>
-        <a class="nav-item" href="#">
-            <div class="ni-icon">👥</div> Patient Queue
-            <div class="ni-dot" style="background:var(--teal)"></div>
         </a>
         <a class="nav-item" href="#">
             <div class="ni-icon">🩺</div> My Patients
@@ -1207,9 +1203,6 @@
         </a>
 
         <div class="sb-sect">Reports</div>
-        <a class="nav-item" href="#">
-            <div class="ni-icon">📋</div> Triage History
-        </a>
         <a class="nav-item" href="#">
             <div class="ni-icon">📊</div> Analytics
         </a>
@@ -1315,276 +1308,207 @@
             </div>
 
             <!-- MAIN GRID -->
-            <div class="grid">
+            <div class="panel-grid">
 
-                <!-- QUEUE PANEL -->
-                <div>
-                    <div class="panel">
-                        <div class="ph">
-                            <div class="lpip"></div>
-                            <span class="ph-title">Live Patient Queue</span>
-                            <span class="ph-sub" id="qCnt"></span>
-                            <div class="ph-right">
-                                <span class="fp on" onclick="fil(this,'all')">All</span>
-                                <span class="fp" onclick="fil(this,'Critical')">🚨 Critical</span>
-                                <span class="fp" onclick="fil(this,'High')">⚠️ High</span>
-                                <span class="fp" onclick="fil(this,'Medium')">Medium</span>
-                                <span class="fp" onclick="fil(this,'Low')">Low</span>
-                            </div>
-                        </div>
-                        <!-- Search -->
-                        <div class="search-bar">
-                            <span class="search-ico">🔍</span>
-                            <input class="search-in" id="searchIn" placeholder="Search patients by name or symptoms..."
-                                oninput="doSearch(this.value)" />
-                        </div>
-                        <div class="err-state" id="errState"></div>
-                        <div class="tscroll">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Patient</th>
-                                        <th>Chief Complaint</th>
-                                        <th>Triage Level</th>
-                                        <th>Wait Time</th>
-                                        <th>Registered</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="qBody">
-                                    <tr>
-                                        <td colspan="6">
-                                            <div class="tstate">
-                                                <div class="tloader"></div>
-                                                Loading patient queue...
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- Quick stats row -->
-                        <div class="qs-row">
-                            <div class="qs">
-                                <div class="qs-val" id="qsResolved">—</div>
-                                <div class="qs-lbl">Resolved Today</div>
-                            </div>
-                            <div class="qs">
-                                <div class="qs-val" id="qsAvgWait">—</div>
-                                <div class="qs-lbl">Avg Wait</div>
-                            </div>
-                            <div class="qs">
-                                <div class="qs-val" id="qsTriages">—</div>
-                                <div class="qs-lbl">AI Triages</div>
+                <!-- Risk distribution -->
+                <div class="panel">
+                    <div class="ph">
+                        <span class="ph-title">Risk Distribution</span>
+                        <span class="ph-sub" id="totalTriages"></span>
+                    </div>
+                    <div class="chart-wrap">
+                        <div class="chart-canvas-wrap">
+                            <canvas id="rChart"></canvas>
+                            <div class="chart-center">
+                                <div class="cc-val" id="ccVal">—</div>
+                                <div class="cc-lbl">PATIENTS</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- RIGHT COLUMN -->
-                <div class="rcol">
-
-                    <!-- Risk distribution -->
-                    <div class="panel">
-                        <div class="ph">
-                            <span class="ph-title">Risk Distribution</span>
-                            <span class="ph-sub" id="totalTriages"></span>
-                        </div>
-                        <div class="chart-wrap">
-                            <div class="chart-canvas-wrap">
-                                <canvas id="rChart"></canvas>
-                                <div class="chart-center">
-                                    <div class="cc-val" id="ccVal">—</div>
-                                    <div class="cc-lbl">PATIENTS</div>
-                                </div>
-                            </div>
+                <!-- Breakdown -->
+                <div class="panel">
+                    <div class="ph">
+                        <span class="ph-title">Queue Breakdown</span>
+                        <span class="ph-sub" id="bdTotal"></span>
+                    </div>
+                    <div class="bd-body" id="bdBody">
+                        <div class="tstate" style="padding:16px">
+                            <div class="tloader"></div>
                         </div>
                     </div>
-
-                    <!-- Breakdown -->
-                    <div class="panel">
-                        <div class="ph">
-                            <span class="ph-title">Queue Breakdown</span>
-                            <span class="ph-sub" id="bdTotal"></span>
-                        </div>
-                        <div class="bd-body" id="bdBody">
-                            <div class="tstate" style="padding:16px">
-                                <div class="tloader"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Activity feed -->
-                    <div class="panel">
-                        <div class="ph">
-                            <span class="ph-title">Recent Activity</span>
-                            <span class="ph-sub" id="actSub"></span>
-                        </div>
-                        <div id="actBody">
-                            <div class="tstate" style="padding:16px">
-                                <div class="tloader"></div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
+
+                <!-- Activity feed -->
+                <div class="panel">
+                    <div class="ph">
+                        <span class="ph-title">Recent Activity</span>
+                        <span class="ph-sub" id="actSub"></span>
+                    </div>
+                    <div id="actBody">
+                        <div class="tstate" style="padding:16px">
+                            <div class="tloader"></div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
-    </div>
 
-    <!-- TOAST -->
-    <div class="toast" id="toast">
-        <div class="td"></div><span id="toastMsg">Refreshed</span>
-    </div>
+        <!-- TOAST -->
+        <div class="toast" id="toast">
+            <div class="td"></div><span id="toastMsg">Refreshed</span>
+        </div>
 
-    <!-- FIREBASE -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-        const cfg = {
-            apiKey: "AIzaSyDMoNdBIWdZNKJOlR7ZV-46OfFHZPwb1Wk",
-            authDomain: "healix-d02c4.firebaseapp.com",
-            projectId: "healix-d02c4",
-            storageBucket: "healix-d02c4.firebasestorage.app",
-            messagingSenderId: "783527967185",
-            appId: "1:783527967185:web:eacf3a3f785121a0ae08f0",
-            measurementId: "G-Z4TD76TGR7"
-        };
-        const app = initializeApp(cfg), auth = getAuth(app), db = getFirestore(app);
-        onAuthStateChanged(auth, async user => {
-            if (!user) { location.href = '/auth/login/'; return; }
+        <!-- FIREBASE -->
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+            import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+            import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+            const cfg = {
+                apiKey: "AIzaSyDMoNdBIWdZNKJOlR7ZV-46OfFHZPwb1Wk",
+                authDomain: "healix-d02c4.firebaseapp.com",
+                projectId: "healix-d02c4",
+                storageBucket: "healix-d02c4.firebasestorage.app",
+                messagingSenderId: "783527967185",
+                appId: "1:783527967185:web:eacf3a3f785121a0ae08f0",
+                measurementId: "G-Z4TD76TGR7"
+            };
+            const app = initializeApp(cfg), auth = getAuth(app), db = getFirestore(app);
+            onAuthStateChanged(auth, async user => {
+                if (!user) { location.href = '/auth/login/'; return; }
 
-            let ud;
-            try {
-                ud = await getDoc(doc(db, 'users', user.uid));
-            } catch (e) {
-                console.error("Firestore lookup failed:", e);
-                // If firestore fails, we proceed with basic user info from the auth object
+                let ud;
+                try {
+                    ud = await getDoc(doc(db, 'users', user.uid));
+                } catch (e) {
+                    console.error("Firestore lookup failed:", e);
+                    // If firestore fails, we proceed with basic user info from the auth object
+                }
+
+                // If profile exists but role is wrong, redirect
+                if (ud && ud.exists() && ud.data().role === 'patient') {
+                    location.href = '/dashboard/patient/';
+                    return;
+                }
+
+                const name = user.displayName || (ud && ud.exists() ? ud.data().name : '') || user.email.split('@')[0];
+
+                // Fill UI elements
+                const docNameEl = document.getElementById('docName');
+                const docAvEl = document.getElementById('docAv');
+                const greetEl = document.getElementById('greet');
+
+                if (docNameEl) docNameEl.textContent = 'Dr. ' + name;
+                if (docAvEl) docAvEl.textContent = name.slice(0, 2).toUpperCase();
+
+                const h = new Date().getHours();
+                if (greetEl) {
+                    greetEl.textContent = `${h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'}, Dr. ${name.split(' ')[0]}`;
+                }
+
+                window.handleLogout = async () => { await signOut(auth); location.href = '/auth/login/'; };
+            });
+        </script>
+
+        <script>
+            /* ── CONFIG ── */
+            const RISK = {
+                Critical: { cls: 'rp-c', dot: '#f43030', bar: '#f43030', orb: 'rgba(244,48,48,0.12)', icon: '🚨', wait: 'w-now', wt: 'Now' },
+                High: { cls: 'rp-h', dot: '#f5a700', bar: '#f5a700', orb: 'rgba(245,167,0,0.12)', icon: '⚠️', wait: 'w-soon', wt: '<10m' },
+                Medium: { cls: 'rp-m', dot: '#7c73f0', bar: '#7c73f0', orb: 'rgba(124,115,240,0.12)', icon: '🔶', wait: 'w-ok', wt: '<30m' },
+                Low: { cls: 'rp-l', dot: '#00dba8', bar: '#00dba8', orb: 'rgba(0,219,168,0.09)', icon: '✅', wait: 'w-ok', wt: 'Routine' },
+            };
+            const ORD = { Critical: 0, High: 1, Medium: 2, Low: 3 };
+
+            /* ── STATE ── */
+            let pts = [], stats = { total_triages: 0, by_risk_level: [] }, hist = [], filt = 'all', srch = '', chart = null;
+
+            /* ── API ── */
+            function csrf() { for (const c of document.cookie.split(';')) { const [k, v] = c.trim().split('='); if (k === 'csrftoken') return decodeURIComponent(v); } return ''; }
+            async function api(u) { const r = await fetch(u, { headers: { 'X-CSRFToken': csrf() } }); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }
+
+            /* ── LOAD ── */
+            async function loadAll() {
+                spin(true);
+                try {
+                    const [p, s, h] = await Promise.all([api('/api/patients/'), api('/api/triage/stats/'), api('/api/triage/history/')]);
+                    pts = Array.isArray(p) ? p : (p.results || []);
+                    stats = s; hist = Array.isArray(h) ? h : (h.results || []);
+                    doStats(); doQueue(); doChart(); doBD(); doAct();
+                    document.getElementById('lastRef').textContent = 'Updated ' + new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+                    document.getElementById('errState').style.display = 'none';
+
+                    /* Show alert banner if critical patients exist */
+                    const critCount = pts.filter(p => p.risk_level === 'Critical').length;
+                    const banner = document.getElementById('alertBanner');
+                    if (critCount > 0) {
+                        document.getElementById('alertTxt').textContent =
+                            `${critCount} critical patient${critCount > 1 ? 's require' : 'requires'} immediate attention`;
+                        banner.style.display = 'flex';
+                    } else { banner.style.display = 'none'; }
+
+                } catch (e) {
+                    const el = document.getElementById('errState');
+                    el.textContent = '⚠ Failed to load: ' + e.message + ' — Is Django running on localhost:8000?';
+                    el.style.display = 'block';
+                    document.getElementById('qBody').innerHTML = '<tr><td colspan="6"><div class="tstate" style="color:var(--red2)">Could not load patients.</div></td></tr>';
+                } finally { spin(false); }
+            }
+            window.loadAll = loadAll;
+
+            /* ── STATS ── */
+            function doStats() {
+                const c = pts.filter(p => p.risk_level === 'Critical').length;
+                const h = pts.filter(p => p.risk_level === 'High').length;
+                const t = pts.length;
+                cnt('sCrit', c); cnt('sHigh', h); cnt('sTotal', t);
+                document.getElementById('wmCrit').textContent = c;
+                document.getElementById('wmHigh').textContent = h;
+                document.getElementById('wmTotal').textContent = t;
+                document.getElementById('sSpeed').textContent = hist.length > 0 ? '6.2s' : '—';
+                document.getElementById('sSub').textContent = t > 0 ? `${t} patient${t !== 1 ? 's' : ''} registered` : 'No patients yet';
+                document.getElementById('critBadge').textContent = c;
+                document.getElementById('trendCrit').textContent = c > 0 ? `${c} URGENT` : 'CLEAR';
+                document.getElementById('trendCrit').className = 'sc-trend ' + (c > 0 ? 'tr-up' : 'tr-ok');
+                document.getElementById('trendHigh').textContent = h > 0 ? `${h} WAITING` : 'CLEAR';
+                document.getElementById('trendHigh').className = 'sc-trend ' + (h > 0 ? 'tr-up' : 'tr-ok');
+
+                /* Quick stats */
+                document.getElementById('qsResolved').textContent = Math.max(0, Math.floor(t * 0.6));
+                document.getElementById('qsAvgWait').textContent = '18m';
+                document.getElementById('qsTriages').textContent = stats.total_triages || t;
             }
 
-            // If profile exists but role is wrong, redirect
-            if (ud && ud.exists() && ud.data().role === 'patient') {
-                location.href = '/dashboard/patient/';
-                return;
+            function cnt(id, target) {
+                const el = document.getElementById(id); let n = 0;
+                const iv = setInterval(() => { n = Math.min(n + Math.ceil(target / 16), target); el.textContent = n; if (n >= target) clearInterval(iv); }, 45);
             }
 
-            const name = user.displayName || (ud && ud.exists() ? ud.data().name : '') || user.email.split('@')[0];
+            /* ── QUEUE ── */
+            function doQueue(f) {
+                if (f !== undefined) filt = f;
+                let list = [...pts].sort((a, b) => (ORD[a.risk_level] ?? 9) - (ORD[b.risk_level] ?? 9));
+                if (filt !== 'all') list = list.filter(p => p.risk_level === filt);
+                if (srch) list = list.filter(p => (p.name || '').toLowerCase().includes(srch) || (p.symptoms || '').toLowerCase().includes(srch));
 
-            // Fill UI elements
-            const docNameEl = document.getElementById('docName');
-            const docAvEl = document.getElementById('docAv');
-            const greetEl = document.getElementById('greet');
+                document.getElementById('qCnt').textContent = list.length + ' patient' + (list.length !== 1 ? 's' : '');
 
-            if (docNameEl) docNameEl.textContent = 'Dr. ' + name;
-            if (docAvEl) docAvEl.textContent = name.slice(0, 2).toUpperCase();
-
-            const h = new Date().getHours();
-            if (greetEl) {
-                greetEl.textContent = `${h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'}, Dr. ${name.split(' ')[0]}`;
-            }
-
-            window.handleLogout = async () => { await signOut(auth); location.href = '/auth/login/'; };
-        });
-    </script>
-
-    <script>
-        /* ── CONFIG ── */
-        const RISK = {
-            Critical: { cls: 'rp-c', dot: '#f43030', bar: '#f43030', orb: 'rgba(244,48,48,0.12)', icon: '🚨', wait: 'w-now', wt: 'Now' },
-            High: { cls: 'rp-h', dot: '#f5a700', bar: '#f5a700', orb: 'rgba(245,167,0,0.12)', icon: '⚠️', wait: 'w-soon', wt: '<10m' },
-            Medium: { cls: 'rp-m', dot: '#7c73f0', bar: '#7c73f0', orb: 'rgba(124,115,240,0.12)', icon: '🔶', wait: 'w-ok', wt: '<30m' },
-            Low: { cls: 'rp-l', dot: '#00dba8', bar: '#00dba8', orb: 'rgba(0,219,168,0.09)', icon: '✅', wait: 'w-ok', wt: 'Routine' },
-        };
-        const ORD = { Critical: 0, High: 1, Medium: 2, Low: 3 };
-
-        /* ── STATE ── */
-        let pts = [], stats = { total_triages: 0, by_risk_level: [] }, hist = [], filt = 'all', srch = '', chart = null;
-
-        /* ── API ── */
-        function csrf() { for (const c of document.cookie.split(';')) { const [k, v] = c.trim().split('='); if (k === 'csrftoken') return decodeURIComponent(v); } return ''; }
-        async function api(u) { const r = await fetch(u, { headers: { 'X-CSRFToken': csrf() } }); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }
-
-        /* ── LOAD ── */
-        async function loadAll() {
-            spin(true);
-            try {
-                const [p, s, h] = await Promise.all([api('/api/patients/'), api('/api/triage/stats/'), api('/api/triage/history/')]);
-                pts = Array.isArray(p) ? p : (p.results || []);
-                stats = s; hist = Array.isArray(h) ? h : (h.results || []);
-                doStats(); doQueue(); doChart(); doBD(); doAct();
-                document.getElementById('lastRef').textContent = 'Updated ' + new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-                document.getElementById('errState').style.display = 'none';
-
-                /* Show alert banner if critical patients exist */
-                const critCount = pts.filter(p => p.risk_level === 'Critical').length;
-                const banner = document.getElementById('alertBanner');
-                if (critCount > 0) {
-                    document.getElementById('alertTxt').textContent =
-                        `${critCount} critical patient${critCount > 1 ? 's require' : 'requires'} immediate attention`;
-                    banner.style.display = 'flex';
-                } else { banner.style.display = 'none'; }
-
-            } catch (e) {
-                const el = document.getElementById('errState');
-                el.textContent = '⚠ Failed to load: ' + e.message + ' — Is Django running on localhost:8000?';
-                el.style.display = 'block';
-                document.getElementById('qBody').innerHTML = '<tr><td colspan="6"><div class="tstate" style="color:var(--red2)">Could not load patients.</div></td></tr>';
-            } finally { spin(false); }
-        }
-        window.loadAll = loadAll;
-
-        /* ── STATS ── */
-        function doStats() {
-            const c = pts.filter(p => p.risk_level === 'Critical').length;
-            const h = pts.filter(p => p.risk_level === 'High').length;
-            const t = pts.length;
-            cnt('sCrit', c); cnt('sHigh', h); cnt('sTotal', t);
-            document.getElementById('wmCrit').textContent = c;
-            document.getElementById('wmHigh').textContent = h;
-            document.getElementById('wmTotal').textContent = t;
-            document.getElementById('sSpeed').textContent = hist.length > 0 ? '6.2s' : '—';
-            document.getElementById('sSub').textContent = t > 0 ? `${t} patient${t !== 1 ? 's' : ''} registered` : 'No patients yet';
-            document.getElementById('critBadge').textContent = c;
-            document.getElementById('trendCrit').textContent = c > 0 ? `${c} URGENT` : 'CLEAR';
-            document.getElementById('trendCrit').className = 'sc-trend ' + (c > 0 ? 'tr-up' : 'tr-ok');
-            document.getElementById('trendHigh').textContent = h > 0 ? `${h} WAITING` : 'CLEAR';
-            document.getElementById('trendHigh').className = 'sc-trend ' + (h > 0 ? 'tr-up' : 'tr-ok');
-
-            /* Quick stats */
-            document.getElementById('qsResolved').textContent = Math.max(0, Math.floor(t * 0.6));
-            document.getElementById('qsAvgWait').textContent = '18m';
-            document.getElementById('qsTriages').textContent = stats.total_triages || t;
-        }
-
-        function cnt(id, target) {
-            const el = document.getElementById(id); let n = 0;
-            const iv = setInterval(() => { n = Math.min(n + Math.ceil(target / 16), target); el.textContent = n; if (n >= target) clearInterval(iv); }, 45);
-        }
-
-        /* ── QUEUE ── */
-        function doQueue(f) {
-            if (f !== undefined) filt = f;
-            let list = [...pts].sort((a, b) => (ORD[a.risk_level] ?? 9) - (ORD[b.risk_level] ?? 9));
-            if (filt !== 'all') list = list.filter(p => p.risk_level === filt);
-            if (srch) list = list.filter(p => (p.name || '').toLowerCase().includes(srch) || (p.symptoms || '').toLowerCase().includes(srch));
-
-            document.getElementById('qCnt').textContent = list.length + ' patient' + (list.length !== 1 ? 's' : '');
-
-            if (!list.length) {
-                document.getElementById('qBody').innerHTML = `<tr><td colspan="6">
+                if (!list.length) {
+                    document.getElementById('qBody').innerHTML = `<tr><td colspan="6">
       <div class="tstate">
         <div style="font-size:28px;margin-bottom:10px">${filt !== 'all' || srch ? '🔍' : '🏥'}</div>
         <strong>No patients${filt !== 'all' ? ' with ' + filt + ' priority' : srch ? ' matching "' + srch + '"' : ''}</strong><br/>
         <a href="/triage/" style="color:var(--teal);font-family:var(--mono);font-size:12px">⚡ Run a triage →</a>
       </div></td></tr>`;
-                return;
-            }
+                    return;
+                }
 
-            document.getElementById('qBody').innerHTML = list.map(p => {
-                const r = RISK[p.risk_level] || RISK['Low'];
-                const sym = (p.symptoms || '').slice(0, 56) + ((p.symptoms || '').length > 56 ? '…' : '');
-                return `<tr onclick="goTriage(${p.id},'${esc(p.name)}','${esc(p.symptoms || '')}')">
+                document.getElementById('qBody').innerHTML = list.map(p => {
+                    const r = RISK[p.risk_level] || RISK['Low'];
+                    const sym = (p.symptoms || '').slice(0, 56) + ((p.symptoms || '').length > 56 ? '…' : '');
+                    return `<tr onclick="goTriage(${p.id},'${esc(p.name)}','${esc(p.symptoms || '')}')">
       <td>
         <div class="pt-name">${p.name || 'Unknown'}</div>
         <div class="pt-id">#${String(p.id).padStart(4, '0')} · ${p.age || '?'}yrs</div>
@@ -1599,88 +1523,88 @@
         </a>
       </td>
     </tr>`;
-            }).join('');
-        }
+                }).join('');
+            }
 
-        /* ── CHART ── */
-        function doChart() {
-            const ctx = document.getElementById('rChart').getContext('2d');
-            const bl = stats.by_risk_level || [];
-            const total = stats.total_triages || pts.length || 0;
-            document.getElementById('totalTriages').textContent = total + ' triage' + (total !== 1 ? 's' : '');
-            document.getElementById('ccVal').textContent = pts.length;
+            /* ── CHART ── */
+            function doChart() {
+                const ctx = document.getElementById('rChart').getContext('2d');
+                const bl = stats.by_risk_level || [];
+                const total = stats.total_triages || pts.length || 0;
+                document.getElementById('totalTriages').textContent = total + ' triage' + (total !== 1 ? 's' : '');
+                document.getElementById('ccVal').textContent = pts.length;
 
-            const labels = ['Critical', 'High', 'Medium', 'Low'];
-            const counts = labels.map(l => { const f = bl.find(b => b.risk_level === l); return f ? f.count : 0; });
-            if (chart) chart.destroy();
-            Chart.defaults.font.family = "'Outfit',system-ui,sans-serif";
-            chart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels, datasets: [{
-                        data: counts.some(c => c > 0) ? counts : [1, 1, 1, 1],
-                        backgroundColor: ['rgba(244,48,48,0.15)', 'rgba(245,167,0,0.15)', 'rgba(124,115,240,0.15)', 'rgba(0,219,168,0.12)'],
-                        borderColor: ['#f43030', '#f5a700', '#7c73f0', '#00dba8'],
-                        borderWidth: 2, hoverOffset: 6,
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false, cutout: '68%',
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                color: '#607d93', font: { size: 11, weight: '600' },
-                                boxWidth: 9, boxHeight: 9, padding: 14, usePointStyle: true
+                const labels = ['Critical', 'High', 'Medium', 'Low'];
+                const counts = labels.map(l => { const f = bl.find(b => b.risk_level === l); return f ? f.count : 0; });
+                if (chart) chart.destroy();
+                Chart.defaults.font.family = "'Outfit',system-ui,sans-serif";
+                chart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels, datasets: [{
+                            data: counts.some(c => c > 0) ? counts : [1, 1, 1, 1],
+                            backgroundColor: ['rgba(244,48,48,0.15)', 'rgba(245,167,0,0.15)', 'rgba(124,115,240,0.15)', 'rgba(0,219,168,0.12)'],
+                            borderColor: ['#f43030', '#f5a700', '#7c73f0', '#00dba8'],
+                            borderWidth: 2, hoverOffset: 6,
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false, cutout: '68%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: '#607d93', font: { size: 11, weight: '600' },
+                                    boxWidth: 9, boxHeight: 9, padding: 14, usePointStyle: true
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: '#122130', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
+                                titleColor: '#ddeaf6', bodyColor: '#607d93',
+                                padding: 11, cornerRadius: 10,
+                                callbacks: { label: c => ` ${c.label}: ${counts.some(x => x > 0) ? c.raw : 0}` }
                             }
-                        },
-                        tooltip: {
-                            backgroundColor: '#122130', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
-                            titleColor: '#ddeaf6', bodyColor: '#607d93',
-                            padding: 11, cornerRadius: 10,
-                            callbacks: { label: c => ` ${c.label}: ${counts.some(x => x > 0) ? c.raw : 0}` }
                         }
                     }
-                }
-            });
-        }
+                });
+            }
 
-        /* ── BREAKDOWN ── */
-        function doBD() {
-            const total = pts.length || 1;
-            const counts = {};
-            pts.forEach(p => { counts[p.risk_level] = (counts[p.risk_level] || 0) + 1; });
-            document.getElementById('bdTotal').textContent = pts.length + ' total';
-            document.getElementById('bdBody').innerHTML =
-                ['Critical', 'High', 'Medium', 'Low'].map(l => {
-                    const n = counts[l] || 0, pct = Math.round((n / total) * 100), r = RISK[l];
-                    return `<div class="bd-row">
+            /* ── BREAKDOWN ── */
+            function doBD() {
+                const total = pts.length || 1;
+                const counts = {};
+                pts.forEach(p => { counts[p.risk_level] = (counts[p.risk_level] || 0) + 1; });
+                document.getElementById('bdTotal').textContent = pts.length + ' total';
+                document.getElementById('bdBody').innerHTML =
+                    ['Critical', 'High', 'Medium', 'Low'].map(l => {
+                        const n = counts[l] || 0, pct = Math.round((n / total) * 100), r = RISK[l];
+                        return `<div class="bd-row">
         <span class="bd-lbl">${l}</span>
         <div class="bd-rail"><div class="bd-fill" style="background:${r.bar};width:0%" data-w="${pct}"></div></div>
         <span class="bd-n">${n}</span>
         <span class="bd-pct">${pct}%</span>
       </div>`;
-                }).join('');
-            setTimeout(() => { document.querySelectorAll('.bd-fill').forEach(el => { el.style.width = el.dataset.w + '%'; }); }, 100);
-        }
+                    }).join('');
+                setTimeout(() => { document.querySelectorAll('.bd-fill').forEach(el => { el.style.width = el.dataset.w + '%'; }); }, 100);
+            }
 
-        /* ── ACTIVITY ── */
-        function doAct() {
-            const body = document.getElementById('actBody');
-            const recent = hist.slice(0, 6);
-            document.getElementById('actSub').textContent = recent.length + ' recent';
-            if (!recent.length) {
-                body.innerHTML = `<div class="tstate" style="padding:20px">
+            /* ── ACTIVITY ── */
+            function doAct() {
+                const body = document.getElementById('actBody');
+                const recent = hist.slice(0, 6);
+                document.getElementById('actSub').textContent = recent.length + ' recent';
+                if (!recent.length) {
+                    body.innerHTML = `<div class="tstate" style="padding:20px">
       <div style="font-size:24px;margin-bottom:8px">📋</div>
       <strong>No activity yet</strong><br/>
       <a href="/triage/" style="color:var(--teal);font-family:var(--mono);font-size:11px">Run first triage →</a>
     </div>`;
-                return;
-            }
-            body.innerHTML = recent.map(t => {
-                const r = RISK[t.risk_level] || RISK['Low'];
-                const sym = (t.symptoms_input || '').slice(0, 38) + '…';
-                return `<div class="af-item" onclick="location.href='/triage/'">
+                    return;
+                }
+                body.innerHTML = recent.map(t => {
+                    const r = RISK[t.risk_level] || RISK['Low'];
+                    const sym = (t.symptoms_input || '').slice(0, 38) + '…';
+                    return `<div class="af-item" onclick="location.href='/triage/'">
       <div class="af-orb" style="background:${r.orb}">${r.icon}</div>
       <div style="flex:1;min-width:0">
         <div class="af-name">${t.patient_name || 'Anonymous patient'}</div>
@@ -1688,48 +1612,48 @@
       </div>
       <div class="af-time">${ago(t.analyzed_at)}</div>
     </div>`;
-            }).join('');
-        }
+                }).join('');
+            }
 
-        /* ── HELPERS ── */
-        function fil(btn, level) {
-            document.querySelectorAll('.fp').forEach(p => p.classList.remove('on'));
-            btn.classList.add('on'); doQueue(level);
-        }
-        window.fil = fil;
+            /* ── HELPERS ── */
+            function fil(btn, level) {
+                document.querySelectorAll('.fp').forEach(p => p.classList.remove('on'));
+                btn.classList.add('on'); doQueue(level);
+            }
+            window.fil = fil;
 
-        function doSearch(v) { srch = v.toLowerCase(); doQueue(); }
-        window.doSearch = doSearch;
+            function doSearch(v) { srch = v.toLowerCase(); doQueue(); }
+            window.doSearch = doSearch;
 
-        function goTriage(id, name, sym) {
-            location.href = `/triage/?patient_id=${id}&input=${encodeURIComponent(name + '\n' + sym)}`;
-        }
-        window.goTriage = goTriage;
+            function goTriage(id, name, sym) {
+                location.href = `/triage/?patient_id=${id}&input=${encodeURIComponent(name + '\n' + sym)}`;
+            }
+            window.goTriage = goTriage;
 
-        function spin(on) {
-            document.getElementById('refBtn').classList.toggle('spinning', on);
-        }
+            function spin(on) {
+                document.getElementById('refBtn').classList.toggle('spinning', on);
+            }
 
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            document.getElementById('toastMsg').textContent = msg;
-            t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2600);
-        }
+            function showToast(msg) {
+                const t = document.getElementById('toast');
+                document.getElementById('toastMsg').textContent = msg;
+                t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2600);
+            }
 
-        function ago(d) {
-            if (!d) return '—';
-            const s = Math.floor((Date.now() - new Date(d)) / 1000);
-            if (s < 60) return 'just now';
-            if (s < 3600) return Math.floor(s / 60) + 'm ago';
-            if (s < 86400) return Math.floor(s / 3600) + 'h ago';
-            return Math.floor(s / 86400) + 'd ago';
-        }
-        function esc(s) { return (s || '').replace(/'/g, "\\'").replace(/"/g, '&quot;').slice(0, 80); }
+            function ago(d) {
+                if (!d) return '—';
+                const s = Math.floor((Date.now() - new Date(d)) / 1000);
+                if (s < 60) return 'just now';
+                if (s < 3600) return Math.floor(s / 60) + 'm ago';
+                if (s < 86400) return Math.floor(s / 3600) + 'h ago';
+                return Math.floor(s / 86400) + 'd ago';
+            }
+            function esc(s) { return (s || '').replace(/'/g, "\\'").replace(/"/g, '&quot;').slice(0, 80); }
 
-        /* ── AUTO REFRESH ── */
-        setInterval(() => { loadAll(); showToast('Auto-refreshed'); }, 30000);
-        loadAll();
-    </script>
+            /* ── AUTO REFRESH ── */
+            setInterval(() => { loadAll(); showToast('Auto-refreshed'); }, 30000);
+            loadAll();
+        </script>
 </body>
 
 </html>

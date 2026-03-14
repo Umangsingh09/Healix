@@ -45,7 +45,8 @@ def get_my_patients(request):
     patients = Patient.objects.filter(user_uid=user_uid).order_by('-created_at')
     serializer = PatientSerializer(patients, many=True)
     return Response(serializer.data)
-
+def health_agent(request):
+    return render(request, 'patients/health_agent.html')
 
 # POST create patient
 @api_view(['POST'])

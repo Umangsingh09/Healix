@@ -1,0 +1,1 @@
+web: gunicorn healix.wsgi:application
