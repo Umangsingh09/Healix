@@ -1,6 +1,7 @@
 from django.db import models
 
 class Patient(models.Model):
+    user_uid = models.CharField(max_length=128, blank=True, null=True, db_index=True)
     name = models.CharField(max_length=100)
     age = models.IntegerField()
     symptoms = models.TextField()

@@ -5,11 +5,14 @@ from .views import (
     get_patient,
     update_patient,
     delete_patient,
-    get_patient_triage_history
+    get_patient_triage_history,
+    get_my_patients
 )
 
 urlpatterns = [
     path('', PatientListView.as_view(), name='patient-list'),
+    path('patients/', get_patients),
+    path('patients/my/', get_my_patients),
     path('create/', create_patient, name='patient-create'),
     path('<int:pk>/', get_patient, name='patient-detail'),
     path('update/<int:pk>/', update_patient, name='patient-update'),

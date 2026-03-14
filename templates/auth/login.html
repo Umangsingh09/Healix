@@ -808,11 +808,17 @@
         // After login, fetch the user's role from Firestore and redirect
         async function redirectByRole(user) {
             try {
-                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                const userDocRef = doc(db, 'users', user.uid);
+                const userDoc = await getDoc(userDocRef);
+
+                // Determine role from UI if new user, or from Firestore if existing
+                const bodyEl = document.getElementById('body');
+                const selectedRole = bodyEl.classList.contains('role-doctor') ? 'doctor' : 'patient';
+
                 if (!userDoc.exists()) {
+                    console.log("No profile found, creating new profile for role:", selectedRole);
                     // First time — create profile using selected role tab
-                    const selectedRole = document.body.classList.contains('role-doctor') ? 'doctor' : 'patient';
-                    await setDoc(doc(db, 'users', user.uid), {
+                    await setDoc(userDocRef, {
                         uid: user.uid,
                         email: user.email,
                         name: user.displayName || '',
@@ -824,15 +830,23 @@
                         ? '/dashboard/doctor/'
                         : '/dashboard/patient/';
                 } else {
-                    const role = userDoc.data().role;
+                    const profileData = userDoc.data();
+                    const role = profileData.role || selectedRole;
+                    console.log("Profile found, role:", role);
+
                     // Update last login
-                    await setDoc(doc(db, 'users', user.uid), { lastLogin: serverTimestamp() }, { merge: true });
+                    await setDoc(userDocRef, { lastLogin: serverTimestamp() }, { merge: true });
+
                     window.location.href = role === 'doctor'
                         ? '/dashboard/doctor/'
                         : '/dashboard/patient/';
                 }
             } catch (err) {
-                showMessage('error', 'Failed to load user profile. Please try again.');
+                console.error("RedirectByRole Detailed Error:", err);
+                const errorMsg = err.code === 'permission-denied'
+                    ? 'Firestore access denied. Check your Firestore Security Rules.'
+                    : 'Failed to load user profile: ' + (err.message || 'Please try again.');
+                showMessage('error', errorMsg);
                 setLoading(false);
             }
         }

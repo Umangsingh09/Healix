@@ -316,6 +316,33 @@
         </table>
     </div>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMoNdBIWdZNKJOlR7ZV-46OfFHZPwb1Wk", authDomain: "healix-d02c4.firebaseapp.com",
+            projectId: "healix-d02c4", storageBucket: "healix-d02c4.firebasestorage.app",
+            messagingSenderId: "783527967185", appId: "1:783527967185:web:eacf3a3f785121a0ae08f0",
+            measurementId: "G-Z4TD76TGR7"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                if (userDoc.exists()) {
+                    const role = userDoc.data().role;
+                    window.location.href = role === 'doctor' ? '/dashboard/doctor/' : '/dashboard/patient/';
+                }
+            } else {
+                window.location.href = '/auth/login/';
+            }
+        });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', loadPatients);
 

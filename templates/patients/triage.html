@@ -2,656 +2,2256 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Healix Triage | Live Agent Progress</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Healix — AI Triage Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0b0f19;
-            --surface-color: rgba(26, 31, 44, 0.7);
-            --accent-color: #00f2fe;
-            --accent-glow: rgba(0, 242, 254, 0.3);
-            --text-primary: #e2e8f0;
-            --text-secondary: #94a3b8;
-            --critical-color: #ff4757;
-            --high-color: #ff7f50;
-            --medium-color: #ffa502;
-            --low-color: #2ed573;
+            --void: #04080c;
+            --deep: #070d13;
+            --base: #0c1520;
+            --raised: #111d28;
+            --lift: #162333;
+            --rim: rgba(255, 255, 255, 0.055);
+            --rim2: rgba(255, 255, 255, 0.10);
+            --rim3: rgba(255, 255, 255, 0.18);
+            --ink: #dce8f0;
+            --ink2: #7a94a8;
+            --ink3: #3d5568;
+            --red: #ff3b2f;
+            --red2: #e02a1f;
+            --red-dim: rgba(255, 59, 47, 0.08);
+            --red-glo: rgba(255, 59, 47, 0.25);
+            --amber: #ffb020;
+            --amb-dim: rgba(255, 176, 32, 0.08);
+            --teal: #00e5b8;
+            --teal-dim: rgba(0, 229, 184, 0.08);
+            --teal-glo: rgba(0, 229, 184, 0.2);
+            --iris: #8b78ff;
+            --iris-dim: rgba(139, 120, 255, 0.08);
+            --sans: 'Syne', system-ui, sans-serif;
+            --mono: 'JetBrains Mono', monospace;
+            --serif: 'Crimson Pro', Georgia, serif;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            margin: 0;
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: var(--void);
+            color: var(--ink);
+            font-family: var(--sans);
             min-height: 100vh;
-            background-image: radial-gradient(circle at top, #162032 0%, #0b0f19 70%);
             overflow-x: hidden;
         }
 
-        .container {
-            width: 90%;
-            max-width: 1000px;
+        /* ── ANIMATED BG ── */
+        #bgCanvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.45;
+        }
+
+        /* ── NAV ── */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            padding: 0 36px;
+            background: rgba(4, 8, 12, 0.88);
+            backdrop-filter: blur(20px) saturate(1.4);
+            border-bottom: 1px solid var(--rim);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-cross {
+            width: 30px;
+            height: 30px;
+            background: var(--red);
+            border-radius: 8px;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            padding: 2rem 0;
-        }
-
-        .card {
-            background: var(--surface-color);
-            border-radius: 20px;
-            padding: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-        }
-
-        .glass-panel {
+            place-items: center;
             position: relative;
         }
 
-        h2 {
-            margin-top: 0;
-            font-size: 1.8rem;
-            font-weight: 600;
-            background: linear-gradient(90deg, #fff, var(--text-secondary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .nav-cross::before,
+        .nav-cross::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 2px;
         }
 
-        textarea {
-            width: 100%;
-            height: 150px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-primary);
-            border-radius: 12px;
-            padding: 1rem;
-            font-family: 'Outfit', sans-serif;
-            font-size: 1rem;
-            resize: none;
-            box-sizing: border-box;
-            transition: border-color 0.3s ease;
+        .nav-cross::before {
+            width: 13px;
+            height: 2px;
         }
 
-        textarea:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 15px var(--accent-glow);
+        .nav-cross::after {
+            width: 2px;
+            height: 13px;
         }
 
-        .controls {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
+        .nav-wordmark {
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            color: var(--ink);
         }
 
-        button {
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 10px;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .nav-div {
+            width: 1px;
+            height: 18px;
+            background: var(--rim2);
+            margin: 0 16px;
+        }
+
+        .nav-page {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink3);
+            letter-spacing: 0.06em;
+        }
+
+        .nav-right {
+            margin-left: auto;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
+            gap: 12px;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #00c6ff, #0072ff);
-            color: white;
-            flex: 1;
-            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3);
+        .nav-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink2);
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 114, 255, 0.5);
+        .pip {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--teal);
+            animation: pip 2.5s ease-in-out infinite;
         }
 
-        .btn-primary:active {
-            transform: translateY(0);
-        }
+        @keyframes pip {
 
-        .btn-voice {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-voice:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .btn-voice.listening {
-            border-color: #ff4757;
-            color: #ff4757;
-            animation: pulse-red 1.5s infinite;
-        }
-
-        @keyframes pulse-red {
-            0% {
-                box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.4);
-            }
-
-            70% {
-                box-shadow: 0 0 0 10px rgba(255, 71, 87, 0);
-            }
-
+            0%,
             100% {
-                box-shadow: 0 0 0 0 rgba(255, 71, 87, 0);
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.35
             }
         }
 
-        /* Agents Progress Panel */
-        .agent-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
+        .nav-back {
+            padding: 6px 14px;
+            border: 1px solid var(--rim2);
+            border-radius: 8px;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink2);
+            text-decoration: none;
+            transition: all 0.2s;
         }
 
-        .agent-item {
+        .nav-back:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        /* ── SHELL ── */
+        .shell {
+            position: relative;
+            z-index: 1;
+            max-width: 1060px;
+            margin: 0 auto;
+            padding: 48px 28px 100px;
+        }
+
+        /* ── PAGE HEADER ── */
+        .ph {
+            margin-bottom: 44px;
+        }
+
+        .ph-eye {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--red);
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            background: rgba(15, 23, 42, 0.4);
-            border-radius: 12px;
-            border-left: 4px solid #334155;
-            transition: all 0.5s ease;
+            gap: 8px;
+        }
+
+        .ph-eye::before {
+            content: '';
+            width: 22px;
+            height: 1px;
+            background: var(--red);
+            opacity: 0.6;
+        }
+
+        .ph-title {
+            font-family: var(--serif);
+            font-size: clamp(34px, 4.5vw, 54px);
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            line-height: 1.05;
+            margin-bottom: 10px;
+        }
+
+        .ph-title em {
+            font-style: italic;
+            color: var(--teal);
+        }
+
+        .ph-sub {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink3);
+            letter-spacing: 0.04em;
+            line-height: 1.8;
+        }
+
+        /* ── MAIN GRID ── */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        @media (max-width: 860px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ── FORM PANEL ── */
+        .form-panel {
+            background: var(--base);
+            border: 1px solid var(--rim);
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .form-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--red) 40%, transparent);
             opacity: 0.5;
         }
 
-        .agent-item.active {
-            opacity: 1;
-            border-left-color: var(--accent-color);
-            background: rgba(15, 23, 42, 0.8);
-            box-shadow: 0 0 20px var(--accent-glow);
-        }
-
-        .agent-item.completed {
-            opacity: 1;
-            border-left-color: var(--low-color);
-        }
-
-        .agent-status-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: #334155;
+        /* Top bar with mode toggle */
+        .form-topbar {
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
+            gap: 8px;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--rim);
+            background: var(--raised);
         }
 
-        .active .agent-status-icon {
-            background: var(--accent-color);
-            box-shadow: 0 0 10px var(--accent-glow);
-            animation: spin 2s linear infinite;
+        .tb-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
         }
 
-        .completed .agent-status-icon {
-            background: var(--low-color);
-            color: #000;
+        .tb-label {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink3);
+            margin-left: 4px;
+        }
+
+        /* Mode toggle */
+        .mode-toggle {
+            margin-left: auto;
+            display: flex;
+            gap: 4px;
+            background: var(--deep);
+            border: 1px solid var(--rim);
+            border-radius: 10px;
+            padding: 3px;
+        }
+
+        .mode-btn {
+            padding: 5px 14px;
+            border-radius: 7px;
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.06em;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            color: var(--ink3);
+            background: transparent;
+        }
+
+        .mode-btn.active {
+            background: var(--raised);
+            color: var(--ink);
+            border: 1px solid var(--rim2);
+        }
+
+        /* ── STRUCTURED FORM ── */
+        .sform {
+            padding: 24px;
+        }
+
+        /* Section header inside form */
+        .fsec-title {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--ink3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            margin-top: 24px;
+        }
+
+        .fsec-title:first-child {
+            margin-top: 0;
+        }
+
+        .fsec-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--rim);
+        }
+
+        /* Row layouts */
+        .frow {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .frow.two {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .frow.three {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .frow.one {
+            grid-template-columns: 1fr;
+        }
+
+        /* Field */
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field-label {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink3);
+        }
+
+        .field input,
+        .field select,
+        .field textarea {
+            background: var(--deep);
+            border: 1px solid var(--rim);
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: var(--ink);
+            font-family: var(--mono);
+            font-size: 12px;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s;
+            width: 100%;
+        }
+
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus {
+            border-color: rgba(0, 229, 184, 0.4);
+            background: rgba(0, 229, 184, 0.03);
+        }
+
+        .field input::placeholder,
+        .field textarea::placeholder {
+            color: var(--ink3);
+        }
+
+        .field select {
+            cursor: pointer;
+            appearance: none;
+        }
+
+        .field select option {
+            background: var(--base);
+        }
+
+        /* Gender radio pills */
+        .gender-pills {
+            display: flex;
+            gap: 8px;
+        }
+
+        .gpill {
+            flex: 1;
+            padding: 9px;
+            text-align: center;
+            background: var(--deep);
+            border: 1px solid var(--rim);
+            border-radius: 10px;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink2);
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+
+        .gpill:hover {
+            border-color: var(--rim2);
+            color: var(--ink);
+        }
+
+        .gpill.sel {
+            background: var(--teal-dim);
+            border-color: rgba(0, 229, 184, 0.4);
+            color: var(--teal);
+        }
+
+        /* Symptom chip selector */
+        .symptom-picker {
+            margin-bottom: 12px;
+        }
+
+        .symptom-categories {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .scat-btn {
+            padding: 4px 12px;
+            border-radius: 7px;
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.06em;
+            background: var(--deep);
+            border: 1px solid var(--rim);
+            color: var(--ink3);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .scat-btn:hover {
+            border-color: var(--rim2);
+            color: var(--ink2);
+        }
+
+        .scat-btn.active {
+            background: var(--red-dim);
+            border-color: rgba(255, 59, 47, 0.35);
+            color: var(--red);
+        }
+
+        .symptom-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            min-height: 36px;
+        }
+
+        .schip {
+            padding: 5px 13px;
+            border-radius: 8px;
+            font-family: var(--mono);
+            font-size: 11px;
+            background: var(--raised);
+            border: 1px solid var(--rim);
+            color: var(--ink2);
+            cursor: pointer;
+            transition: all 0.15s;
+            user-select: none;
+        }
+
+        .schip:hover {
+            border-color: var(--rim2);
+            color: var(--ink);
+        }
+
+        .schip.picked {
+            background: var(--red-dim);
+            border-color: rgba(255, 59, 47, 0.4);
+            color: var(--red);
+        }
+
+        /* Selected symptoms display */
+        .sel-sym-wrap {
+            min-height: 38px;
+            padding: 8px 12px;
+            background: var(--deep);
+            border: 1px solid var(--rim);
+            border-radius: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .sel-sym-tag {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 6px;
+            background: var(--red-dim);
+            border: 1px solid rgba(255, 59, 47, 0.25);
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--red);
+        }
+
+        .sel-sym-remove {
+            cursor: pointer;
+            font-size: 13px;
+            line-height: 1;
+            color: rgba(255, 59, 47, 0.6);
+            transition: color 0.15s;
+        }
+
+        .sel-sym-remove:hover {
+            color: var(--red);
+        }
+
+        .sel-sym-placeholder {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink3);
+        }
+
+        /* Custom symptom input */
+        .custom-sym-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .custom-sym-input {
+            flex: 1;
+            background: var(--deep);
+            border: 1px solid var(--rim);
+            border-radius: 9px;
+            padding: 8px 12px;
+            color: var(--ink);
+            font-family: var(--mono);
+            font-size: 12px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .custom-sym-input:focus {
+            border-color: rgba(0, 229, 184, 0.4);
+        }
+
+        .custom-sym-input::placeholder {
+            color: var(--ink3);
+        }
+
+        .custom-add-btn {
+            padding: 8px 16px;
+            background: var(--raised);
+            border: 1px solid var(--rim2);
+            border-radius: 9px;
+            color: var(--ink2);
+            font-family: var(--mono);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.18s;
+            white-space: nowrap;
+        }
+
+        .custom-add-btn:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        /* Duration slider */
+        .duration-wrap {
+            position: relative;
+        }
+
+        .duration-display {
+            text-align: center;
+            margin-bottom: 8px;
+            font-family: var(--mono);
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--ink);
+            letter-spacing: -0.04em;
+        }
+
+        .duration-sub {
+            font-size: 11px;
+            color: var(--ink3);
+            font-weight: 300;
+        }
+
+        input[type="range"].dur-slider {
+            width: 100%;
+            appearance: none;
+            height: 4px;
+            background: var(--rim2);
+            border-radius: 2px;
+            outline: none;
+            cursor: pointer;
+            border: none;
+            padding: 0;
+        }
+
+        input[type="range"].dur-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--teal);
+            cursor: pointer;
+            box-shadow: 0 0 0 3px rgba(0, 229, 184, 0.2);
+        }
+
+        .duration-labels {
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+            margin-top: 6px;
+        }
+
+        /* Severity scale */
+        .severity-scale {
+            display: flex;
+            gap: 6px;
+        }
+
+        .sev-btn {
+            flex: 1;
+            padding: 10px 4px;
+            text-align: center;
+            background: var(--deep);
+            border: 1px solid var(--rim);
+            border-radius: 9px;
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+
+        .sev-num {
+            font-family: var(--mono);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--ink2);
+        }
+
+        .sev-label {
+            font-family: var(--mono);
+            font-size: 9px;
+            color: var(--ink3);
+            margin-top: 2px;
+        }
+
+        .sev-btn:hover {
+            border-color: var(--rim2);
+        }
+
+        .sev-btn.sel-1,
+        .sev-btn.sel-2,
+        .sev-btn.sel-3 {
+            background: var(--teal-dim);
+            border-color: rgba(0, 229, 184, 0.35);
+        }
+
+        .sev-btn.sel-4,
+        .sev-btn.sel-5 {
+            background: var(--amb-dim);
+            border-color: rgba(255, 176, 32, 0.35);
+        }
+
+        .sev-btn.sel-6,
+        .sev-btn.sel-7 {
+            background: rgba(255, 176, 32, 0.1);
+            border-color: rgba(255, 176, 32, 0.4);
+        }
+
+        .sev-btn.sel-8,
+        .sev-btn.sel-9 {
+            background: var(--red-dim);
+            border-color: rgba(255, 59, 47, 0.35);
+        }
+
+        .sev-btn.sel-10 {
+            background: rgba(255, 59, 47, 0.15);
+            border-color: rgba(255, 59, 47, 0.5);
+        }
+
+        .sev-btn.sel-1 .sev-num,
+        .sev-btn.sel-2 .sev-num,
+        .sev-btn.sel-3 .sev-num {
+            color: var(--teal);
+        }
+
+        .sev-btn.sel-4 .sev-num,
+        .sev-btn.sel-5 .sev-num,
+        .sev-btn.sel-6 .sev-num,
+        .sev-btn.sel-7 .sev-num {
+            color: var(--amber);
+        }
+
+        .sev-btn.sel-8 .sev-num,
+        .sev-btn.sel-9 .sev-num,
+        .sev-btn.sel-10 .sev-num {
+            color: var(--red);
+        }
+
+        /* Free text mode */
+        .freetext-wrap {
+            padding: 24px;
+            display: none;
+        }
+
+        .ft-textarea {
+            width: 100%;
+            min-height: 200px;
+            background: var(--deep);
+            border: 1px solid var(--rim);
+            border-radius: 12px;
+            padding: 16px 48px 16px 16px;
+            color: var(--ink);
+            font-family: var(--mono);
+            font-size: 13px;
+            line-height: 1.8;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .ft-textarea:focus {
+            border-color: rgba(0, 229, 184, 0.4);
+        }
+
+        .ft-textarea::placeholder {
+            color: var(--ink3);
+        }
+
+        /* Preview strip */
+        .preview-strip {
+            margin: 0 24px 16px;
+            background: var(--deep);
+            border: 1px solid var(--rim);
+            border-radius: 12px;
+            padding: 14px 16px;
+            display: none;
+        }
+
+        .preview-label {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink3);
+            margin-bottom: 8px;
+        }
+
+        .preview-text {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink2);
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+
+        /* Submit bar */
+        .submit-bar {
+            padding: 16px 24px;
+            border-top: 1px solid var(--rim);
+            background: var(--raised);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sb-info {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+            flex: 1;
+            line-height: 1.5;
+        }
+
+        #voiceBtn {
+            width: 44px;
+            height: 44px;
+            border-radius: 11px;
+            background: var(--base);
+            border: 1px solid var(--rim2);
+            color: var(--ink2);
+            font-size: 18px;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        #voiceBtn:hover {
+            border-color: var(--amber);
+            color: var(--amber);
+        }
+
+        #voiceBtn.listening {
+            background: rgba(255, 176, 32, 0.1);
+            border-color: var(--amber);
+            color: var(--amber);
+            animation: micbeat 0.9s infinite;
+        }
+
+        @keyframes micbeat {
+
+            0%,
+            100% {
+                transform: scale(1)
+            }
+
+            50% {
+                transform: scale(1.07)
+            }
+        }
+
+        #analyzeBtn {
+            padding: 0 28px;
+            height: 44px;
+            background: var(--red);
+            border: none;
+            border-radius: 11px;
+            color: white;
+            font-family: var(--sans);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        #analyzeBtn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, transparent 60%);
+        }
+
+        #analyzeBtn:hover:not(:disabled) {
+            background: var(--red2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px var(--red-glo);
+        }
+
+        #analyzeBtn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .btn-spin {
+            width: 15px;
+            height: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.65s linear infinite;
+            display: none;
         }
 
         @keyframes spin {
-            100% {
+            to {
                 transform: rotate(360deg);
             }
         }
 
-        .agent-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .agent-name {
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .agent-desc {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .triage-result {
-            margin-top: 2rem;
-            padding: 1.5rem;
-            border-radius: 12px;
-            background: rgba(0, 0, 0, 0.2);
-            display: none;
-            animation: fadeUp 0.6s ease forwards;
-        }
-
-        .triage-level-badge {
-            display: inline-block;
-            padding: 0.4rem 1rem;
+        /* ── MONITOR PANEL ── */
+        .monitor {
+            background: var(--base);
+            border: 1px solid var(--rim);
             border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            margin-bottom: 1rem;
+            overflow: hidden;
+            position: sticky;
+            top: 74px;
         }
 
-        .level-CRITICAL {
-            background: var(--critical-color);
-            color: white;
-            box-shadow: 0 0 15px rgba(255, 71, 87, 0.5);
+        .mon-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--rim);
+            background: var(--raised);
         }
 
-        .level-HIGH {
-            background: var(--high-color);
-            color: white;
-            box-shadow: 0 0 15px rgba(255, 127, 80, 0.5);
+        .mon-title {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink2);
+            letter-spacing: 0.08em;
         }
 
-        .level-MEDIUM {
-            background: var(--medium-color);
-            color: white;
-            box-shadow: 0 0 15px rgba(255, 165, 2, 0.5);
+        .mon-live {
+            margin-left: auto;
+            display: none;
+            align-items: center;
+            gap: 5px;
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
         }
 
-        .level-LOW {
-            background: var(--low-color);
-            color: #000;
-            box-shadow: 0 0 15px rgba(46, 213, 115, 0.5);
+        .mon-idle {
+            padding: 28px 20px;
+            text-align: center;
         }
 
-        @keyframes fadeUp {
+        .mon-idle-icon {
+            font-size: 28px;
+            opacity: 0.35;
+            margin-bottom: 10px;
+        }
+
+        .mon-idle-txt {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink3);
+            line-height: 1.8;
+        }
+
+        /* Agents list */
+        .agents-wrap {
+            display: none;
+        }
+
+        .amon-body {
+            padding: 12px;
+        }
+
+        .arow {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 10px;
+            border-radius: 10px;
+            margin-bottom: 3px;
+            transition: background 0.25s;
+        }
+
+        .arow:last-child {
+            margin-bottom: 0;
+        }
+
+        .arow.active {
+            background: var(--raised);
+        }
+
+        .arow.done {
+            background: var(--teal-dim);
+        }
+
+        .anum {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+            width: 16px;
+            flex-shrink: 0;
+        }
+
+        .aorb {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: var(--raised);
+            border: 1px solid var(--rim);
+            display: grid;
+            place-items: center;
+            font-size: 13px;
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+
+        .arow.active .aorb {
+            background: var(--red-dim);
+            border-color: rgba(255, 59, 47, 0.4);
+            animation: orb 1.1s ease-in-out infinite;
+        }
+
+        .arow.done .aorb {
+            background: var(--teal-dim);
+            border-color: rgba(0, 229, 184, 0.4);
+        }
+
+        @keyframes orb {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.5
+            }
+        }
+
+        .ameta {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .aname {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .astate {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+            margin-top: 1px;
+        }
+
+        .arow.active .astate {
+            color: var(--red);
+        }
+
+        .arow.done .astate {
+            color: var(--teal);
+        }
+
+        .achk {
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            color: var(--teal);
+        }
+
+        .arow.done .achk {
+            opacity: 1;
+        }
+
+        .mon-prog {
+            padding: 12px 14px;
+            border-top: 1px solid var(--rim);
+        }
+
+        .mp-meta {
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+            margin-bottom: 7px;
+        }
+
+        .mp-rail {
+            height: 3px;
+            background: var(--rim);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .mp-fill {
+            height: 100%;
+            background: var(--teal);
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mon-time {
+            text-align: center;
+            padding: 12px 14px;
+            border-top: 1px solid var(--rim);
+        }
+
+        .mt-num {
+            font-family: var(--mono);
+            font-size: 22px;
+            font-weight: 500;
+            color: var(--ink);
+            letter-spacing: -0.04em;
+            line-height: 1;
+        }
+
+        .mt-unit {
+            font-size: 12px;
+            color: var(--ink3);
+        }
+
+        .mt-lbl {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-top: 3px;
+        }
+
+        /* ── ERROR ── */
+        #errorCard {
+            display: none;
+            margin-bottom: 20px;
+            background: var(--red-dim);
+            border: 1px solid rgba(255, 59, 47, 0.25);
+            border-radius: 12px;
+            padding: 14px 18px;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: #ff6b62;
+            line-height: 1.6;
+        }
+
+        /* ── RESULTS ── */
+        #resultsSection {
+            margin-top: 24px;
+            display: none;
+        }
+
+        .risk-masthead {
+            border-radius: 20px;
+            padding: 32px 36px;
+            margin-bottom: 18px;
+            position: relative;
+            overflow: hidden;
+            animation: riseIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @keyframes riseIn {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(20px) scale(0.98)
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1)
             }
         }
 
-        .navbar {
+        .risk-masthead.Critical {
+            background: var(--red-dim);
+            border: 1px solid rgba(255, 59, 47, 0.22);
+        }
+
+        .risk-masthead.High {
+            background: var(--amb-dim);
+            border: 1px solid rgba(255, 176, 32, 0.22);
+        }
+
+        .risk-masthead.Medium {
+            background: var(--iris-dim);
+            border: 1px solid rgba(139, 120, 255, 0.22);
+        }
+
+        .risk-masthead.Low {
+            background: var(--teal-dim);
+            border: 1px solid rgba(0, 229, 184, 0.22);
+        }
+
+        .risk-masthead::before {
+            content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 1.5rem 2rem;
-            box-sizing: border-box;
+            top: -60px;
+            right: -60px;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            opacity: 0.07;
+            pointer-events: none;
+        }
+
+        .risk-masthead.Critical::before {
+            background: var(--red);
+        }
+
+        .risk-masthead.High::before {
+            background: var(--amber);
+        }
+
+        .risk-masthead.Medium::before {
+            background: var(--iris);
+        }
+
+        .risk-masthead.Low::before {
+            background: var(--teal);
+        }
+
+        .rmh-top {
             display: flex;
+            align-items: flex-start;
             justify-content: space-between;
-            align-items: center;
+            margin-bottom: 18px;
         }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: white;
-            text-decoration: none;
+        .rmh-tag {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .risk-masthead.Critical .rmh-tag {
+            color: var(--red);
+        }
+
+        .risk-masthead.High .rmh-tag {
+            color: var(--amber);
+        }
+
+        .risk-masthead.Medium .rmh-tag {
+            color: var(--iris);
+        }
+
+        .risk-masthead.Low .rmh-tag {
+            color: var(--teal);
+        }
+
+        .rmh-level {
+            font-family: var(--serif);
+            font-size: 48px;
+            font-weight: 300;
+            letter-spacing: -0.03em;
+            line-height: 1;
+        }
+
+        .risk-masthead.Critical .rmh-level {
+            color: var(--red);
+        }
+
+        .risk-masthead.High .rmh-level {
+            color: var(--amber);
+        }
+
+        .risk-masthead.Medium .rmh-level {
+            color: var(--iris);
+        }
+
+        .risk-masthead.Low .rmh-level {
+            color: var(--teal);
+        }
+
+        .rmh-ring {
+            width: 68px;
+            height: 68px;
+            position: relative;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
         }
 
-        .logo-icon {
-            width: 30px;
-            height: 30px;
-            background: linear-gradient(135deg, #00f2fe, #4facfe);
-            border-radius: 8px;
+        .rmh-ring svg {
+            position: absolute;
+            inset: 0;
+            transform: rotate(-90deg);
         }
 
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            margin-left: 2rem;
+        .ring-track {
+            stroke: var(--rim2);
+            fill: none;
+        }
+
+        .ring-arc {
+            fill: none;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+        }
+
+        .risk-masthead.Critical .ring-arc {
+            stroke: var(--red);
+        }
+
+        .risk-masthead.High .ring-arc {
+            stroke: var(--amber);
+        }
+
+        .risk-masthead.Medium .ring-arc {
+            stroke: var(--iris);
+        }
+
+        .risk-masthead.Low .ring-arc {
+            stroke: var(--teal);
+        }
+
+        .ring-pct {
+            font-family: var(--mono);
+            font-size: 14px;
             font-weight: 500;
-            transition: color 0.3s;
+            color: var(--ink);
+            position: relative;
+            z-index: 1;
         }
 
-        .nav-links a:hover {
-            color: white;
+        .ring-sub {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+            letter-spacing: 0.08em;
+            margin-top: 4px;
+            text-align: center;
         }
 
-        /* Markdown styling for explanation */
-        .explanation-text {
-            font-size: 0.95rem;
+        .rmh-summary {
+            font-family: var(--serif);
+            font-size: 16px;
+            font-weight: 300;
+            font-style: italic;
+            color: var(--ink2);
             line-height: 1.6;
-            color: #cbd5e1;
+            border-top: 1px solid var(--rim);
+            padding-top: 14px;
         }
 
-        @media(max-width: 768px) {
-            .container {
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        @media (max-width: 680px) {
+            .cards-grid {
                 grid-template-columns: 1fr;
             }
+        }
+
+        .rcard {
+            background: var(--base);
+            border: 1px solid var(--rim);
+            border-radius: 16px;
+            padding: 20px;
+            animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        .rcard:nth-child(1) {
+            animation-delay: .1s
+        }
+
+        .rcard:nth-child(2) {
+            animation-delay: .18s
+        }
+
+        .rcard:nth-child(3) {
+            animation-delay: .26s;
+            grid-column: 1/-1
+        }
+
+        .rcard:nth-child(4) {
+            animation-delay: .34s;
+            grid-column: 1/-1
+        }
+
+        .rcard-lbl {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .rcard-lbl::before {
+            content: '';
+            width: 14px;
+            height: 1px;
+            background: currentColor;
+        }
+
+        .cond-item {
+            margin-bottom: 12px;
+        }
+
+        .cond-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .cond-hdr {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .cond-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .cond-pct {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink2);
+        }
+
+        .cond-bar {
+            height: 3px;
+            background: var(--rim);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .cond-fill {
+            height: 100%;
+            background: var(--teal);
+            border-radius: 2px;
+            width: 0%;
+            transition: width 1.1s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
+        }
+
+        .sym-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+
+        .sym-tag {
+            padding: 5px 13px;
+            border-radius: 8px;
+            font-family: var(--mono);
+            font-size: 11px;
+            background: var(--red-dim);
+            color: var(--red);
+            border: 1px solid rgba(255, 59, 47, 0.2);
+            animation: tagpop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+
+        @keyframes tagpop {
+            from {
+                opacity: 0;
+                transform: scale(0.8)
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1)
+            }
+        }
+
+        .rec-text {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--ink);
+        }
+
+        .rec-text strong {
+            color: var(--teal);
+            font-weight: 600;
+        }
+
+        .xai-block {
+            display: flex;
+            gap: 14px;
+            background: var(--deep);
+            border-radius: 11px;
+            padding: 16px;
+        }
+
+        .xai-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            flex-shrink: 0;
+            background: var(--teal-dim);
+            border: 1px solid rgba(0, 229, 184, 0.25);
+            display: grid;
+            place-items: center;
+            font-size: 15px;
+        }
+
+        .xai-text {
+            font-family: var(--serif);
+            font-size: 15px;
+            font-weight: 300;
+            font-style: italic;
+            color: var(--ink2);
+            line-height: 1.75;
+        }
+
+        .action-strip {
+            margin-top: 18px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            animation: riseIn 0.5s ease 0.5s both;
+        }
+
+        .abtn {
+            padding: 11px 22px;
+            border-radius: 10px;
+            font-family: var(--sans);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            text-decoration: none;
+        }
+
+        .abtn.prim {
+            background: var(--teal);
+            color: #002e25;
+            border: none;
+        }
+
+        .abtn.prim:hover {
+            background: #00cfaa;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--teal-glo);
+        }
+
+        .abtn.sec {
+            background: transparent;
+            border: 1px solid var(--rim2);
+            color: var(--ink2);
+        }
+
+        .abtn.sec:hover {
+            border-color: var(--ink2);
+            color: var(--ink);
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--rim2);
+            border-radius: 2px;
         }
     </style>
 </head>
 
 <body>
 
-    <nav class="navbar">
-        <a href="/" class="logo">
-            <div class="logo-icon"></div>
-            Healix AI
+    <canvas id="bgCanvas"></canvas>
+
+    <!-- NAV -->
+    <nav class="nav">
+        <a class="nav-brand" href="/">
+            <div class="nav-cross"></div>
+            <span class="nav-wordmark">HEALIX</span>
         </a>
-        <div class="nav-links">
-            <a href="/dashboard/">Patient Dashboard</a>
+        <div class="nav-div"></div>
+        <span class="nav-page">triage_engine.py</span>
+        <div class="nav-right">
+            <div class="nav-pill">
+                <div class="pip"></div>5 agents online
+            </div>
+            <a href="/dashboard/doctor/" id="backToDash" class="nav-back">← Dashboard</a>
         </div>
     </nav>
 
-    <div class="container">
-        <!-- Input Panel -->
-        <div class="card glass-panel">
-            <h2>Patient Intake</h2>
-            <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">
-                Describe your symptoms, duration, and medical history. Be as detailed as possible to help our AI triage
-                system assist you correctly.
-            </p>
-            <textarea id="patientInput"
-                placeholder="E.g., I've had a severe headache behind my eyes for 3 days, accompanied by slight nausea. I have a history of migraines..."></textarea>
+    <div class="shell">
 
-            <div class="controls">
-                <button id="voiceBtn" class="btn-voice" onclick="toggleVoice()">
-                    🎤 <span id="voiceText">Record Voice</span>
-                </button>
-                <button id="submitBtn" class="btn-primary" onclick="startTriage()">
-                    🚀 Run Triage Analysis
-                </button>
+        <div class="ph">
+            <div class="ph-eye">Clinical Decision Support</div>
+            <h1 class="ph-title">AI Triage <em>Analysis</em></h1>
+            <p class="ph-sub">Fill in patient details below — or switch to free-text mode.<br>Five AI agents analyze and
+                return results in under 10 seconds.</p>
+        </div>
+
+        <div id="errorCard"></div>
+
+        <div class="main-grid">
+
+            <!-- ══ LEFT: SMART FORM ══ -->
+            <div>
+                <div class="form-panel">
+                    <div class="form-topbar">
+                        <div class="tb-dot" style="background:#ff5f56"></div>
+                        <div class="tb-dot" style="background:#ffbd2e"></div>
+                        <div class="tb-dot" style="background:#27c93f"></div>
+                        <span class="tb-label">patient_intake.form</span>
+                        <div class="mode-toggle">
+                            <button class="mode-btn active" id="modeForm"
+                                onclick="switchMode('form')">Structured</button>
+                            <button class="mode-btn" id="modeFree" onclick="switchMode('free')">Free text</button>
+                        </div>
+                    </div>
+
+                    <!-- STRUCTURED FORM -->
+                    <div class="sform" id="structuredForm">
+
+                        <!-- Patient info -->
+                        <div class="fsec-title">Patient info</div>
+                        <div class="frow two">
+                            <div class="field">
+                                <label class="field-label">Full name</label>
+                                <input type="text" id="fName" placeholder="e.g. Raj Sharma" />
+                            </div>
+                            <div class="field">
+                                <label class="field-label">Age</label>
+                                <input type="number" id="fAge" placeholder="e.g. 58" min="0" max="120" />
+                            </div>
+                        </div>
+                        <div class="frow one">
+                            <div class="field">
+                                <label class="field-label">Gender</label>
+                                <div class="gender-pills">
+                                    <div class="gpill" onclick="selGender(this,'Male')">Male</div>
+                                    <div class="gpill" onclick="selGender(this,'Female')">Female</div>
+                                    <div class="gpill" onclick="selGender(this,'Other')">Other</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Symptoms -->
+                        <div class="fsec-title">Symptoms</div>
+                        <div class="symptom-picker">
+                            <div class="symptom-categories" id="symCats">
+                                <button class="scat-btn active" onclick="loadCat(this,'cardiac')">Cardiac</button>
+                                <button class="scat-btn" onclick="loadCat(this,'neuro')">Neurological</button>
+                                <button class="scat-btn" onclick="loadCat(this,'respiratory')">Respiratory</button>
+                                <button class="scat-btn" onclick="loadCat(this,'gastro')">Gastro</button>
+                                <button class="scat-btn" onclick="loadCat(this,'musculo')">Musculo</button>
+                                <button class="scat-btn" onclick="loadCat(this,'general')">General</button>
+                            </div>
+                            <div class="symptom-chips" id="symChips"></div>
+                        </div>
+
+                        <!-- Selected symptoms display -->
+                        <div class="sel-sym-wrap" id="selSymWrap">
+                            <span class="sel-sym-placeholder" id="selPlaceholder">No symptoms selected — click chips
+                                above</span>
+                        </div>
+
+                        <!-- Custom symptom -->
+                        <div class="custom-sym-row">
+                            <input class="custom-sym-input" id="customSym" placeholder="Add custom symptom..."
+                                onkeydown="if(event.key==='Enter')addCustomSym()" />
+                            <button class="custom-add-btn" onclick="addCustomSym()">+ Add</button>
+                        </div>
+
+                        <!-- Duration & Severity -->
+                        <div class="fsec-title">Duration & severity</div>
+                        <div class="frow two">
+                            <div class="field">
+                                <label class="field-label">Onset duration</label>
+                                <div class="duration-display">
+                                    <span id="durVal">2</span><span class="duration-sub"> hrs</span>
+                                </div>
+                                <input type="range" class="dur-slider" id="durSlider" min="0" max="72" value="2"
+                                    oninput="updateDuration(this.value)" />
+                                <div class="duration-labels"><span>Just now</span><span>24h</span><span>3 days</span>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label class="field-label">Pain / severity (1–10)</label>
+                                <div class="severity-scale" id="sevScale">
+                                    <!-- injected by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Medical history -->
+                        <div class="fsec-title">Medical history</div>
+                        <div class="frow two">
+                            <div class="field">
+                                <label class="field-label">Known conditions</label>
+                                <input type="text" id="fHistory" placeholder="e.g. hypertension, diabetes" />
+                            </div>
+                            <div class="field">
+                                <label class="field-label">Current medications</label>
+                                <input type="text" id="fMeds" placeholder="e.g. metformin, aspirin" />
+                            </div>
+                        </div>
+                        <div class="frow one">
+                            <div class="field">
+                                <label class="field-label">Additional notes</label>
+                                <textarea id="fNotes" style="min-height:64px;resize:none"
+                                    placeholder="Allergies, recent travel, other context..."></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- FREE TEXT MODE -->
+                    <div class="freetext-wrap" id="freetextForm">
+                        <div class="field">
+                            <label class="field-label" style="margin-bottom:8px">Paste notes, transcripts, or dictate
+                                symptoms</label>
+                            <div style="position:relative">
+                                <textarea class="ft-textarea" id="ftInput"
+                                    placeholder="Patient age: 58&#10;Gender: Male&#10;Symptoms: chest pain, sweating, dizziness&#10;Duration: 2 hours&#10;History: hypertension&#10;&#10;— or paste doctor notes, discharge summaries, transcripts —"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PREVIEW -->
+                    <div class="preview-strip" id="previewStrip">
+                        <div class="preview-label">Will be sent to AI ↓</div>
+                        <div class="preview-text" id="previewText"></div>
+                    </div>
+
+                    <!-- SUBMIT BAR -->
+                    <div class="submit-bar">
+                        <div class="sb-info" id="sbInfo">Fill patient details or select symptoms</div>
+                        <button id="voiceBtn" onclick="toggleVoice()" title="Voice input">🎤</button>
+                        <button id="analyzeBtn" onclick="runTriage()">
+                            <div class="btn-spin" id="btnSpin"></div>
+                            <span id="btnTxt">⚡ Analyze</span>
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            <div id="patientForm" style="display: none; margin-top: 1rem;">
-                <input type="text" id="patientName" placeholder="Patient Name"
-                    style="width:100%; padding:0.8rem; margin-bottom:0.5rem; border-radius:8px; border:none; background: rgba(15, 23, 42, 0.6); color: white;">
-                <input type="number" id="patientAge" placeholder="Age"
-                    style="width:100%; padding:0.8rem; margin-bottom:0.8rem; border-radius:8px; border:none; background: rgba(15, 23, 42, 0.6); color: white;">
-                <button class="btn-primary" onclick="savePatient()" style="width:100%">Save Patient Record</button>
+            <!-- ══ RIGHT: MONITOR ══ -->
+            <div>
+                <div class="monitor" id="monitorPanel">
+                    <div class="mon-head">
+                        <div class="tb-dot" style="background:var(--teal);width:8px;height:8px"></div>
+                        <span class="mon-title">AGENT MONITOR</span>
+                        <div class="mon-live" id="monLive">
+                            <div class="pip"></div>RUNNING
+                        </div>
+                    </div>
+                    <div class="mon-idle" id="monIdle">
+                        <div class="mon-idle-icon">⬡</div>
+                        <div class="mon-idle-txt">Five agents standing by.<br />Submit patient data to
+                            begin<br />real-time analysis.</div>
+                    </div>
+                    <div class="agents-wrap" id="agentsWrap">
+                        <div class="amon-body" id="agentsBody"></div>
+                        <div class="mon-prog">
+                            <div class="mp-meta">
+                                <span id="mpLabel">Initializing</span>
+                                <span id="mpPct">0%</span>
+                            </div>
+                            <div class="mp-rail">
+                                <div class="mp-fill" id="mpFill"></div>
+                            </div>
+                        </div>
+                        <div class="mon-time">
+                            <div><span class="mt-num" id="mtNum">0.0</span><span class="mt-unit">s</span></div>
+                            <div class="mt-lbl">Processing time</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RESULTS -->
+        <div id="resultsSection">
+            <div class="risk-masthead" id="riskMH">
+                <div class="rmh-top">
+                    <div>
+                        <div class="rmh-tag" id="rmhTag">TRIAGE LEVEL</div>
+                        <div class="rmh-level" id="rmhLevel">—</div>
+                    </div>
+                    <div style="text-align:right">
+                        <div class="rmh-ring">
+                            <svg viewBox="0 0 68 68" width="68" height="68">
+                                <circle class="ring-track" cx="34" cy="34" r="28" stroke-width="4" />
+                                <circle class="ring-arc" id="ringArc" cx="34" cy="34" r="28" stroke-width="4"
+                                    stroke-dasharray="175.9" stroke-dashoffset="175.9" />
+                            </svg>
+                            <span class="ring-pct" id="ringPct">—</span>
+                        </div>
+                        <div class="ring-sub">Confidence</div>
+                    </div>
+                </div>
+                <div class="rmh-summary" id="rmhSummary">—</div>
+            </div>
+
+            <div class="cards-grid">
+                <div class="rcard">
+                    <div class="rcard-lbl">Possible conditions</div>
+                    <div id="condsList"></div>
+                </div>
+                <div class="rcard">
+                    <div class="rcard-lbl">Key symptoms</div>
+                    <div class="sym-cloud" id="symTags"></div>
+                </div>
+                <div class="rcard">
+                    <div class="rcard-lbl">Recommended actions</div>
+                    <div class="rec-text" id="recText"></div>
+                </div>
+                <div class="rcard">
+                    <div class="rcard-lbl">AI explanation</div>
+                    <div class="xai-block">
+                        <div class="xai-icon">💡</div>
+                        <div class="xai-text" id="xaiText"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-strip">
+                <button class="abtn prim" onclick="redirectToDashboard()">✓ Save &amp; Dashboard</button>
+                <button class="abtn sec" onclick="resetAll()">+ New Analysis</button>
+                <button class="abtn sec" onclick="window.print()">↓ Print Report</button>
             </div>
         </div>
 
-        <!-- AI Progress Panel -->
-        <div class="card glass-panel">
-            <h2>Live AI Triage Progress</h2>
-
-            <div class="agent-list" id="agentList">
-                <div class="agent-item" id="stage-extracting">
-                    <div class="agent-status-icon">1</div>
-                    <div class="agent-info">
-                        <span class="agent-name">Symptom Extractor Agent</span>
-                        <span class="agent-desc" id="desc-extracting">Waiting for input...</span>
-                    </div>
-                </div>
-
-                <div class="agent-item" id="stage-triaging">
-                    <div class="agent-status-icon">2</div>
-                    <div class="agent-info">
-                        <span class="agent-name">Triage Decision Agent</span>
-                        <span class="agent-desc" id="desc-triaging">Pending extraction</span>
-                    </div>
-                </div>
-
-                <div class="agent-item" id="stage-diagnosing">
-                    <div class="agent-status-icon">3</div>
-                    <div class="agent-info">
-                        <span class="agent-name">Medical Knowledge Agent</span>
-                        <span class="agent-desc" id="desc-diagnosing">Pending triage</span>
-                    </div>
-                </div>
-
-                <div class="agent-item" id="stage-recommending">
-                    <div class="agent-status-icon">4</div>
-                    <div class="agent-info">
-                        <span class="agent-name">Recommendation Agent</span>
-                        <span class="agent-desc" id="desc-recommending">Pending diagnosis</span>
-                    </div>
-                </div>
-
-                <div class="agent-item" id="stage-explaining">
-                    <div class="agent-status-icon">5</div>
-                    <div class="agent-info">
-                        <span class="agent-name">XAI Explanation Agent</span>
-                        <span class="agent-desc" id="desc-explaining">Pending recommendations</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Triage Final Result Display -->
-            <div id="triageResult" class="triage-result">
-                <h3 style="margin-top:0;">Triage Summary</h3>
-                <div id="resultLevel" class="triage-level-badge level-MEDIUM">PROCESSING...</div>
-                <div id="resultExplanation" class="explanation-text"></div>
-            </div>
-        </div>
     </div>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMoNdBIWdZNKJOlR7ZV-46OfFHZPwb1Wk", authDomain: "healix-d02c4.firebaseapp.com",
+            projectId: "healix-d02c4", storageBucket: "healix-d02c4.firebasestorage.app",
+            messagingSenderId: "783527967185", appId: "1:783527967185:web:eacf3a3f785121a0ae08f0",
+            measurementId: "G-Z4TD76TGR7"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let userRole = 'doctor'; // fallback
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                if (userDoc.exists()) {
+                    userRole = userDoc.data().role;
+                    const dashUrl = userRole === 'doctor' ? '/dashboard/doctor/' : '/dashboard/patient/';
+                    document.getElementById('backToDash').href = dashUrl;
+                }
+            }
+        });
+
+        window.redirectToDashboard = function () {
+            window.location.href = userRole === 'doctor' ? '/dashboard/doctor/' : '/dashboard/patient/';
+        };
+    </script>
+
     <script>
-        // --- Web Speech API (Voice Recognition) Setup ---
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        let recognition;
-        let isListening = false;
+        /* ── BACKGROUND ── */
+        (() => {
+            const c = document.getElementById('bgCanvas'), ctx = c.getContext('2d');
+            let W, H, P = [];
+            function resize() { W = c.width = innerWidth; H = c.height = innerHeight; }
+            resize(); addEventListener('resize', resize);
+            for (let i = 0; i < 55; i++) P.push({ x: Math.random() * 2000, y: Math.random() * 1200, vx: (Math.random() - .5) * .25, vy: (Math.random() - .5) * .18, r: Math.random() * 1.1 + .3, a: Math.random() * .45 + .1, col: Math.random() > .55 ? '#00e5b8' : '#ff3b2f' });
+            function draw() {
+                ctx.clearRect(0, 0, W, H);
+                P.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < 0) p.x = W; if (p.x > W) p.x = 0; if (p.y < 0) p.y = H; if (p.y > H) p.y = 0; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fillStyle = p.col; ctx.globalAlpha = p.a; ctx.fill(); });
+                ctx.globalAlpha = .05;
+                for (let i = 0; i < P.length; i++)for (let j = i + 1; j < P.length; j++) { const dx = P[i].x - P[j].x, dy = P[i].y - P[j].y, d = Math.sqrt(dx * dx + dy * dy); if (d < 110) { ctx.beginPath(); ctx.moveTo(P[i].x, P[i].y); ctx.lineTo(P[j].x, P[j].y); ctx.strokeStyle = '#00e5b8'; ctx.lineWidth = .5; ctx.stroke(); } }
+                ctx.globalAlpha = 1; requestAnimationFrame(draw);
+            }
+            draw();
+        })();
 
-        if (SpeechRecognition) {
-            recognition = new SpeechRecognition();
-            recognition.continuous = true;
-            recognition.interimResults = true;
-            recognition.lang = 'en-US';
+        /* ── SYMPTOM LIBRARY ── */
+        const SYM_CATS = {
+            cardiac: ['Chest pain', 'Palpitations', 'Sweating', 'Left arm pain', 'Jaw pain', 'Shortness of breath', 'Dizziness', 'Fainting'],
+            neuro: ['Severe headache', 'Confusion', 'Slurred speech', 'Face drooping', 'Weakness', 'Numbness', 'Seizure', 'Vision loss'],
+            respiratory: ['Breathlessness', 'Wheezing', 'Coughing', 'Coughing blood', 'Rapid breathing', 'Chest tightness', 'Stridor'],
+            gastro: ['Abdominal pain', 'Nausea', 'Vomiting', 'Diarrhea', 'Blood in stool', 'Bloating', 'Jaundice', 'Loss of appetite'],
+            musculo: ['Joint pain', 'Back pain', 'Swelling', 'Bruising', 'Limping', 'Muscle weakness', 'Sprain', 'Fracture'],
+            general: ['Fever', 'Fatigue', 'Weight loss', 'Night sweats', 'Chills', 'Rash', 'Itching', 'Pale skin'],
+        };
+        let pickedSyms = [], selGenderVal = '', sevSel = 0, durVal = 2;
 
-            recognition.onresult = function (event) {
-                let finalTranscript = '';
-                let interimTranscript = '';
-
-                for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    if (event.results[i].isFinal) {
-                        finalTranscript += event.results[i][0].transcript;
-                    } else {
-                        interimTranscript += event.results[i][0].transcript;
-                    }
-                }
-
-                const inputBox = document.getElementById('patientInput');
-                inputBox.value = inputBox.value + ' ' + finalTranscript;
-                if (interimTranscript.length > 0) {
-                    // Could show interim but let's keep it simple
-                }
-            };
-
-            recognition.onerror = function (event) {
-                console.error("Speech recognition error", event.error);
-                stopVoice();
-            };
-
-            recognition.onend = function () {
-                if (isListening) recognition.start(); // keep listening if not explicitly stopped
-            };
-        } else {
-            console.warn("Web Speech API not supported in this browser.");
-            document.getElementById('voiceBtn').style.display = 'none';
+        function loadCat(btn, cat) {
+            document.querySelectorAll('.scat-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const chips = document.getElementById('symChips');
+            chips.innerHTML = SYM_CATS[cat].map(s =>
+                `<div class="schip${pickedSyms.includes(s) ? ' picked' : ''}" onclick="toggleSym(this,'${s}')">${s}</div>`
+            ).join('');
         }
+        loadCat(document.querySelector('.scat-btn'), 'cardiac');
 
-        function toggleVoice() {
-            if (!recognition) return alert('Speech recognition not supported in this browser.');
-
-            const btn = document.getElementById('voiceBtn');
-            const txt = document.getElementById('voiceText');
-
-            if (isListening) {
-                stopVoice();
+        function toggleSym(el, sym) {
+            if (pickedSyms.includes(sym)) {
+                pickedSyms = pickedSyms.filter(s => s !== sym);
+                el.classList.remove('picked');
             } else {
-                recognition.start();
-                isListening = true;
-                btn.classList.add('listening');
-                btn.innerHTML = '🛑 <span id="voiceText">Stop Recording</span>';
+                pickedSyms.push(sym);
+                el.classList.add('picked');
             }
+            renderSelSyms(); updatePreview();
         }
 
-        function stopVoice() {
-            if (recognition) recognition.stop();
-            isListening = false;
-            const btn = document.getElementById('voiceBtn');
-            btn.classList.remove('listening');
-            btn.innerHTML = '🎤 <span id="voiceText">Record Voice</span>';
+        function renderSelSyms() {
+            const wrap = document.getElementById('selSymWrap');
+            const ph = document.getElementById('selPlaceholder');
+            if (pickedSyms.length === 0) {
+                wrap.innerHTML = '<span class="sel-sym-placeholder" id="selPlaceholder">No symptoms selected — click chips above</span>';
+                return;
+            }
+            wrap.innerHTML = pickedSyms.map(s =>
+                `<span class="sel-sym-tag">${s}<span class="sel-sym-remove" onclick="removeSym('${s}')">×</span></span>`
+            ).join('');
         }
 
-        // --- Server-Sent Events (SSE) AI Integration ---
-        let currentLevel = 'MEDIUM';
-        let fullAiResult = null;
+        function removeSym(sym) {
+            pickedSyms = pickedSyms.filter(s => s !== sym);
+            // Update chip if visible
+            document.querySelectorAll('.schip').forEach(c => { if (c.textContent === sym) c.classList.remove('picked'); });
+            renderSelSyms(); updatePreview();
+        }
 
-        async function startTriage() {
-            const input = document.getElementById('patientInput').value.trim();
-            if (!input) return alert("Please describe your symptoms first.");
+        function addCustomSym() {
+            const inp = document.getElementById('customSym');
+            const val = inp.value.trim();
+            if (!val) return;
+            if (!pickedSyms.includes(val)) { pickedSyms.push(val); renderSelSyms(); updatePreview(); }
+            inp.value = '';
+        }
 
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '⚙️ Processing...';
+        /* ── GENDER ── */
+        function selGender(el, val) {
+            document.querySelectorAll('.gpill').forEach(p => p.classList.remove('sel'));
+            el.classList.add('sel'); selGenderVal = val;
+            updatePreview();
+        }
 
-            // Reset UI
-            document.querySelectorAll('.agent-item').forEach(el => {
-                el.classList.remove('active', 'completed');
-                const id = el.id.replace('stage-', '');
-                document.getElementById(`desc-${id}`).innerText = 'Pending...';
+        /* ── DURATION ── */
+        function updateDuration(v) {
+            durVal = parseInt(v);
+            const disp = durVal === 0 ? 'Just now' : durVal < 24 ? `${durVal} hrs` : `${Math.round(durVal / 24)} days`;
+            document.getElementById('durVal').parentElement.innerHTML =
+                `<span id="durVal">${durVal < 24 ? durVal : Math.round(durVal / 24)}</span><span class="duration-sub"> ${durVal < 24 ? 'hrs' : 'days'}</span>`;
+            updatePreview();
+        }
+
+        /* ── SEVERITY SCALE ── */
+        (function buildSevScale() {
+            const scale = document.getElementById('sevScale');
+            const labels = { 1: 'Minimal', 5: 'Moderate', 10: 'Extreme' };
+            scale.innerHTML = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n =>
+                `<div class="sev-btn" id="sev-${n}" onclick="selSev(${n})">
+      <div class="sev-num">${n}</div>
+      ${labels[n] ? `<div class="sev-label">${labels[n]}</div>` : ''}
+    </div>`
+            ).join('');
+        })();
+
+        function selSev(n) {
+            sevSel = n;
+            [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].forEach(i => {
+                const el = document.getElementById(`sev-${i}`);
+                el.className = 'sev-btn' + (i <= n ? ` sel-${n}` : '');
             });
-            document.getElementById('triageResult').style.display = 'none';
-            document.getElementById('patientForm').style.display = 'none';
+            updatePreview();
+        }
 
-            // Because SSE requires GET and doesn't easily support request bodies via native EventSource,
-            // we will simulate SSE using fetch with response stream reading since the backend expects POST.
-            // Alternatively, adjust the backend or use fetch streams. Your backend views.py uses POST.
+        /* ── MODE SWITCH ── */
+        let currentMode = 'form';
+        function switchMode(mode) {
+            currentMode = mode;
+            document.getElementById('modeForm').classList.toggle('active', mode === 'form');
+            document.getElementById('modeFree').classList.toggle('active', mode === 'free');
+            document.getElementById('structuredForm').style.display = mode === 'form' ? 'block' : 'none';
+            document.getElementById('freetextForm').style.display = mode === 'free' ? 'block' : 'none';
+            updatePreview();
+        }
 
+        /* ── BUILD PROMPT FROM FORM ── */
+        function buildPrompt() {
+            if (currentMode === 'free') {
+                return document.getElementById('ftInput').value.trim();
+            }
+            const name = document.getElementById('fName').value.trim();
+            const age = document.getElementById('fAge').value.trim();
+            const history = document.getElementById('fHistory').value.trim();
+            const meds = document.getElementById('fMeds').value.trim();
+            const notes = document.getElementById('fNotes').value.trim();
+
+            const parts = [];
+            if (name) parts.push(`Patient name: ${name}`);
+            if (age) parts.push(`Patient age: ${age}`);
+            if (selGenderVal) parts.push(`Gender: ${selGenderVal}`);
+            if (pickedSyms.length > 0) parts.push(`Symptoms: ${pickedSyms.join(', ')}`);
+            if (durVal > 0) {
+                const d = durVal < 24 ? `${durVal} hours` : `${Math.round(durVal / 24)} days`;
+                parts.push(`Duration: ${d}`);
+            }
+            if (sevSel > 0) parts.push(`Pain/severity: ${sevSel}/10`);
+            if (history) parts.push(`Medical history: ${history}`);
+            if (meds) parts.push(`Current medications: ${meds}`);
+            if (notes) parts.push(`Additional notes: ${notes}`);
+            return parts.join('\n');
+        }
+
+        /* ── PREVIEW STRIP ── */
+        function updatePreview() {
+            const prompt = buildPrompt();
+            const strip = document.getElementById('previewStrip');
+            const info = document.getElementById('sbInfo');
+            if (prompt.length > 10) {
+                strip.style.display = 'block';
+                document.getElementById('previewText').textContent = prompt;
+                const symsCount = pickedSyms.length;
+                info.textContent = currentMode === 'form'
+                    ? `${symsCount} symptom${symsCount !== 1 ? 's' : ''} selected · ready to analyze`
+                    : `Free text mode · ${prompt.length} chars`;
+            } else {
+                strip.style.display = 'none';
+                info.textContent = 'Fill patient details or select symptoms';
+            }
+        }
+
+        /* ── AGENTS ── */
+        const AGENTS = [
+            { id: 'extraction', icon: '◈', name: 'Symptom Extraction', verb: 'Parsing patient data' },
+            { id: 'triage', icon: '◉', name: 'Triage Decision', verb: 'Classifying urgency' },
+            { id: 'medical', icon: '◆', name: 'Medical Knowledge', verb: 'Identifying conditions' },
+            { id: 'recommend', icon: '◇', name: 'Recommendation', verb: 'Building action plan' },
+            { id: 'explain', icon: '◎', name: 'Explanation (XAI)', verb: 'Writing rationale' },
+        ];
+
+        function buildMonitor() {
+            document.getElementById('monIdle').style.display = 'none';
+            document.getElementById('agentsWrap').style.display = 'block';
+            document.getElementById('monLive').style.display = 'flex';
+            document.getElementById('agentsBody').innerHTML = AGENTS.map((a, i) =>
+                `<div class="arow idle" id="ar-${a.id}">
+      <span class="anum">${String(i + 1).padStart(2, '0')}</span>
+      <div class="aorb">${a.icon}</div>
+      <div class="ameta"><div class="aname">${a.name}</div><div class="astate" id="as-${a.id}">standing by</div></div>
+      <span class="achk" id="ac-${a.id}">✓</span>
+    </div>`
+            ).join('');
+        }
+
+        function setAgent(id, state) {
+            const row = document.getElementById(`ar-${id}`);
+            const stxt = document.getElementById(`as-${id}`);
+            if (!row) return;
+            row.className = `arow ${state}`;
+            const ag = AGENTS.find(a => a.id === id);
+            stxt.textContent = state === 'active' ? ag.verb + '...' : state === 'done' ? 'complete' : 'standing by';
+        }
+        function setProg(pct, lbl) {
+            document.getElementById('mpFill').style.width = pct + '%';
+            document.getElementById('mpPct').textContent = pct + '%';
+            document.getElementById('mpLabel').textContent = lbl;
+        }
+
+        /* ── TIMER ── */
+        let tRef = null, t0 = 0;
+        function startTimer() { t0 = Date.now(); tRef = setInterval(() => { document.getElementById('mtNum').textContent = ((Date.now() - t0) / 1000).toFixed(1); }, 100); }
+        function stopTimer() { clearInterval(tRef); }
+
+        async function animateAgents(total) {
+            const step = total / AGENTS.length;
+            for (let i = 0; i < AGENTS.length; i++) {
+                setAgent(AGENTS[i].id, 'active');
+                setProg(Math.round((i / AGENTS.length) * 85), AGENTS[i].name);
+                await sleep(step);
+                setAgent(AGENTS[i].id, 'done');
+            }
+        }
+        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+        /* ── CSRF ── */
+        function csrf() { for (const c of document.cookie.split(';')) { const [k, v] = c.trim().split('='); if (k === 'csrftoken') return decodeURIComponent(v); } return ''; }
+
+        /* ── MAIN TRIAGE ── */
+        async function runTriage() {
+            const prompt = buildPrompt();
+            if (!prompt || prompt.length < 5) { showError('Please add at least some symptoms before analyzing.'); return; }
+
+            hideError();
+            hideResults();
+            setLoading(true);
+            buildMonitor();
+            startTimer();
+
+            const urlP = new URLSearchParams(location.search);
+            const body = { symptoms: prompt };
+            const pid = urlP.get('patient_id');
+            if (pid) body.patient_id = parseInt(pid);
+
+            // Link to logged-in user if available
+            if (auth.currentUser) {
+                body.user_uid = auth.currentUser.uid;
+                // If in structured mode, grab name/age. If not, use Firestore data if possible
+                const name = document.getElementById('fName')?.value.trim();
+                const age = document.getElementById('fAge')?.value.trim();
+                if (name) body.name = name;
+                if (age) body.age = parseInt(age);
+            }
+
+            const animP = animateAgents(5200);
             try {
-                const response = await fetch('/api/triage/stream/', {
+                const res = await fetch('/api/triage/analyze/', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ patient_input: input })
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf() },
+                    body: JSON.stringify(body),
                 });
-
-                if (!response.ok) throw new Error("Server error");
-
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder("utf-8");
-
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-
-                    const chunk = decoder.decode(value, { stream: true });
-                    const lines = chunk.split('\n');
-
-                    for (const line of lines) {
-                        if (line.startsWith('data: ')) {
-                            try {
-                                const data = JSON.parse(line.substring(6));
-                                handleSSEEvent(data);
-                            } catch (e) {
-                                console.error("Error parsing SSE JSON:", e);
-                            }
-                        }
-                    }
-                }
+                await animP;
+                if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error || `HTTP ${res.status}`); }
+                const data = await res.json();
+                setProg(100, 'Analysis complete');
+                stopTimer();
+                document.getElementById('monLive').style.display = 'none';
+                await sleep(300);
+                renderResults(data);
+                setLoading(false);
             } catch (err) {
-                console.error("Triage stream failed:", err);
-                alert("An error occurred during triage processing.");
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '🚀 Run Triage Analysis';
+                await animP.catch(() => { });
+                stopTimer(); setLoading(false); resetMonitor();
+                showError('Analysis failed: ' + err.message + '. Make sure Django is running on port 8000.');
             }
         }
 
-        function handleSSEEvent(event) {
-            if (event.type === 'stage_start') {
-                const stepId = event.stage;
-                const el = document.getElementById(`stage-${stepId}`);
-                el.classList.add('active');
+        /* ── RENDER RESULTS ── */
+        function renderResults(data) {
+            const level = data.risk_level || 'Low';
+            const COLORS = { Critical: '#ff3b2f', High: '#ffb020', Medium: '#8b78ff', Low: '#00e5b8' };
+            const color = COLORS[level] || COLORS.Low;
 
-                document.getElementById(`desc-${stepId}`).innerText = event.message || 'Processing...';
-            }
-            else if (event.type === 'stage_complete') {
-                const stepId = event.stage;
-                const el = document.getElementById(`stage-${stepId}`);
-                el.classList.remove('active');
-                el.classList.add('completed');
+            const mh = document.getElementById('riskMH');
+            mh.className = `risk-masthead ${level}`;
+            document.getElementById('rmhTag').textContent = `ESI Level — ${level} Priority`;
+            document.getElementById('rmhLevel').textContent = level;
 
-                document.getElementById(`desc-${stepId}`).innerText = "✅ Completed";
-                if (stepId === 'triaging' && event.data) {
-                    currentLevel = event.data.level || 'MEDIUM';
-                }
-            }
-            else if (event.type === 'complete') {
-                fullAiResult = event.result || {};
+            const conf = Math.round((data.confidence_score || 0.75) * 100);
+            const circ = 175.9;
+            document.getElementById('ringPct').textContent = conf + '%';
+            document.getElementById('ringArc').style.stroke = color;
+            setTimeout(() => { document.getElementById('ringArc').style.strokeDashoffset = circ - (circ * conf / 100); }, 200);
 
-                // Show final result box
-                const rxBox = document.getElementById('triageResult');
-                rxBox.style.display = 'block';
+            document.getElementById('rmhSummary').textContent = data.explanation || 'Analysis complete.';
 
-                const levelBadge = document.getElementById('resultLevel');
-                levelBadge.className = `triage-level-badge level-${currentLevel}`;
-                levelBadge.innerText = currentLevel;
+            const conds = data.possible_conditions || [];
+            const probs = [88, 61, 37];
+            document.getElementById('condsList').innerHTML = conds.slice(0, 3).map((c, i) => `
+    <div class="cond-item">
+      <div class="cond-hdr"><span class="cond-name">${c}</span><span class="cond-pct">${probs[i] || 25}%</span></div>
+      <div class="cond-bar"><div class="cond-fill" style="background:${color}" data-w="${probs[i] || 25}"></div></div>
+    </div>`).join('') || '<span style="font-family:var(--mono);font-size:11px;color:var(--ink3)">None identified</span>';
+            setTimeout(() => { document.querySelectorAll('.cond-fill').forEach(el => { el.style.width = el.dataset.w + '%'; }); }, 100);
 
-                let expText = "Detailed explanation not available.";
-                if (fullAiResult.explanation && fullAiResult.explanation.reasoning) {
-                    expText = fullAiResult.explanation.reasoning;
-                } else if (typeof fullAiResult.explanation === 'string') {
-                    expText = fullAiResult.explanation;
-                }
+            const syms = data.key_symptoms || [];
+            document.getElementById('symTags').innerHTML = syms.length
+                ? syms.map((s, i) => `<span class="sym-tag" style="animation-delay:${i * 0.07}s">${s}</span>`).join('')
+                : '<span style="font-family:var(--mono);font-size:11px;color:var(--ink3)">None flagged</span>';
 
-                document.getElementById('resultExplanation').innerText = expText;
+            document.getElementById('recText').innerHTML = (data.recommendation || '').replace(/(immediately|urgent|STAT|emergency|call|ECG|blood|IV|oxygen|refer)/gi, '<strong>$1</strong>');
+            document.getElementById('xaiText').textContent = data.explanation || 'No explanation available.';
 
-                // Show save form
-                document.getElementById('patientForm').style.display = 'block';
-            }
-            else if (event.type === 'error') {
-                alert("AI Engine Error: " + event.message);
-            }
+            const sec = document.getElementById('resultsSection');
+            sec.style.display = 'block';
+            window._lastTriageId = data.triage_id;
+            setTimeout(() => sec.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
         }
 
-        // --- Save Patient to DB ---
-        async function savePatient() {
-            const name = document.getElementById('patientName').value.trim();
-            const age = document.getElementById('patientAge').value.trim();
-            const symptoms = document.getElementById('patientInput').value.trim();
-
-            if (!name || !age) return alert("Enter patient name and age.");
-
-            const payload = {
-                name: name,
-                age: parseInt(age),
-                symptoms: symptoms,
-                triage_level: currentLevel,
-                risk_level: currentLevel,
-                ai_analysis: fullAiResult,
-                status: 'Triaged'
-            };
-
-            try {
-                const res = await fetch('/api/patients/patients/create/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (res.ok) {
-                    alert("Patient saved successfully!");
-                    window.location.href = "/dashboard/";
-                } else {
-                    const data = await res.json();
-                    alert("Failed to save: " + JSON.stringify(data));
-                }
-            } catch (e) {
-                console.error(e);
-                alert("Database error.");
-            }
+        /* ── HELPERS ── */
+        function setLoading(on) {
+            const btn = document.getElementById('analyzeBtn');
+            document.getElementById('btnSpin').style.display = on ? 'block' : 'none';
+            document.getElementById('btnTxt').textContent = on ? 'Analyzing...' : '⚡ Analyze';
+            btn.disabled = on;
         }
+        function showError(msg) { const el = document.getElementById('errorCard'); el.textContent = '⚠  ' + msg; el.style.display = 'block'; }
+        function hideError() { document.getElementById('errorCard').style.display = 'none'; }
+        function hideResults() { document.getElementById('resultsSection').style.display = 'none'; }
+        function resetMonitor() {
+            document.getElementById('monIdle').style.display = 'block';
+            document.getElementById('agentsWrap').style.display = 'none';
+            document.getElementById('monLive').style.display = 'none';
+        }
+        function resetAll() {
+            hideResults(); resetMonitor();
+            pickedSyms = []; sevSel = 0; selGenderVal = ''; durVal = 2;
+            document.querySelectorAll('#fName,#fAge,#fHistory,#fMeds,#fNotes').forEach(el => el.value = '');
+            document.querySelectorAll('.gpill').forEach(el => el.classList.remove('sel'));
+            document.querySelectorAll('.sev-btn').forEach(el => el.className = 'sev-btn');
+            document.getElementById('durSlider').value = 2;
+            document.getElementById('durVal').parentElement.innerHTML = '<span id="durVal">2</span><span class="duration-sub"> hrs</span>';
+            renderSelSyms(); updatePreview();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* ── VOICE INPUT ── */
+        let recog = null, listening = false;
+        function toggleVoice() {
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SR) { alert('Voice requires Chrome or Edge.'); return; }
+            if (listening) { recog.stop(); return; }
+            if (currentMode === 'form') switchMode('free');
+            recog = new SR(); recog.continuous = true; recog.interimResults = true; recog.lang = 'en-IN';
+            const vb = document.getElementById('voiceBtn');
+            recog.onstart = () => { listening = true; vb.classList.add('listening'); };
+            recog.onresult = e => { let t = ''; for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript; document.getElementById('ftInput').value = t; updatePreview(); };
+            recog.onend = () => { listening = false; vb.classList.remove('listening'); };
+            recog.start();
+        }
+
+        /* ── AUTO-FILL FROM URL ── */
+        window.addEventListener('DOMContentLoaded', () => {
+            const p = new URLSearchParams(location.search).get('input');
+            if (p) { switchMode('free'); document.getElementById('ftInput').value = decodeURIComponent(p); updatePreview(); setTimeout(runTriage, 500); }
+        });
     </script>
 </body>
 

@@ -18,7 +18,7 @@ class PatientPagination(PageNumberPagination):
     max_page_size = 100
 
 
-# GET all patients
+# GET all patients (Class-based for remote compatibility)
 class PatientListView(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = PatientSerializer
@@ -26,11 +26,22 @@ class PatientListView(ListAPIView):
     queryset = Patient.objects.all().order_by('-created_at')
 
 
-# GET all patients (legacy function-based view for compatibility)
+# GET all patients (Function-based)
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_patients(request):
-    patients = Patient.objects.all()
+    patients = Patient.objects.all().order_by('-created_at')
+    serializer = PatientSerializer(patients, many=True)
+    return Response(serializer.data)
+
+# GET patients for logged-in user (For Patients)
+@api_view(['GET'])
+def get_my_patients(request):
+    user_uid = request.query_params.get('user_uid')
+    if not user_uid:
+        return Response({"error": "user_uid required"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    patients = Patient.objects.filter(user_uid=user_uid).order_by('-created_at')
     serializer = PatientSerializer(patients, many=True)
     return Response(serializer.data)
 

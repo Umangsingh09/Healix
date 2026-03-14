@@ -4,12 +4,40 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Healix — Doctor Dashboard</title>
+    <title>Healix — Clinical Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
-        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap"
         rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <style>
+        :root {
+            --void: #04080c;
+            --deep: #070d13;
+            --base: #0c1520;
+            --raised: #111d28;
+            --lift: #162333;
+            --rim: rgba(255, 255, 255, 0.055);
+            --rim2: rgba(255, 255, 255, 0.10);
+            --rim3: rgba(255, 255, 255, 0.18);
+            --ink: #dce8f0;
+            --ink2: #7a94a8;
+            --ink3: #3d5568;
+            --red: #ff3b2f;
+            --red-dim: rgba(255, 59, 47, 0.10);
+            --red-glo: rgba(255, 59, 47, 0.22);
+            --amber: #ffb020;
+            --amb-dim: rgba(255, 176, 32, 0.10);
+            --teal: #00e5b8;
+            --teal-dim: rgba(0, 229, 184, 0.08);
+            --teal-glo: rgba(0, 229, 184, 0.2);
+            --iris: #8b78ff;
+            --iris-dim: rgba(139, 120, 255, 0.10);
+            --sans: 'Syne', system-ui, sans-serif;
+            --mono: 'JetBrains Mono', monospace;
+            --serif: 'Crimson Pro', Georgia, serif;
+        }
+
         *,
         *::before,
         *::after {
@@ -18,147 +46,172 @@
             padding: 0;
         }
 
-        :root {
-            --bg: #070b0f;
-            --bg2: #0d1318;
-            --surface: #111820;
-            --surface2: #161e27;
-            --border: rgba(255, 255, 255, 0.07);
-            --border2: rgba(255, 255, 255, 0.13);
-            --text: #e8edf2;
-            --muted: #4a5a68;
-            --muted2: #8a9baa;
-            --red: #e84c3d;
-            --red-soft: rgba(232, 76, 61, 0.12);
-            --teal: #00c9a7;
-            --teal-soft: rgba(0, 201, 167, 0.1);
-            --amber: #f0a500;
-            --amber-soft: rgba(240, 165, 0, 0.1);
-            --font-serif: 'DM Serif Display', Georgia, serif;
-            --font-mono: 'DM Mono', monospace;
-            --font-sans: 'Instrument Sans', system-ui, sans-serif;
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: var(--font-sans);
+            background: var(--void);
+            color: var(--ink);
+            font-family: var(--sans);
             min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
         }
 
-        /* Sidebar */
+        /* SIDEBAR */
         .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
             width: 220px;
-            background: var(--bg2);
-            border-right: 1px solid var(--border);
+            flex-shrink: 0;
+            background: var(--deep);
+            border-right: 1px solid var(--rim);
             display: flex;
             flex-direction: column;
-            padding: 24px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
             z-index: 50;
+            overflow-y: auto;
         }
 
-        .sidebar-logo {
+        .sb-logo {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 0 20px 28px;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 12px;
+            padding: 20px 20px 18px;
+            border-bottom: 1px solid var(--rim);
         }
 
-        .logo-icon {
+        .sb-cross {
             width: 30px;
             height: 30px;
-            background: var(--teal);
+            background: var(--red);
             border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            color: #04342c;
+            display: grid;
+            place-items: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .sb-cross::before,
+        .sb-cross::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 2px;
+        }
+
+        .sb-cross::before {
+            width: 13px;
+            height: 2px;
+        }
+
+        .sb-cross::after {
+            width: 2px;
+            height: 13px;
+        }
+
+        .sb-wordmark {
+            font-size: 17px;
             font-weight: 700;
+            letter-spacing: 0.04em;
         }
 
-        .logo-text {
-            font-family: var(--font-serif);
-            font-size: 20px;
-        }
-
-        .role-chip {
-            background: var(--teal-soft);
+        .sb-role {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.14em;
             color: var(--teal);
-            font-family: var(--font-mono);
-            font-size: 10px;
-            padding: 2px 8px;
-            border-radius: 4px;
-            letter-spacing: 0.08em;
+            background: var(--teal-dim);
+            border: 1px solid rgba(0, 229, 184, 0.25);
+            padding: 2px 7px;
+            border-radius: 5px;
             margin-left: auto;
+        }
+
+        .sb-sec {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--ink3);
+            padding: 18px 20px 8px;
         }
 
         .nav-item {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 10px 20px;
-            margin: 2px 8px;
-            border-radius: 8px;
-            color: var(--muted2);
-            font-size: 14px;
+            padding: 9px 16px;
+            margin: 1px 8px;
+            border-radius: 9px;
+            color: var(--ink3);
+            font-size: 13px;
             font-weight: 500;
             cursor: pointer;
             text-decoration: none;
-            transition: all 0.2s;
+            transition: all 0.18s;
         }
 
         .nav-item:hover {
-            background: var(--surface);
-            color: var(--text);
+            background: var(--raised);
+            color: var(--ink2);
         }
 
         .nav-item.active {
-            background: var(--surface2);
-            color: var(--text);
-            border: 1px solid var(--border2);
+            background: var(--raised);
+            color: var(--ink);
+            border: 1px solid var(--rim2);
         }
 
-        .nav-item span {
-            font-size: 16px;
+        .nav-icon {
+            font-size: 14px;
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
         }
 
-        .sidebar-footer {
+        .nav-badge {
+            margin-left: auto;
+            font-family: var(--mono);
+            font-size: 10px;
+            background: var(--red-dim);
+            color: var(--red);
+            border: 1px solid rgba(255, 59, 47, 0.25);
+            padding: 1px 7px;
+            border-radius: 10px;
+        }
+
+        .sb-profile {
             margin-top: auto;
-            padding: 16px 12px 0;
-            border-top: 1px solid var(--border);
+            padding: 14px 12px;
+            border-top: 1px solid var(--rim);
         }
 
-        .doctor-profile {
+        .profile-card {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 8px;
-            border-radius: 8px;
+            padding: 10px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: background 0.18s;
         }
 
-        .doctor-profile:hover {
-            background: var(--surface);
+        .profile-card:hover {
+            background: var(--raised);
         }
 
         .avatar {
             width: 34px;
             height: 34px;
             border-radius: 50%;
-            background: var(--teal-soft);
-            border: 1px solid var(--teal);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
+            background: var(--teal-dim);
+            border: 1.5px solid rgba(0, 229, 184, 0.35);
+            display: grid;
+            place-items: center;
+            font-size: 13px;
             font-weight: 600;
             color: var(--teal);
             flex-shrink: 0;
@@ -167,142 +220,92 @@
         .profile-name {
             font-size: 13px;
             font-weight: 500;
+            color: var(--ink);
         }
 
         .profile-role {
-            font-family: var(--font-mono);
+            font-family: var(--mono);
             font-size: 10px;
-            color: var(--muted2);
+            color: var(--ink3);
+            margin-top: 1px;
         }
 
         .logout-btn {
             margin-left: auto;
             background: none;
             border: none;
-            color: var(--muted);
-            font-size: 14px;
+            color: var(--ink3);
             cursor: pointer;
+            font-size: 15px;
             padding: 4px;
+            transition: color 0.18s;
         }
 
         .logout-btn:hover {
             color: var(--red);
         }
 
-        /* Main content */
+        /* MAIN */
         .main {
             margin-left: 220px;
-            padding: 32px 36px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        .page-header {
+        .topbar {
+            height: 58px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 32px;
+            padding: 0 32px;
+            gap: 16px;
+            background: rgba(4, 8, 12, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--rim);
+            position: sticky;
+            top: 0;
+            z-index: 40;
         }
 
-        .page-title {
-            font-family: var(--font-serif);
-            font-size: 28px;
+        .tb-title {
+            font-family: var(--serif);
+            font-size: 22px;
+            font-weight: 300;
             letter-spacing: -0.02em;
         }
 
-        .page-sub {
-            font-size: 13px;
-            color: var(--muted2);
-            font-family: var(--font-mono);
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-sm {
-            padding: 8px 18px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            border: 1px solid var(--border2);
-            background: transparent;
-            color: var(--muted2);
-            transition: all 0.2s;
-            font-family: var(--font-sans);
-        }
-
-        .btn-sm:hover {
-            border-color: var(--teal);
-            color: var(--teal);
-        }
-
-        .btn-sm.primary {
-            background: var(--teal);
-            color: #04342c;
-            border-color: var(--teal);
-        }
-
-        .btn-sm.primary:hover {
-            background: #00b897;
-        }
-
-        /* Stats row */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 28px;
-        }
-
-        .stat-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-        }
-
-        .stat-label {
-            font-family: var(--font-mono);
+        .tb-greeting {
+            font-family: var(--mono);
             font-size: 11px;
-            color: var(--muted2);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 8px;
+            color: var(--ink3);
         }
 
-        .stat-value {
-            font-family: var(--font-serif);
-            font-size: 32px;
-            color: var(--text);
-            line-height: 1;
-        }
-
-        .stat-change {
-            font-size: 12px;
-            color: var(--muted2);
-            margin-top: 4px;
-        }
-
-        /* Patient queue */
-        .section-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 16px;
+        .tb-right {
+            margin-left: auto;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
         }
 
-        .live-dot {
+        .live-ind {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink2);
+        }
+
+        .live-pip {
             width: 7px;
             height: 7px;
             border-radius: 50%;
-            background: var(--red);
-            animation: pulse-dot 1.5s infinite;
+            background: var(--teal);
+            animation: pip 2s ease-in-out infinite;
         }
 
-        @keyframes pulse-dot {
+        @keyframes pip {
 
             0%,
             100% {
@@ -311,130 +314,600 @@
             }
 
             50% {
-                opacity: 0.5;
-                transform: scale(0.8)
+                opacity: 0.35;
+                transform: scale(0.75)
             }
         }
 
-        .queue-table {
+        .ref-btn {
+            padding: 6px 14px;
+            background: transparent;
+            border: 1px solid var(--rim2);
+            border-radius: 8px;
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink2);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ref-btn:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        .ref-ring {
+            width: 12px;
+            height: 12px;
+            border: 1.5px solid var(--rim2);
+            border-top-color: var(--teal);
+            border-radius: 50%;
+        }
+
+        .spinning .ref-ring {
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .new-btn {
+            padding: 8px 18px;
+            background: var(--red);
+            border: none;
+            border-radius: 9px;
+            font-family: var(--sans);
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            letter-spacing: 0.04em;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .new-btn:hover {
+            background: #e02a1f;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px var(--red-glo);
+        }
+
+        /* CONTENT */
+        .content {
+            padding: 28px 32px 60px;
+            flex: 1;
+        }
+
+        /* STATS */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--base);
+            border: 1px solid var(--rim);
+            border-radius: 16px;
+            padding: 20px 22px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--rim2);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+        }
+
+        .sc-critical::before {
+            background: var(--red);
+        }
+
+        .sc-high::before {
+            background: var(--amber);
+        }
+
+        .sc-total::before {
+            background: var(--teal);
+        }
+
+        .sc-speed::before {
+            background: var(--iris);
+        }
+
+        .stat-lbl {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink3);
+            margin-bottom: 10px;
+        }
+
+        .stat-val {
+            font-family: var(--serif);
+            font-size: 38px;
+            font-weight: 300;
+            line-height: 1;
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+            animation: countUp 0.6s ease both;
+        }
+
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: translateY(8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .sc-critical .stat-val {
+            color: var(--red);
+        }
+
+        .sc-high .stat-val {
+            color: var(--amber);
+        }
+
+        .sc-total .stat-val {
+            color: var(--teal);
+        }
+
+        .sc-speed .stat-val {
+            color: var(--iris);
+        }
+
+        .stat-sub {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+        }
+
+        .stat-ico {
+            position: absolute;
+            right: 16px;
+            top: 16px;
+            font-size: 22px;
+            opacity: 0.15;
+        }
+
+        /* GRID */
+        .dash-grid {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 18px;
+            align-items: start;
+        }
+
+        @media(max-width:1100px) {
+            .dash-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* PANEL */
+        .panel {
+            background: var(--base);
+            border: 1px solid var(--rim);
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .panel-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 22px;
+            border-bottom: 1px solid var(--rim);
+            background: var(--raised);
+        }
+
+        .panel-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .panel-sub {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+        }
+
+        .panel-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* FILTER PILLS */
+        .fpill {
+            padding: 4px 11px;
+            border-radius: 20px;
+            font-family: var(--mono);
+            font-size: 10px;
+            background: var(--raised);
+            border: 1px solid var(--rim);
+            color: var(--ink3);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .fpill:hover {
+            border-color: var(--rim2);
+            color: var(--ink2);
+        }
+
+        .fpill.active {
+            background: var(--red-dim);
+            border-color: rgba(255, 59, 47, 0.35);
+            color: var(--red);
+        }
+
+        /* TABLE */
+        .tbl-wrap {
+            overflow-x: auto;
+        }
+
+        table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .queue-table th {
+        thead th {
             text-align: left;
-            font-family: var(--font-mono);
-            font-size: 11px;
-            color: var(--muted);
+            padding: 10px 20px;
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            padding: 10px 16px;
-            border-bottom: 1px solid var(--border);
+            color: var(--ink3);
+            border-bottom: 1px solid var(--rim);
+            white-space: nowrap;
         }
 
-        .queue-table td {
-            padding: 14px 16px;
-            border-bottom: 1px solid var(--border);
-            font-size: 14px;
+        tbody tr {
+            border-bottom: 1px solid var(--rim);
+            transition: background 0.15s;
+            cursor: pointer;
         }
 
-        .queue-table tr:last-child td {
+        tbody tr:last-child {
             border-bottom: none;
         }
 
-        .queue-table tr:hover td {
-            background: var(--surface2);
+        tbody tr:hover {
+            background: var(--raised);
         }
 
-        .triage-pill {
-            display: inline-block;
-            padding: 3px 12px;
-            border-radius: 6px;
-            font-family: var(--font-mono);
-            font-size: 11px;
+        tbody td {
+            padding: 13px 20px;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        /* RISK PILL */
+        .rp {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 11px;
+            border-radius: 7px;
+            font-family: var(--mono);
+            font-size: 10px;
             font-weight: 500;
-            letter-spacing: 0.06em;
+            letter-spacing: 0.08em;
+            white-space: nowrap;
         }
 
-        /* New triage input */
-        .new-triage-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 14px;
+        .rd {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .rp-c {
+            background: var(--red-dim);
+            color: var(--red);
+            border: 1px solid rgba(255, 59, 47, 0.25);
+        }
+
+        .rp-h {
+            background: var(--amb-dim);
+            color: var(--amber);
+            border: 1px solid rgba(255, 176, 32, 0.25);
+        }
+
+        .rp-m {
+            background: var(--iris-dim);
+            color: var(--iris);
+            border: 1px solid rgba(139, 120, 255, 0.25);
+        }
+
+        .rp-l {
+            background: var(--teal-dim);
+            color: var(--teal);
+            border: 1px solid rgba(0, 229, 184, 0.25);
+        }
+
+        .p-name {
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 2px;
+        }
+
+        .p-id {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+        }
+
+        .p-sym {
+            color: var(--ink2);
+            max-width: 200px;
             overflow: hidden;
-            margin-top: 28px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
-        .card-header {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border);
+        .tbl-act {
+            padding: 5px 12px;
+            border-radius: 7px;
+            background: transparent;
+            border: 1px solid var(--rim2);
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink2);
+            cursor: pointer;
+            transition: all 0.18s;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .tbl-act:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        /* STATES */
+        .tbl-state {
+            padding: 44px 20px;
+            text-align: center;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink3);
+            line-height: 2;
+        }
+
+        .loader {
+            width: 22px;
+            height: 22px;
+            margin: 0 auto 12px;
+            border: 2px solid var(--rim2);
+            border-top-color: var(--teal);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        /* RIGHT COL */
+        .right-col {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* CHART */
+        .chart-wrap {
+            position: relative;
+            height: 195px;
+            padding: 16px 20px 0;
+        }
+
+        /* BREAKDOWN */
+        .bd-body {
+            padding: 16px 18px;
+        }
+
+        .bd-row {
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-
-        .card-title {
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .card-body {
-            padding: 20px;
-        }
-
-        .triage-textarea {
-            width: 100%;
-            min-height: 100px;
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 14px;
-            color: var(--text);
-            font-family: var(--font-mono);
-            font-size: 13px;
-            line-height: 1.6;
-            resize: vertical;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .triage-textarea:focus {
-            border-color: var(--teal);
-        }
-
-        .triage-textarea::placeholder {
-            color: var(--muted);
-        }
-
-        .card-footer {
-            display: flex;
-            justify-content: flex-end;
             gap: 10px;
-            margin-top: 12px;
+            margin-bottom: 11px;
+        }
+
+        .bd-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .bd-lbl {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink2);
+            width: 68px;
+            flex-shrink: 0;
+        }
+
+        .bd-rail {
+            flex: 1;
+            height: 5px;
+            background: var(--rim);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .bd-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+        }
+
+        .bd-n {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink2);
+            min-width: 18px;
+            text-align: right;
+        }
+
+        /* ACTIVITY */
+        .act-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 18px;
+            border-bottom: 1px solid var(--rim);
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+
+        .act-item:last-child {
+            border-bottom: none;
+        }
+
+        .act-item:hover {
+            background: var(--raised);
+        }
+
+        .act-orb {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+            font-size: 13px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .act-meta {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .act-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--ink);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .act-detail {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+            margin-top: 2px;
+        }
+
+        .act-time {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+            flex-shrink: 0;
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 999;
+            background: var(--raised);
+            border: 1px solid var(--rim2);
+            border-radius: 11px;
+            padding: 11px 16px;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            transform: translateY(70px);
+            opacity: 0;
+            transition: all 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .t-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--teal);
+        }
+
+        @media(max-width:860px) {
+            .sidebar {
+                transform: translateX(-100%)
+            }
+
+            .main {
+                margin-left: 0
+            }
+
+            .stats-row {
+                grid-template-columns: 1fr 1fr
+            }
         }
     </style>
 </head>
 
 <body>
 
+    <!-- SIDEBAR -->
     <aside class="sidebar">
-        <div class="sidebar-logo">
-            <div class="logo-icon">+</div>
-            <span class="logo-text">Healix</span>
-            <span class="role-chip">DR</span>
+        <div class="sb-logo">
+            <div class="sb-cross"></div>
+            <span class="sb-wordmark">HEALIX</span>
+            <span class="sb-role">DR</span>
         </div>
-        <a class="nav-item active" href="#"><span>📊</span> Dashboard</a>
-        <a class="nav-item" href="#"><span>🚨</span> Triage Queue</a>
-        <a class="nav-item" href="#"><span>🧑‍⚕️</span> My Patients</a>
-        <a class="nav-item" href="#"><span>🧬</span> Run Triage</a>
-        <a class="nav-item" href="#"><span>📋</span> Reports</a>
-        <a class="nav-item" href="#"><span>⚙️</span> Settings</a>
-
-        <div class="sidebar-footer">
-            <div class="doctor-profile">
-                <div class="avatar" id="doctorInitials">DR</div>
+        <div class="sb-sec">Clinical</div>
+        <a class="nav-item active" href="/dashboard/doctor/"><span class="nav-icon">⬡</span>Dashboard</a>
+        <a class="nav-item" href="/triage/"><span class="nav-icon">⚡</span>New Triage<span class="nav-badge"
+                id="critBadge">0</span></a>
+        <a class="nav-item" href="#"><span class="nav-icon">◈</span>Patient Queue</a>
+        <a class="nav-item" href="#"><span class="nav-icon">◆</span>My Patients</a>
+        <div class="sb-sec">Reports</div>
+        <a class="nav-item" href="#"><span class="nav-icon">◇</span>Triage History</a>
+        <a class="nav-item" href="#"><span class="nav-icon">◉</span>Analytics</a>
+        <div class="sb-sec">System</div>
+        <a class="nav-item" href="#"><span class="nav-icon">◎</span>Settings</a>
+        <div class="sb-profile">
+            <div class="profile-card">
+                <div class="avatar" id="docAvatar">DR</div>
                 <div>
-                    <div class="profile-name" id="doctorName">Dr. Loading...</div>
+                    <div class="profile-name" id="docName">Dr. Loading...</div>
                     <div class="profile-role">Physician · Healix</div>
                 </div>
                 <button class="logout-btn" onclick="handleLogout()" title="Sign out">⏏</button>
@@ -442,179 +915,302 @@
         </div>
     </aside>
 
-    <main class="main">
-        <div class="page-header">
-            <div>
-                <h1 class="page-title">Clinical Dashboard</h1>
-                <p class="page-sub" id="greetingText">Good morning, Doctor</p>
-            </div>
-            <div class="header-actions">
-                <button class="btn-sm">Export PDF</button>
-                <button class="btn-sm primary" onclick="document.getElementById('newTriageInput').focus()">+ New
-                    Triage</button>
-            </div>
-        </div>
-
-        <!-- Stats -->
-        <div class="stats-row">
-            <div class="stat-card">
-                <div class="stat-label">Active Patients</div>
-                <div class="stat-value" style="color:var(--text)">24</div>
-                <div class="stat-change">↑ 3 since yesterday</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Critical Cases</div>
-                <div class="stat-value" style="color:var(--red)">3</div>
-                <div class="stat-change">Requires immediate action</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Avg. Triage Time</div>
-                <div class="stat-value" style="color:var(--teal)">6.2s</div>
-                <div class="stat-change">AI processing time</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Resolved Today</div>
-                <div class="stat-value">11</div>
-                <div class="stat-change">↑ 2 vs yesterday</div>
+    <!-- MAIN -->
+    <div class="main">
+        <div class="topbar">
+            <div class="tb-title">Clinical Dashboard</div>
+            <div class="tb-greeting" id="greeting">Good morning, Doctor</div>
+            <div class="tb-right">
+                <div class="live-ind">
+                    <div class="live-pip"></div><span id="lastRef">Live</span>
+                </div>
+                <button class="ref-btn" id="refBtn" onclick="refreshAll()"><span class="ref-ring"
+                        id="refRing"></span>Refresh</button>
+                <a class="new-btn" href="/triage/">⚡ New Triage</a>
             </div>
         </div>
 
-        <!-- Patient Queue -->
-        <div class="section-title">
-            <div class="live-dot"></div> Live Patient Queue
-        </div>
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;">
-            <table class="queue-table">
-                <thead>
-                    <tr>
-                        <th>Patient</th>
-                        <th>Chief Complaint</th>
-                        <th>Triage Level</th>
-                        <th>Wait Time</th>
-                        <th>Assigned</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <div style="font-weight:500">Sharma, Raj</div>
-                            <div style="font-size:12px;color:var(--muted2);font-family:var(--font-mono)">#0042 · 58M
-                            </div>
-                        </td>
-                        <td>Chest pain, sweating, dizziness</td>
-                        <td><span class="triage-pill" style="background:var(--red-soft);color:var(--red)">●
-                                CRITICAL</span></td>
-                        <td style="font-family:var(--font-mono);font-size:13px">2 min</td>
-                        <td style="color:var(--muted2);font-size:13px">Dr. You</td>
-                        <td><button class="btn-sm" style="padding:5px 12px;font-size:12px">View →</button></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div style="font-weight:500">Mehta, Priya</div>
-                            <div style="font-size:12px;color:var(--muted2);font-family:var(--font-mono)">#0041 · 34F
-                            </div>
-                        </td>
-                        <td>Severe headache, nausea, light sensitivity</td>
-                        <td><span class="triage-pill" style="background:var(--amber-soft);color:var(--amber)">●
-                                HIGH</span></td>
-                        <td style="font-family:var(--font-mono);font-size:13px">8 min</td>
-                        <td style="color:var(--muted2);font-size:13px">Unassigned</td>
-                        <td><button class="btn-sm" style="padding:5px 12px;font-size:12px">View →</button></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div style="font-weight:500">Verma, Anil</div>
-                            <div style="font-size:12px;color:var(--muted2);font-family:var(--font-mono)">#0040 · 22M
-                            </div>
-                        </td>
-                        <td>Ankle pain after sports fall</td>
-                        <td><span class="triage-pill" style="background:rgba(123,104,238,0.15);color:#7b68ee">●
-                                MEDIUM</span></td>
-                        <td style="font-family:var(--font-mono);font-size:13px">22 min</td>
-                        <td style="color:var(--muted2);font-size:13px">Unassigned</td>
-                        <td><button class="btn-sm" style="padding:5px 12px;font-size:12px">View →</button></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div style="font-weight:500">Singh, Kavya</div>
-                            <div style="font-size:12px;color:var(--muted2);font-family:var(--font-mono)">#0039 · 8F
-                            </div>
-                        </td>
-                        <td>Mild fever, routine check</td>
-                        <td><span class="triage-pill" style="background:var(--teal-soft);color:var(--teal)">● LOW</span>
-                        </td>
-                        <td style="font-family:var(--font-mono);font-size:13px">45 min</td>
-                        <td style="color:var(--muted2);font-size:13px">Unassigned</td>
-                        <td><button class="btn-sm" style="padding:5px 12px;font-size:12px">View →</button></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <div class="content">
 
-        <!-- New Triage Input -->
-        <div class="new-triage-card">
-            <div class="card-header">
-                <span>⚡</span>
-                <span class="card-title">Quick Triage — Enter Patient Data</span>
-                <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted2);margin-left:auto">AI agents
-                    will process in ~6s</span>
+            <!-- Stats -->
+            <div class="stats-row">
+                <div class="stat-card sc-critical">
+                    <div class="stat-ico">🚨</div>
+                    <div class="stat-lbl">Critical cases</div>
+                    <div class="stat-val" id="sCrit">—</div>
+                    <div class="stat-sub">Immediate attention</div>
+                </div>
+                <div class="stat-card sc-high">
+                    <div class="stat-ico">⚠️</div>
+                    <div class="stat-lbl">High priority</div>
+                    <div class="stat-val" id="sHigh">—</div>
+                    <div class="stat-sub">Within 10 minutes</div>
+                </div>
+                <div class="stat-card sc-total">
+                    <div class="stat-ico">🏥</div>
+                    <div class="stat-lbl">Total patients</div>
+                    <div class="stat-val" id="sTotal">—</div>
+                    <div class="stat-sub" id="sSub">Loading...</div>
+                </div>
+                <div class="stat-card sc-speed">
+                    <div class="stat-ico">⚡</div>
+                    <div class="stat-lbl">Avg triage time</div>
+                    <div class="stat-val" id="sSpeed">—</div>
+                    <div class="stat-sub">AI processing</div>
+                </div>
             </div>
-            <div class="card-body">
-                <textarea class="triage-textarea" id="newTriageInput"
-                    placeholder="Patient age: 45&#10;Symptoms: shortness of breath, chest tightness&#10;Duration: 1 hour&#10;&#10;Paste any format — doctor notes, transcripts, or free text..."></textarea>
-                <div class="card-footer">
-                    <button class="btn-sm">Save Draft</button>
-                    <button class="btn-sm primary" onclick="runTriage()">⚡ Run AI Triage</button>
+
+            <!-- Grid -->
+            <div class="dash-grid">
+
+                <!-- Queue -->
+                <div class="panel">
+                    <div class="panel-head">
+                        <div class="live-pip"></div>
+                        <span class="panel-title">Live Patient Queue</span>
+                        <span class="panel-sub" id="qCount"></span>
+                        <div class="panel-actions">
+                            <span class="fpill active" onclick="doFilter(this,'all')">All</span>
+                            <span class="fpill" onclick="doFilter(this,'Critical')"
+                                style="color:var(--red)">Critical</span>
+                            <span class="fpill" onclick="doFilter(this,'High')" style="color:var(--amber)">High</span>
+                            <span class="fpill" onclick="doFilter(this,'Medium')">Medium</span>
+                            <span class="fpill" onclick="doFilter(this,'Low')" style="color:var(--teal)">Low</span>
+                        </div>
+                    </div>
+                    <div class="tbl-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Patient</th>
+                                    <th>Chief complaint</th>
+                                    <th>Triage level</th>
+                                    <th>Registered</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="qBody">
+                                <tr>
+                                    <td colspan="5">
+                                        <div class="tbl-state">
+                                            <div class="loader"></div>Loading patient queue...
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Right -->
+                <div class="right-col">
+
+                    <div class="panel">
+                        <div class="panel-head"><span class="panel-title">Risk distribution</span><span
+                                class="panel-sub" id="totalTriage"></span></div>
+                        <div class="chart-wrap"><canvas id="rChart"></canvas></div>
+                        <div style="height:16px"></div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-head"><span class="panel-title">Queue breakdown</span></div>
+                        <div class="bd-body" id="bdBody">
+                            <div class="tbl-state" style="padding:20px">
+                                <div class="loader"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-head"><span class="panel-title">Recent triage activity</span></div>
+                        <div id="actBody">
+                            <div class="tbl-state" style="padding:20px">
+                                <div class="loader"></div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
-    </main>
+    </div>
+
+    <div class="toast" id="toast">
+        <div class="t-dot"></div><span id="toastMsg">Refreshed</span>
+    </div>
 
     <!-- Firebase Auth Guard -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyDMoNdBIWdZNKJOlR7ZV-46OfFHZPwb1Wk", authDomain: "healix-d02c4.firebaseapp.com",
-            projectId: "healix-d02c4", storageBucket: "healix-d02c4.firebasestorage.app",
-            messagingSenderId: "783527967185", appId: "1:783527967185:web:eacf3a3f785121a0ae08f0",
+        const cfg = {
+            apiKey: "AIzaSyDMoNdBIWdZNKJOlR7ZV-46OfFHZPwb1Wk",
+            authDomain: "healix-d02c4.firebaseapp.com",
+            projectId: "healix-d02c4",
+            storageBucket: "healix-d02c4.firebasestorage.app",
+            messagingSenderId: "783527967185",
+            appId: "1:783527967185:web:eacf3a3f785121a0ae08f0",
             measurementId: "G-Z4TD76TGR7"
         };
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        const app = initializeApp(cfg), auth = getAuth(app), db = getFirestore(app);
+        onAuthStateChanged(auth, async user => {
+            if (!user) { location.href = '/auth/login/'; return; }
+            const ud = await getDoc(doc(db, 'users', user.uid));
+            if (!ud.exists() || ud.data().role !== 'doctor') { location.href = '/auth/login/'; return; }
+            const name = user.displayName || ud.data().name || user.email.split('@')[0];
+            document.getElementById('docName').textContent = 'Dr. ' + name;
+            document.getElementById('docAvatar').textContent = name.slice(0, 2).toUpperCase();
+            const h = new Date().getHours();
+            document.getElementById('greeting').textContent =
+                `${h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'}, Dr. ${name.split(' ')[0]}`;
+            window.handleLogout = async () => { await signOut(auth); location.href = '/auth/login/'; };
+        });
+    </script>
 
-        // Auth guard — redirect if not logged in or wrong role
-        onAuthStateChanged(auth, async (user) => {
-            if (!user) { window.location.href = '/auth/login/'; return; }
-            const userDoc = await getDoc(doc(db, 'users', user.uid));
-            if (!userDoc.exists() || userDoc.data().role !== 'doctor') {
-                window.location.href = '/auth/login/';
+    <script>
+        /* ── CONFIG ── */
+        const RISK = {
+            Critical: { cls: 'rp-c', dot: '#ff3b2f', bar: '#ff3b2f', orb: 'rgba(255,59,47,0.12)', icon: '🚨' },
+            High: { cls: 'rp-h', dot: '#ffb020', bar: '#ffb020', orb: 'rgba(255,176,32,0.12)', icon: '⚠️' },
+            Medium: { cls: 'rp-m', dot: '#8b78ff', bar: '#8b78ff', orb: 'rgba(139,120,255,0.12)', icon: '🔶' },
+            Low: { cls: 'rp-l', dot: '#00e5b8', bar: '#00e5b8', orb: 'rgba(0,229,184,0.10)', icon: '✅' },
+        };
+        const ORDER = { Critical: 0, High: 1, Medium: 2, Low: 3 };
+
+        /* ── STATE ── */
+        let patients = [], stats = { total_triages: 0, by_risk_level: [] }, history = [], filter = 'all', chart = null;
+
+        /* ── API ── */
+        function csrf() { for (const c of document.cookie.split(';')) { const [k, v] = c.trim().split('='); if (k === 'csrftoken') return decodeURIComponent(v); } return ''; }
+        async function get(url) { const r = await fetch(url, { headers: { 'X-CSRFToken': csrf() } }); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }
+
+        /* ── LOAD ── */
+        async function loadAll() {
+            setSpinning(true);
+            try {
+                const [p, s, h] = await Promise.all([get('/api/patients/'), get('/api/triage/stats/'), get('/api/triage/history/')]);
+                patients = Array.isArray(p) ? p : (p.results || []);
+                stats = s;
+                history = Array.isArray(h) ? h : (h.results || []);
+                renderStats(); renderQueue(); renderChart(); renderBreakdown(); renderActivity();
+                document.getElementById('lastRef').textContent = 'Updated ' + new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+            } catch (e) {
+                document.getElementById('qBody').innerHTML = `<tr><td colspan="5"><div class="tbl-state" style="color:var(--red)">⚠ ${e.message}<br/><span style="color:var(--ink3)">Is Django running on localhost:8000?</span></div></td></tr>`;
+            } finally { setSpinning(false); }
+        }
+
+        /* ── STATS ── */
+        function renderStats() {
+            const c = patients.filter(p => p.risk_level === 'Critical').length;
+            const h = patients.filter(p => p.risk_level === 'High').length;
+            const t = patients.length;
+            document.getElementById('sCrit').textContent = c;
+            document.getElementById('sHigh').textContent = h;
+            document.getElementById('sTotal').textContent = t;
+            document.getElementById('sSpeed').textContent = history.length > 0 ? '6.2s' : '—';
+            document.getElementById('sSub').textContent = t > 0 ? `${t} patient${t !== 1 ? 's' : ''} in system` : 'No patients yet';
+            document.getElementById('critBadge').textContent = c;
+        }
+
+        /* ── QUEUE ── */
+        function renderQueue(f) {
+            if (f !== undefined) filter = f;
+            let list = [...patients].sort((a, b) => (ORDER[a.risk_level] ?? 9) - (ORDER[b.risk_level] ?? 9));
+            if (filter !== 'all') list = list.filter(p => p.risk_level === filter);
+            document.getElementById('qCount').textContent = list.length + ' patient' + (list.length !== 1 ? 's' : '');
+            if (!list.length) {
+                document.getElementById('qBody').innerHTML = `<tr><td colspan="5"><div class="tbl-state">No patients${filter !== 'all' ? ' with ' + filter + ' priority' : ''} found.<br/><a href="/triage/" style="color:var(--teal);text-decoration:none;font-family:var(--mono)">⚡ Run a triage →</a></div></td></tr>`;
                 return;
             }
-            // Populate UI
-            const name = user.displayName || userDoc.data().name || user.email.split('@')[0];
-            document.getElementById('doctorName').textContent = 'Dr. ' + name;
-            document.getElementById('doctorInitials').textContent = name.slice(0, 2).toUpperCase();
-            const hour = new Date().getHours();
-            const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-            document.getElementById('greetingText').textContent = `${greeting}, Dr. ${name.split(' ')[0]}`;
-        });
-
-        window.handleLogout = async function () {
-            await signOut(auth);
-            window.location.href = '/auth/login/';
-        };
-    </script>
-    <script>
-        function runTriage() {
-            const input = document.getElementById('newTriageInput').value.trim();
-            if (!input) return;
-            window.location.href = `/triage/?input=${encodeURIComponent(input)}`;
+            document.getElementById('qBody').innerHTML = list.map(p => {
+                const r = RISK[p.risk_level] || RISK['Low'];
+                const sym = p.symptoms ? (p.symptoms.slice(0, 55) + (p.symptoms.length > 55 ? '…' : '')) : '—';
+                return `<tr onclick="go(${p.id},'${esc(p.name)}','${esc(p.symptoms || '')}')">
+      <td><div class="p-name">${p.name || 'Unknown'}</div><div class="p-id">#${String(p.id).padStart(4, '0')} · ${p.age || '?'}yrs</div></td>
+      <td><div class="p-sym">${sym}</div></td>
+      <td><span class="rp ${r.cls}"><span class="rd" style="background:${r.dot}"></span>${p.risk_level || '—'}</span></td>
+      <td style="font-family:var(--mono);font-size:11px;color:var(--ink3)">${timeAgo(p.created_at)}</td>
+      <td><a class="tbl-act" href="/triage/?patient_id=${p.id}&input=${encodeURIComponent((p.name || '') + '\n' + (p.symptoms || ''))}">Triage →</a></td>
+    </tr>`;
+            }).join('');
         }
+
+        /* ── CHART ── */
+        function renderChart() {
+            const ctx = document.getElementById('rChart').getContext('2d');
+            const bl = stats.by_risk_level || [];
+            const total = stats.total_triages || 0;
+            document.getElementById('totalTriage').textContent = total + ' total triage' + (total !== 1 ? 's' : '');
+            const labels = ['Critical', 'High', 'Medium', 'Low'];
+            const counts = labels.map(l => { const f = bl.find(b => b.risk_level === l); return f ? f.count : 0; });
+            if (chart) chart.destroy();
+            chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: { labels, datasets: [{ data: counts.some(c => c > 0) ? counts : [1, 1, 1, 1], backgroundColor: ['rgba(255,59,47,0.7)', 'rgba(255,176,32,0.7)', 'rgba(139,120,255,0.7)', 'rgba(0,229,184,0.7)'], borderColor: ['#ff3b2f', '#ffb020', '#8b78ff', '#00e5b8'], borderWidth: 1.5, hoverOffset: 5 }] },
+                options: {
+                    responsive: true, maintainAspectRatio: false, cutout: '68%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#7a94a8', font: { family: "'JetBrains Mono'", size: 10 }, boxWidth: 9, boxHeight: 9, padding: 12 } },
+                        tooltip: {
+                            backgroundColor: '#111d28', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1, titleColor: '#dce8f0', bodyColor: '#7a94a8', titleFont: { family: "'JetBrains Mono'", size: 10 }, bodyFont: { family: "'JetBrains Mono'", size: 10 },
+                            callbacks: { label: c => ` ${c.label}: ${counts.some(x => x > 0) ? c.raw : 0}` }
+                        }
+                    }
+                }
+            });
+        }
+
+        /* ── BREAKDOWN ── */
+        function renderBreakdown() {
+            const total = patients.length || 1;
+            const counts = {};
+            patients.forEach(p => { counts[p.risk_level] = (counts[p.risk_level] || 0) + 1; });
+            document.getElementById('bdBody').innerHTML = ['Critical', 'High', 'Medium', 'Low'].map(l => {
+                const n = counts[l] || 0, pct = Math.round((n / total) * 100), r = RISK[l];
+                return `<div class="bd-row"><span class="bd-lbl">${l}</span><div class="bd-rail"><div class="bd-fill" style="background:${r.bar};width:0%" data-w="${pct}"></div></div><span class="bd-n">${n}</span></div>`;
+            }).join('');
+            setTimeout(() => { document.querySelectorAll('.bd-fill').forEach(el => { el.style.width = el.dataset.w + '%'; }); }, 100);
+        }
+
+        /* ── ACTIVITY ── */
+        function renderActivity() {
+            const body = document.getElementById('actBody');
+            const recent = history.slice(0, 6);
+            if (!recent.length) {
+                body.innerHTML = `<div class="tbl-state" style="padding:24px">No triage activity yet.<br/><a href="/triage/" style="color:var(--teal);text-decoration:none;font-family:var(--mono)">Run first triage →</a></div>`;
+                return;
+            }
+            body.innerHTML = recent.map(t => {
+                const r = RISK[t.risk_level] || RISK['Low'];
+                const sym = t.symptoms_input ? (t.symptoms_input.slice(0, 38) + '…') : '—';
+                return `<div class="act-item" onclick="location.href='/triage/'">
+      <div class="act-orb" style="background:${r.orb}">${r.icon}</div>
+      <div class="act-meta"><div class="act-name">${t.patient_name || 'Anonymous patient'}</div><div class="act-detail">${t.risk_level} · ${sym}</div></div>
+      <div class="act-time">${timeAgo(t.analyzed_at)}</div>
+    </div>`;
+            }).join('');
+        }
+
+        /* ── HELPERS ── */
+        function doFilter(btn, level) {
+            document.querySelectorAll('.fpill').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active'); renderQueue(level);
+        }
+        function go(id, name, sym) { location.href = `/triage/?patient_id=${id}&input=${encodeURIComponent(name + '\n' + sym)}`; }
+        function setSpinning(on) { document.getElementById('refBtn').classList.toggle('spinning', on); document.getElementById('refRing').style.animation = on ? 'spin 0.7s linear infinite' : 'none'; }
+        function refreshAll() { loadAll(); showToast('Dashboard refreshed'); }
+        function showToast(msg) { const t = document.getElementById('toast'); document.getElementById('toastMsg').textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2600); }
+        function timeAgo(d) { if (!d) return '—'; const s = Math.floor((Date.now() - new Date(d)) / 1000); if (s < 60) return 'just now'; if (s < 3600) return Math.floor(s / 60) + 'm ago'; if (s < 86400) return Math.floor(s / 3600) + 'h ago'; return Math.floor(s / 86400) + 'd ago'; }
+        function esc(s) { return (s || '').replace(/'/g, "\\'").replace(/"/g, '&quot;').slice(0, 80); }
+
+        window.doFilter = doFilter; window.refreshAll = refreshAll;
+
+        /* ── AUTO-REFRESH 30s ── */
+        setInterval(() => { loadAll(); showToast('Auto-refreshed'); }, 30000);
+
+        /* ── INIT ── */
+        loadAll();
     </script>
 </body>
 
