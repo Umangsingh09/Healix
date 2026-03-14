@@ -36,6 +36,12 @@ class AnalyzeTriageView(APIView):
 
             # Create or update Patient record
             user_uid = serializer.validated_data.get('user_uid')
+            if not user_uid and request.user.is_authenticated:
+                try:
+                    user_uid = request.user.userprofile.firebase_uid
+                except:
+                    pass
+            
             name = serializer.validated_data.get('name') or 'Anonymous'
             age = serializer.validated_data.get('age') or 0
 

@@ -6,7 +6,8 @@ from .views import (
     update_patient,
     delete_patient,
     get_patient_triage_history,
-    get_my_patients
+    get_my_patients,
+    get_patients
 )
 
 urlpatterns = [

@@ -4,38 +4,33 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Healix — My Health Dashboard</title>
+    <title>Healix — My Health</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
-        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap"
         rel="stylesheet">
     <style>
         :root {
-            --void: #04080c;
-            --deep: #070d13;
-            --base: #0c1520;
-            --raised: #111d28;
-            --lift: #162333;
-            --rim: rgba(255, 255, 255, 0.055);
-            --rim2: rgba(255, 255, 255, 0.10);
-            --rim3: rgba(255, 255, 255, 0.18);
-            --ink: #dce8f0;
-            --ink2: #7a94a8;
-            --ink3: #3d5568;
-            --red: #ff3b2f;
-            --red2: #e02a1f;
-            --red-dim: rgba(255, 59, 47, 0.08);
-            --red-glo: rgba(255, 59, 47, 0.25);
-            --teal: #00e5b8;
-            --teal-dim: rgba(0, 229, 184, 0.08);
-            --teal-glo: rgba(0, 229, 184, 0.2);
-            --amber: #ffb020;
-            --amb-dim: rgba(255, 176, 32, 0.08);
-            --iris: #8b78ff;
-            --iris-dim: rgba(139, 120, 255, 0.08);
-            --sans: 'Syne', system-ui, sans-serif;
+            --bg: #080f17;
+            --bg2: #0d1825;
+            --card: #101e2e;
+            --card2: #132234;
+            --rim: rgba(255, 255, 255, 0.06);
+            --rim2: rgba(255, 255, 255, 0.11);
+            --ink: #e2edf7;
+            --ink2: #6b8499;
+            --ink3: #344d61;
+            --red: #f43f3f;
+            --red2: #ff6b6b;
+            --red-a: rgba(244, 63, 63, 0.12);
+            --amber: #f59e0b;
+            --amb-a: rgba(245, 158, 11, 0.12);
+            --teal: #06d6a0;
+            --teal-a: rgba(6, 214, 160, 0.10);
+            --iris: #818cf8;
+            --iris-a: rgba(129, 140, 248, 0.12);
+            --sans: 'Outfit', system-ui, sans-serif;
             --mono: 'JetBrains Mono', monospace;
-            --serif: 'Crimson Pro', Georgia, serif;
         }
 
         *,
@@ -47,669 +42,1155 @@
         }
 
         body {
-            background: var(--void);
+            background: var(--bg);
             color: var(--ink);
             font-family: var(--sans);
             min-height: 100vh;
             overflow-x: hidden;
         }
 
-        #bgCanvas {
+        body::after {
+            content: '';
             position: fixed;
             inset: 0;
             z-index: 0;
             pointer-events: none;
-            opacity: 0.45;
+            opacity: 0.018;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-size: 200px;
         }
 
-        /* Top nav */
-        .topnav {
-            height: 72px;
-            background: rgba(4, 8, 12, 0.8);
-            backdrop-filter: blur(20px) saturate(1.4);
-            border-bottom: 1px solid var(--rim);
-            display: flex;
-            align-items: center;
-            padding: 0 48px;
-            gap: 20px;
+        /* NAV */
+        .nav {
             position: sticky;
             top: 0;
             z-index: 50;
-        }
-
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: var(--red);
-            border-radius: 9px;
+            height: 62px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            padding: 0 32px;
+            gap: 14px;
+            background: rgba(8, 15, 23, 0.88);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--rim);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nl-mark {
+            width: 34px;
+            height: 34px;
+            background: var(--red);
+            border-radius: 9px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            box-shadow: 0 0 16px rgba(244, 63, 63, 0.35);
+        }
+
+        .nl-cross {
+            position: relative;
+            width: 14px;
+            height: 14px;
+        }
+
+        .nl-cross::before,
+        .nl-cross::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 2px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .nl-cross::before {
+            width: 14px;
+            height: 2px;
+        }
+
+        .nl-cross::after {
+            width: 2px;
+            height: 14px;
+        }
+
+        .nl-word {
             font-size: 18px;
-            color: white;
-            font-weight: 300;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            color: var(--ink);
         }
 
-        .logo-text {
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-        }
-
-        .role-chip {
-            background: var(--red-dim);
-            color: var(--red);
-            font-family: var(--mono);
-            font-size: 10px;
+        .nl-tag {
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            color: var(--red2);
+            background: var(--red-a);
+            border: 1px solid rgba(244, 63, 63, 0.25);
             padding: 2px 8px;
-            border-radius: 4px;
-            letter-spacing: 0.1em;
-            border: 1px solid var(--red-glo);
+            border-radius: 6px;
         }
 
         .nav-links {
             display: flex;
-            gap: 8px;
-            margin-left: 32px;
+            gap: 4px;
+            margin-left: 20px;
         }
 
-        .nav-link {
-            padding: 8px 16px;
-            border-radius: 10px;
-            font-size: 14px;
+        .nla {
+            padding: 7px 14px;
+            border-radius: 9px;
+            font-size: 13px;
             font-weight: 500;
-            color: var(--ink3);
+            color: var(--ink2);
             text-decoration: none;
-            transition: all 0.2s;
+            transition: all 0.18s;
         }
 
-        .nav-link:hover,
-        .nav-link.active {
+        .nla:hover {
             background: var(--rim);
             color: var(--ink);
         }
 
-        .topnav-right {
+        .nla.on {
+            background: var(--red-a);
+            color: var(--ink);
+            border: 1px solid rgba(244, 63, 63, 0.2);
+        }
+
+        .nav-right {
             margin-left: auto;
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 10px;
         }
 
-        .avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: var(--red-dim);
-            border: 1px solid var(--red-glo);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--red);
-            cursor: pointer;
-        }
-
-        .logout-btn {
-            background: var(--base);
-            border: 1px solid var(--rim2);
-            border-radius: 10px;
-            color: var(--ink2);
+        .pat-av {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--red) 0%, var(--amber) 100%);
+            display: grid;
+            place-items: center;
             font-size: 12px;
-            padding: 8px 16px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .nav-out {
+            padding: 6px 14px;
+            background: var(--card);
+            border: 1px solid var(--rim2);
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--ink2);
             cursor: pointer;
-            font-family: var(--mono);
-            font-weight: 600;
-            transition: all 0.2s;
+            transition: all 0.18s;
         }
 
-        .logout-btn:hover {
+        .nav-out:hover {
             border-color: var(--red);
-            color: var(--red);
+            color: var(--red2);
         }
 
-        /* Content */
+        /* PAGE */
         .page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 32px 28px 80px;
             position: relative;
             z-index: 1;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 48px 24px;
         }
 
-        /* Welcome banner */
-        .welcome-banner {
-            background: var(--base);
+        /* WELCOME BANNER */
+        .banner {
+            background: var(--card);
             border: 1px solid var(--rim);
-            border-radius: 24px;
-            padding: 40px;
-            margin-bottom: 32px;
+            border-radius: 20px;
+            padding: 28px 32px;
+            margin-bottom: 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         }
 
-        .welcome-title {
-            font-family: var(--serif);
-            font-size: 38px;
-            font-weight: 300;
-            letter-spacing: -0.02em;
+        .b-glow {
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(244, 63, 63, 0.08), transparent 70%);
+        }
+
+        .b-glow2 {
+            position: absolute;
+            bottom: -40px;
+            left: 30%;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(6, 214, 160, 0.06), transparent 70%);
+        }
+
+        .b-eye {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--teal);
             margin-bottom: 8px;
         }
 
-        .welcome-sub {
-            font-family: var(--mono);
-            font-size: 12px;
-            color: var(--ink3);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
+        .b-name {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 6px;
         }
 
-        .report-btn {
-            padding: 12px 28px;
+        .b-name span {
+            color: var(--teal);
+        }
+
+        .b-sub {
+            font-size: 13px;
+            color: var(--ink2);
+        }
+
+        .b-btn {
+            padding: 12px 24px;
             background: var(--red);
             border: none;
-            border-radius: 12px;
-            color: white;
+            border-radius: 11px;
+            font-family: var(--sans);
             font-size: 14px;
             font-weight: 700;
+            color: white;
             cursor: pointer;
-            font-family: var(--sans);
             transition: all 0.2s;
-            box-shadow: 0 4px 14px var(--red-glo);
+            white-space: nowrap;
+            box-shadow: 0 0 24px rgba(244, 63, 63, 0.3);
         }
 
-        .report-btn:hover {
-            background: var(--red2);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px var(--red-glo);
+        .b-btn:hover {
+            background: #e03030;
+            transform: translateY(-2px);
         }
 
-        /* Status card */
-        .status-grid {
+        /* STAT CARDS */
+        .stats {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 32px;
-        }
-
-        .status-card {
-            background: var(--base);
-            border: 1px solid var(--rim);
-            border-radius: 20px;
-            padding: 24px;
-        }
-
-        .status-label {
-            font-family: var(--mono);
-            font-size: 10px;
-            color: var(--ink3);
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            margin-bottom: 12px;
-        }
-
-        .status-value {
-            font-family: var(--serif);
-            font-size: 32px;
-            font-weight: 300;
-            line-height: 1;
-        }
-
-        /* Current triage status */
-        .triage-status-card {
-            background: var(--base);
-            border: 1px solid var(--rim);
-            border-radius: 24px;
-            padding: 32px;
-            margin-bottom: 32px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .triage-status-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
             margin-bottom: 24px;
         }
 
-        .section-title {
-            font-family: var(--serif);
-            font-size: 20px;
-            font-weight: 300;
-        }
-
-        .triage-badge-large {
-            padding: 8px 20px;
-            border-radius: 10px;
-            font-family: var(--mono);
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-        }
-
-        .triage-detail {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .detail-item {
-            background: var(--deep);
+        .sc {
+            background: var(--card);
             border: 1px solid var(--rim);
             border-radius: 16px;
-            padding: 20px;
-        }
-
-        .detail-label {
-            font-family: var(--mono);
-            font-size: 10px;
-            color: var(--ink3);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 10px;
-        }
-
-        .detail-value {
-            font-size: 14px;
-            color: var(--ink2);
-            line-height: 1.6;
-        }
-
-        /* History table */
-        .history-card {
-            background: var(--base);
-            border: 1px solid var(--rim);
-            border-radius: 20px;
+            padding: 20px 22px;
+            position: relative;
             overflow: hidden;
-            margin-top: 32px;
+            transition: all 0.2s;
         }
 
-        .history-header {
-            padding: 20px 24px;
-            background: var(--raised);
-            border-bottom: 1px solid var(--rim);
+        .sc:hover {
+            border-color: var(--rim2);
+            transform: translateY(-2px);
+        }
+
+        .sc::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 16px;
+            right: 16px;
+            height: 1px;
+        }
+
+        .sr::before {
+            background: linear-gradient(90deg, transparent, var(--red), transparent);
+        }
+
+        .st::before {
+            background: linear-gradient(90deg, transparent, var(--teal), transparent);
+        }
+
+        .si::before {
+            background: linear-gradient(90deg, transparent, var(--iris), transparent);
+        }
+
+        .sc-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            margin-bottom: 14px;
         }
 
+        .sc-ico {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            font-size: 18px;
+        }
+
+        .sr .sc-ico {
+            background: var(--red-a);
+        }
+
+        .st .sc-ico {
+            background: var(--teal-a);
+        }
+
+        .si .sc-ico {
+            background: var(--iris-a);
+        }
+
+        .sc-badge {
+            font-family: var(--mono);
+            font-size: 9px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.08em;
+        }
+
+        .bok {
+            background: var(--teal-a);
+            color: var(--teal);
+        }
+
+        .bpend {
+            background: var(--amb-a);
+            color: var(--amber);
+        }
+
+        .binfo {
+            background: var(--iris-a);
+            color: var(--iris);
+        }
+
+        .bred {
+            background: var(--red-a);
+            color: var(--red2);
+        }
+
+        .sc-val {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .sr .sc-val {
+            color: var(--red2);
+        }
+
+        .st .sc-val {
+            color: var(--teal);
+        }
+
+        .si .sc-val {
+            color: var(--iris);
+        }
+
+        .sc-lbl {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--ink2);
+        }
+
+        .sc-sub {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+            margin-top: 3px;
+        }
+
+        /* GRID */
+        .grid2 {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 16px;
+        }
+
+        @media(max-width:900px) {
+            .grid2 {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* PANEL */
+        .panel {
+            background: var(--card);
+            border: 1px solid var(--rim);
+            border-radius: 18px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .panel:last-child {
+            margin-bottom: 0;
+        }
+
+        .ph {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 22px;
+            border-bottom: 1px solid var(--rim);
+            background: var(--card2);
+        }
+
+        .ph-t {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .ph-s {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+        }
+
+        .ph-r {
+            margin-left: auto;
+        }
+
+        /* LATEST TRIAGE */
+        .ts-body {
+            padding: 22px;
+        }
+
+        .ts-lvl {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 20px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            margin-bottom: 18px;
+        }
+
+        .ts-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .lv-c {
+            background: var(--red-a);
+            color: var(--red2);
+            border: 1px solid rgba(244, 63, 63, 0.3);
+        }
+
+        .lv-h {
+            background: var(--amb-a);
+            color: var(--amber);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .lv-m {
+            background: var(--iris-a);
+            color: var(--iris);
+            border: 1px solid rgba(129, 140, 248, 0.3);
+        }
+
+        .lv-l {
+            background: var(--teal-a);
+            color: var(--teal);
+            border: 1px solid rgba(6, 214, 160, 0.3);
+        }
+
+        .ts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .ts-cell {
+            background: var(--card2);
+            border: 1px solid var(--rim);
+            border-radius: 12px;
+            padding: 14px 16px;
+        }
+
+        .tsc-lbl {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink3);
+            margin-bottom: 6px;
+        }
+
+        .tsc-val {
+            font-size: 13px;
+            color: var(--ink);
+            line-height: 1.5;
+        }
+
+        .tsc-val.it {
+            color: var(--ink2);
+            font-style: italic;
+        }
+
+        /* TABLE */
         table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        th {
+        thead th {
+            padding: 10px 20px;
             text-align: left;
             font-family: var(--mono);
-            font-size: 10px;
-            color: var(--ink3);
-            text-transform: uppercase;
+            font-size: 9px;
+            font-weight: 600;
             letter-spacing: 0.1em;
-            padding: 14px 24px;
+            text-transform: uppercase;
+            color: var(--ink3);
+            background: var(--card2);
             border-bottom: 1px solid var(--rim);
+            white-space: nowrap;
         }
 
-        td {
-            padding: 16px 24px;
+        tbody tr {
             border-bottom: 1px solid var(--rim);
-            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.12s;
         }
 
-        tr:last-child td {
+        tbody tr:last-child {
             border-bottom: none;
         }
 
-        tr:hover td {
-            background: var(--raised);
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.025);
         }
 
-        .pill {
+        tbody td {
+            padding: 13px 20px;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .rp {
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            padding: 3px 12px;
+            padding: 4px 11px;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .rpd {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .rp-c {
+            background: var(--red-a);
+            color: var(--red2);
+            border: 1px solid rgba(244, 63, 63, 0.25);
+        }
+
+        .rp-h {
+            background: var(--amb-a);
+            color: var(--amber);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+        }
+
+        .rp-m {
+            background: var(--iris-a);
+            color: var(--iris);
+            border: 1px solid rgba(129, 140, 248, 0.25);
+        }
+
+        .rp-l {
+            background: var(--teal-a);
+            color: var(--teal);
+            border: 1px solid rgba(6, 214, 160, 0.25);
+        }
+
+        .sp {
+            display: inline-block;
+            padding: 3px 10px;
             border-radius: 6px;
             font-family: var(--mono);
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
         }
 
-        /* Submit symptoms form */
-        .submit-card {
-            background: var(--base);
-            border: 1px solid var(--rim);
-            border-radius: 24px;
-            overflow: hidden;
-            margin-top: 32px;
+        .sp-ok {
+            background: var(--teal-a);
+            color: var(--teal);
         }
 
-        .card-header {
-            padding: 20px 24px;
-            background: var(--raised);
-            border-bottom: 1px solid var(--rim);
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .sp-pend {
+            background: var(--amb-a);
+            color: var(--amber);
         }
 
-        .card-title {
+        /* LOADING */
+        .tstate {
+            padding: 40px 20px;
+            text-align: center;
+            font-size: 14px;
+            color: var(--ink3);
+            line-height: 2;
+        }
+
+        .tl {
+            width: 22px;
+            height: 22px;
+            margin: 0 auto 12px;
+            border: 2.5px solid var(--rim2);
+            border-top-color: var(--teal);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* SYMPTOM FORM */
+        .sf {
+            padding: 20px;
+        }
+
+        .sf-lbl {
             font-family: var(--mono);
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--ink2);
+            font-size: 9px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink3);
+            margin-bottom: 10px;
         }
 
-        .card-body {
-            padding: 24px;
-        }
-
-        .textarea {
+        .sf-ta {
             width: 100%;
-            min-height: 110px;
-            background: var(--deep);
+            min-height: 90px;
+            background: var(--bg2);
             border: 1px solid var(--rim);
-            border-radius: 14px;
-            padding: 16px;
+            border-radius: 10px;
+            padding: 12px 14px;
             color: var(--ink);
             font-family: var(--mono);
-            font-size: 13px;
+            font-size: 12px;
             line-height: 1.7;
-            resize: vertical;
+            resize: none;
             outline: none;
             transition: border-color 0.2s;
         }
 
-        .textarea:focus {
-            border-color: var(--red-glo);
-            background: rgba(255, 59, 47, 0.02);
+        .sf-ta:focus {
+            border-color: rgba(244, 63, 63, 0.4);
         }
 
-        .card-footer {
+        .sf-ta::placeholder {
+            color: var(--ink3);
+        }
+
+        .sf-foot {
             display: flex;
             justify-content: flex-end;
-            margin-top: 16px;
+            margin-top: 10px;
         }
 
-        .btn-submit {
-            padding: 10px 24px;
+        .sf-btn {
+            padding: 9px 20px;
             background: var(--red);
             border: none;
-            border-radius: 10px;
+            border-radius: 9px;
+            font-family: var(--sans);
+            font-size: 13px;
+            font-weight: 700;
             color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sf-btn:hover {
+            background: #e03030;
+            transform: translateY(-1px);
+        }
+
+        /* DOCTOR CARD */
+        .dc {
+            padding: 18px 20px;
+        }
+
+        .dc-in {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: var(--card2);
+            border: 1px solid var(--rim);
+            border-radius: 12px;
+            padding: 14px 16px;
+        }
+
+        .dc-av {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--teal) 0%, var(--iris) 100%);
+            display: grid;
+            place-items: center;
+            font-size: 15px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .dc-name {
             font-size: 14px;
             font-weight: 700;
-            cursor: pointer;
-            font-family: var(--sans);
-            transition: all 0.2s;
-            box-shadow: 0 4px 14px var(--red-glo);
+            color: var(--ink);
         }
 
-        .btn-submit:hover {
-            background: var(--red2);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px var(--red-glo);
+        .dc-role {
+            font-size: 11px;
+            color: var(--ink3);
+            margin-top: 2px;
         }
 
-        ::-webkit-scrollbar {
-            width: 4px;
+        .dc-avail {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 6px;
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--teal);
         }
 
-        ::-webkit-scrollbar-track {
-            background: transparent;
+        .av-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--teal);
+            animation: pip 2s infinite;
         }
 
-        ::-webkit-scrollbar-thumb {
-            background: var(--rim2);
-            border-radius: 2px;
+        @keyframes pip {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.3
+            }
+        }
+
+        /* QUICK STATS */
+        .qs {
+            padding: 16px 18px;
+        }
+
+        .qsr {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--rim);
+        }
+
+        .qsr:last-child {
+            border-bottom: none;
+        }
+
+        .qsl {
+            font-size: 13px;
+            color: var(--ink2);
+        }
+
+        .qsv {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 999;
+            background: var(--card2);
+            border: 1px solid var(--rim2);
+            border-radius: 12px;
+            padding: 12px 18px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(70px);
+            opacity: 0;
+            transition: all 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+            pointer-events: none;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .tdot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--teal);
         }
     </style>
 </head>
 
 <body>
-    <canvas id="bgCanvas"></canvas>
 
-    <nav class="topnav">
-        <div class="logo-icon">+</div>
-        <span class="logo-text">Healix</span>
-        <span class="role-chip">PATIENT</span>
+    <nav class="nav">
+        <a class="nav-logo" href="/">
+            <div class="nl-mark">
+                <div class="nl-cross"></div>
+            </div>
+            <span class="nl-word">Healix</span>
+            <span class="nl-tag">PATIENT</span>
+        </a>
         <div class="nav-links">
-            <a class="nav-link active" href="#">My Health</a>
-            <a class="nav-link" href="#">My Reports</a>
-            <a class="nav-link" href="#">Submit Symptoms</a>
+            <a class="nla on" href="/dashboard/patient/">My Health</a>
+            <a class="nla" href="#">My Reports</a>
+            <a class="nla" href="#">Appointments</a>
         </div>
-        <div class="topnav-right">
-            <div class="avatar" id="patientInitials">P</div>
-            <button class="logout-btn" onclick="handleLogout()">Sign out</button>
+        <div class="nav-right">
+            <div class="pat-av" id="patAv">P</div>
+            <button class="nav-out" onclick="handleLogout()">Sign out ↩</button>
         </div>
     </nav>
 
     <div class="page">
 
-        <!-- Welcome banner -->
-        <div class="welcome-banner">
+        <!-- BANNER -->
+        <div class="banner">
+            <div class="b-glow"></div>
+            <div class="b-glow2"></div>
             <div>
-                <h1 class="welcome-title" id="welcomeTitle">Hello, Patient 👋</h1>
-                <p class="welcome-sub">Here's your latest health summary from Healix.</p>
+                <div class="b-eye">Your Health Dashboard</div>
+                <div class="b-name">Hello, <span id="patName">Patient</span> 👋</div>
+                <div class="b-sub">Here's your latest health summary from Healix AI.</div>
             </div>
-            <button class="report-btn" onclick="document.getElementById('symptomInput').focus()">+ Report
-                Symptoms</button>
+            <button class="b-btn" onclick="document.getElementById('symInput').focus()">+ Report Symptoms</button>
         </div>
 
-        <!-- Status -->
-        <div class="status-grid">
-            <div class="status-card">
-                <div class="status-label">Current Status</div>
-                <div class="status-value" id="statusText" style="color:var(--teal)">Stable</div>
-                <div id="lastCheckText" style="font-size:12px;color:var(--muted2);margin-top:4px">Last check: Syncing...
+        <!-- STATS -->
+        <div class="stats">
+            <div class="sc sr">
+                <div class="sc-top">
+                    <div class="sc-ico">🩺</div>
+                    <span class="sc-badge bok" id="sBadge">STABLE</span>
                 </div>
+                <div class="sc-val" id="sStatus">Stable</div>
+                <div class="sc-lbl">Current Status</div>
+                <div class="sc-sub" id="sSub">Last check: —</div>
             </div>
-            <div class="status-card">
-                <div class="status-label">Reports Filed</div>
-                <div class="status-value" id="reportCount">0</div>
-                <div style="font-size:12px;color:var(--muted2);margin-top:4px">Total assessments</div>
-            </div>
-            <div class="status-card">
-                <div class="status-label">Assigned Doctor</div>
-                <div style="font-size:16px;font-weight:600;margin-top:4px">Dr. Sharma</div>
-                <div style="font-size:12px;color:var(--teal);margin-top:2px">Available</div>
-            </div>
-        </div>
-
-        <!-- Latest triage result -->
-        <div class="triage-status-card" id="latestTriageCard" style="display:none">
-            <div class="triage-status-header">
-                <span class="section-title">Your Latest Triage Result</span>
-                <span class="triage-badge-large" id="latestBadge">● LOW</span>
-            </div>
-            <div class="triage-detail">
-                <div class="detail-item">
-                    <div class="detail-label">Reported Symptoms</div>
-                    <div class="detail-value" id="latestSymptoms">...</div>
+            <div class="sc st">
+                <div class="sc-top">
+                    <div class="sc-ico">📋</div>
+                    <span class="sc-badge binfo">THIS MONTH</span>
                 </div>
-                <div class="detail-item">
-                    <div class="detail-label">AI Assessment</div>
-                    <div class="detail-value" id="latestAssessment">...</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Recommended Action</div>
-                    <div class="detail-value" id="latestAction">...</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Doctor's Note</div>
-                    <div class="detail-value" style="color:var(--muted2);font-style:italic">Record synced from AI
-                        Engine.</div>
-                </div>
+                <div class="sc-val" id="sReports">—</div>
+                <div class="sc-lbl">Triage Reports</div>
+                <div class="sc-sub" id="sRepSub">Loading...</div>
             </div>
-        </div>
-        <div id="noTriageMsg"
-            style="background:var(--surface); padding: 40px; border-radius: 16px; text-align: center; border: 1px dashed var(--border); color: var(--muted2); margin-bottom: 32px">
-            No triage records found. Use the form below to report symptoms.
-        </div>
-
-        <!-- History -->
-        <div class="history-card">
-            <div class="history-header">
-                <span class="section-title">Triage History</span>
-                <span id="historyCount" style="font-family:var(--font-mono);font-size:12px;color:var(--muted2)">0
-                    records</span>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Chief Complaint</th>
-                        <th>Triage Level</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="historyBody">
-                    <tr>
-                        <td colspan="4" style="text-align:center; padding: 20px; color: var(--muted2)">Loading
-                            history...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Report new symptoms -->
-        <div class="submit-card">
-            <div class="card-header">
-                <span>🩺</span>
-                <span class="card-title">Report New Symptoms</span>
-            </div>
-            <div class="card-body">
-                <textarea class="textarea" id="symptomInput"
-                    placeholder="Describe how you're feeling...&#10;e.g. I have had a headache for 2 days, with mild nausea. No fever."></textarea>
-                <div class="card-footer">
-                    <button class="btn-submit" onclick="submitSymptoms()">Send to Doctor →</button>
+            <div class="sc si">
+                <div class="sc-top">
+                    <div class="sc-ico">👨‍⚕️</div>
+                    <span class="sc-badge bok">AVAILABLE</span>
                 </div>
+                <div class="sc-val" style="font-size:18px;margin-top:4px" id="sDoc">Dr. Sharma</div>
+                <div class="sc-lbl">Assigned Doctor</div>
+                <div class="sc-sub">Healix Clinical Team</div>
             </div>
         </div>
 
+        <div class="grid2">
+            <div>
+                <!-- Latest triage -->
+                <div class="panel">
+                    <div class="ph">
+                        <span class="ph-t">Latest Triage Result</span>
+                        <span class="ph-s" id="latDate"></span>
+                    </div>
+                    <div id="tsBody">
+                        <div class="tstate">
+                            <div class="tl"></div>Loading your latest result...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History -->
+                <div class="panel">
+                    <div class="ph">
+                        <span class="ph-t">Triage History</span>
+                        <span class="ph-s" id="hCnt"></span>
+                    </div>
+                    <div id="hBody">
+                        <div class="tstate">
+                            <div class="tl"></div>Loading history...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <!-- Submit symptoms -->
+                <div class="panel">
+                    <div class="ph"><span class="ph-t">Report New Symptoms</span></div>
+                    <div class="sf">
+                        <div class="sf-lbl">Describe how you're feeling</div>
+                        <textarea class="sf-ta" id="symInput"
+                            placeholder="I have had a headache for 2 days, with mild nausea..."></textarea>
+                        <div class="sf-foot">
+                            <button class="sf-btn" onclick="submitSym()">Send to Doctor →</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Doctor -->
+                <div class="panel">
+                    <div class="ph"><span class="ph-t">My Doctor</span></div>
+                    <div class="dc">
+                        <div class="dc-in">
+                            <div class="dc-av" id="dcAv">DS</div>
+                            <div>
+                                <div class="dc-name" id="dcName">Dr. Sharma</div>
+                                <div class="dc-role">General Physician · Healix</div>
+                                <div class="dc-avail">
+                                    <div class="av-dot"></div>Available now
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick stats -->
+                <div class="panel">
+                    <div class="ph"><span class="ph-t">My Stats</span></div>
+                    <div class="qs">
+                        <div class="qsr"><span class="qsl">Total triages</span><span class="qsv" id="qsT"
+                                style="color:var(--teal)">—</span></div>
+                        <div class="qsr"><span class="qsl">Last risk level</span><span class="qsv" id="qsL">—</span>
+                        </div>
+                        <div class="qsr"><span class="qsl">Resolved cases</span><span class="qsv" id="qsR"
+                                style="color:var(--teal)">—</span></div>
+                        <div class="qsr"><span class="qsl">Avg AI confidence</span><span class="qsv" id="qsC"
+                                style="color:var(--iris)">—</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Firebase Auth Guard -->
+    <div class="toast" id="toast">
+        <div class="tdot"></div><span id="tMsg">Updated</span>
+    </div>
+
+    <!-- Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-        const firebaseConfig = {
+        const cfg = {
             apiKey: "AIzaSyDMoNdBIWdZNKJOlR7ZV-46OfFHZPwb1Wk", authDomain: "healix-d02c4.firebaseapp.com",
             projectId: "healix-d02c4", storageBucket: "healix-d02c4.firebasestorage.app",
             messagingSenderId: "783527967185", appId: "1:783527967185:web:eacf3a3f785121a0ae08f0",
             measurementId: "G-Z4TD76TGR7"
         };
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        onAuthStateChanged(auth, async (user) => {
-            if (!user) { window.location.href = '/auth/login/'; return; }
-            const userDoc = await getDoc(doc(db, 'users', user.uid));
-            if (userDoc.exists() && userDoc.data().role === 'doctor') {
-                window.location.href = '/dashboard/doctor/';
-                return;
-            }
-            const name = user.displayName || userDoc.data().name || 'Patient';
-            document.getElementById('welcomeTitle').textContent = `Hello, ${name.split(' ')[0]} 👋`;
-            document.getElementById('patientInitials').textContent = name.slice(0, 1).toUpperCase();
-
-            loadMyData(user.uid);
+        const app = initializeApp(cfg), auth = getAuth(app), db = getFirestore(app);
+        window.auth = auth;
+        onAuthStateChanged(auth, async user => {
+            if (!user) { location.href = '/auth/login/'; return; }
+            const ud = await getDoc(doc(db, 'users', user.uid));
+            if (!ud.exists() || ud.data().role !== 'patient') { location.href = '/auth/login/'; return; }
+            const name = user.displayName || ud.data().name || user.email.split('@')[0];
+            document.getElementById('patName').textContent = name.split(' ')[0];
+            document.getElementById('patAv').textContent = name.slice(0, 1).toUpperCase();
+            const pid = ud.data().django_patient_id;
+            if (pid) { window._pid = pid; loadData(pid); } else { loadGeneric(); }
+            window.handleLogout = async () => { await signOut(auth); location.href = '/auth/login/'; };
         });
+    </script>
 
-        async function loadMyData(uid) {
+    <script>
+        const RISK = {
+            Critical: { cls: 'rp-c', dot: '#f43f3f' }, High: { cls: 'rp-h', dot: '#f59e0b' },
+            Medium: { cls: 'rp-m', dot: '#818cf8' }, Low: { cls: 'rp-l', dot: '#06d6a0' },
+        };
+        function csrf() { for (const c of document.cookie.split(';')) { const [k, v] = c.trim().split('='); if (k === 'csrftoken') return decodeURIComponent(v); } return ''; }
+        async function get(u) {
+            let headers = { 'X-CSRFToken': csrf(), 'Content-Type': 'application/json' };
+            if (window.auth && window.auth.currentUser) {
+                const token = await window.auth.currentUser.getIdToken(true);
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            const r = await fetch(u, { headers });
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+        }
+
+        async function loadData(pid) {
             try {
-                const res = await fetch(`/api/patients/patients/my/?user_uid=${uid}`);
-                const data = await res.json();
-                renderPatientDashboard(data);
+                const [p, h] = await Promise.all([get(`/api/patients/${pid}/`), get(`/api/triage/patient/${pid}/history/`)]);
+                const hist = Array.isArray(h) ? h : (h.results || []);
+                renderBanner(p, hist); renderHistory(hist); renderStats(hist);
+            } catch (e) { loadGeneric(); }
+        }
+
+        async function loadGeneric() {
+            try {
+                const h = await get('/api/triage/history/');
+                const hist = Array.isArray(h) ? h : (h.results || []);
+                renderHistory(hist.slice(0, 5)); renderStats(hist.slice(0, 5));
+                emptyLatest();
             } catch (e) {
-                console.error("Error loading patient data:", e);
+                emptyLatest();
+                document.getElementById('hBody').innerHTML = `<div class="tstate">No history found.<br/><a href="/triage/" style="color:var(--teal)">Submit symptoms →</a></div>`;
             }
         }
 
-        function renderPatientDashboard(records) {
-            const historyBody = document.getElementById('historyBody');
-            const historyCount = document.getElementById('historyCount');
-            const reportCount = document.getElementById('reportCount');
-            const lastCheckText = document.getElementById('lastCheckText');
+        function renderBanner(p, hist) {
+            const latest = hist[0];
+            const level = p.risk_level || (latest ? latest.risk_level : 'Low');
+            const statusMap = { Critical: 'At Risk', High: 'Needs Attention', Medium: 'Monitoring', Low: 'Stable' };
+            const badgeMap = { Critical: 'bred', High: 'bpend', Medium: 'binfo', Low: 'bok' };
+            document.getElementById('sStatus').textContent = statusMap[level] || 'Stable';
+            document.getElementById('sBadge').textContent = level.toUpperCase();
+            document.getElementById('sBadge').className = 'sc-badge ' + (badgeMap[level] || 'bok');
+            document.getElementById('sSub').textContent = latest ? `Last check: ${ago(latest.analyzed_at)}` : 'No recent check';
+            if (latest) {
+                document.getElementById('latDate').textContent = ago(latest.analyzed_at);
+                renderLatest(latest, p);
+            } else { emptyLatest(); }
+        }
 
-            if (!records || records.length === 0) {
-                historyBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px; color: var(--muted2)">No records found.</td></tr>';
+        function renderLatest(t, p) {
+            const level = t.risk_level || 'Low';
+            const r = RISK[level] || RISK['Low'];
+            const conds = (t.possible_conditions || []).slice(0, 3);
+            document.getElementById('tsBody').innerHTML = `
+    <div class="ts-body">
+      <div class="ts-lvl lv-${level.toLowerCase()}">
+        <span class="ts-dot" style="background:${r.dot}"></span>
+        ${level} Priority
+      </div>
+      <div class="ts-grid">
+        <div class="ts-cell">
+          <div class="tsc-lbl">Reported symptoms</div>
+          <div class="tsc-val">${t.symptoms_input || p.symptoms || '—'}</div>
+        </div>
+        <div class="ts-cell">
+          <div class="tsc-lbl">Possible conditions</div>
+          <div class="tsc-val">${conds.length ? conds.join(', ') : 'Evaluation pending'}</div>
+        </div>
+        <div class="ts-cell">
+          <div class="tsc-lbl">Recommended action</div>
+          <div class="tsc-val">${t.recommendation ? (t.recommendation.slice(0, 100) + '…') : 'Pending review'}</div>
+        </div>
+        <div class="ts-cell">
+          <div class="tsc-lbl">AI explanation</div>
+          <div class="tsc-val it">${t.explanation ? ('"' + t.explanation.slice(0, 90) + '…"') : 'Pending'}</div>
+        </div>
+      </div>
+    </div>`;
+        }
+
+        function emptyLatest() {
+            document.getElementById('tsBody').innerHTML = `<div class="tstate" style="padding:28px">
+    <div style="font-size:28px;margin-bottom:10px">🩺</div>
+    <strong>No triage on record</strong><br/>
+    <a href="/triage/" style="color:var(--teal);font-size:13px">Report symptoms to get started →</a>
+  </div>`;
+        }
+
+        function renderHistory(hist) {
+            document.getElementById('hCnt').textContent = hist.length + ' record' + (hist.length !== 1 ? 's' : '');
+            if (!hist.length) {
+                document.getElementById('hBody').innerHTML = `<div class="tstate">No history yet.<br/><a href="/triage/" style="color:var(--teal)">Run your first triage →</a></div>`;
                 return;
             }
-
-            // Update stats
-            reportCount.textContent = records.length;
-            historyCount.textContent = `${records.length} records`;
-
-            const latest = records[0];
-            const date = new Date(latest.created_at);
-            lastCheckText.textContent = `Last check: ${date.toLocaleDateString()}`;
-
-            // Render latest card
-            document.getElementById('noTriageMsg').style.display = 'none';
-            document.getElementById('latestTriageCard').style.display = 'block';
-
-            const level = (latest.triage_level || 'LOW').toUpperCase();
-            const badge = document.getElementById('latestBadge');
-            badge.textContent = `● ${level}`;
-            badge.style.background = level === 'CRITICAL' ? 'rgba(255,59,47,0.1)' : level === 'HIGH' ? 'rgba(255,176,32,0.1)' : 'var(--teal-soft)';
-            badge.style.color = level === 'CRITICAL' ? '#ff3b2f' : level === 'HIGH' ? '#ffb020' : 'var(--teal)';
-
-            document.getElementById('latestSymptoms').textContent = latest.symptoms;
-            document.getElementById('latestAssessment').textContent = (latest.ai_analysis && latest.ai_analysis.explanation) || "Analysis complete. Waiting for doctor review.";
-            document.getElementById('latestAction').textContent = (latest.ai_analysis && latest.ai_analysis.recommendation) || "Monitor symptoms and report changes.";
-
-            // Render history table
-            historyBody.innerHTML = records.map(r => {
-                const rLevel = (r.triage_level || 'LOW').toUpperCase();
-                const rDate = new Date(r.created_at).toLocaleDateString();
-                const rColor = rLevel === 'CRITICAL' ? '#ff3b2f' : rLevel === 'HIGH' ? '#ffb020' : '#00e5b8';
-                return `
-                    <tr>
-                        <td style="font-family:var(--font-mono);font-size:12px">${rDate}</td>
-                        <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">${r.symptoms}</td>
-                        <td><span class="pill" style="background:rgba(0,0,0,0.2);color:${rColor};border:1px solid ${rColor}33">${rLevel}</span></td>
-                        <td><span class="pill" style="background:var(--teal-soft);color:var(--teal)">${r.status || 'Synced'}</span></td>
-                    </tr>
-                `;
-            }).join('');
+            document.getElementById('hBody').innerHTML = `<table>
+    <thead><tr><th>Date</th><th>Complaint</th><th>Risk Level</th><th>Status</th></tr></thead>
+    <tbody>${hist.map((t, i) => {
+                const r = RISK[t.risk_level] || RISK['Low'];
+                const sym = (t.symptoms_input || '').slice(0, 48) + '…';
+                const done = i > 0;
+                return `<tr>
+        <td style="font-family:var(--mono);font-size:11px;color:var(--ink3)">${fmtD(t.analyzed_at)}</td>
+        <td style="font-size:12px;color:var(--ink2)">${sym}</td>
+        <td><span class="rp ${r.cls}"><span class="rpd" style="background:${r.dot}"></span>${t.risk_level}</span></td>
+        <td><span class="sp ${done ? 'sp-ok' : 'sp-pend'}">${done ? 'Resolved' : 'Pending'}</span></td>
+      </tr>`;
+            }).join('')}</tbody>
+  </table>`;
         }
 
-        window.handleLogout = async function () {
-            await signOut(auth);
-            window.location.href = '/auth/login/';
-        };
-    </script>
-    <script>
-        /* ── BACKGROUND ── */
-        (() => {
-            const c = document.getElementById('bgCanvas'), ctx = c.getContext('2d');
-            let W, H, P = [];
-            function resize() { W = c.width = innerWidth; H = c.height = innerHeight; }
-            resize(); addEventListener('resize', resize);
-            for (let i = 0; i < 55; i++) P.push({ x: Math.random() * 2000, y: Math.random() * 1200, vx: (Math.random() - .5) * .25, vy: (Math.random() - .5) * .18, r: Math.random() * 1.1 + .3, a: Math.random() * .45 + .1, col: Math.random() > 0.55 ? '#00e5b8' : '#ff3b2f' });
-            function draw() {
-                ctx.clearRect(0, 0, W, H);
-                P.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < 0) p.x = W; if (p.x > W) p.x = 0; if (p.y < 0) p.y = H; if (p.y > H) p.y = 0; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fillStyle = p.col; ctx.globalAlpha = p.a; ctx.fill(); });
-                ctx.globalAlpha = .05;
-                for (let i = 0; i < P.length; i++)for (let j = i + 1; j < P.length; j++) { const dx = P[i].x - P[j].x, dy = P[i].y - P[j].y, d = Math.sqrt(dx * dx + dy * dy); if (d < 110) { ctx.beginPath(); ctx.moveTo(P[i].x, P[i].y); ctx.lineTo(P[j].x, P[j].y); ctx.strokeStyle = '#ff3b2f'; ctx.lineWidth = .5; ctx.stroke(); } }
-                ctx.globalAlpha = 1; requestAnimationFrame(draw);
-            }
-            draw();
-        })();
-
-        function submitSymptoms() {
-            const input = document.getElementById('symptomInput').value.trim();
-            if (!input) return;
-            window.location.href = `/triage/?input=${encodeURIComponent(input)}`;
+        function renderStats(hist) {
+            const total = hist.length;
+            const last = hist[0] ? hist[0].risk_level : '—';
+            const resolved = Math.max(0, total - 1);
+            const avgConf = hist.length ? Math.round(hist.reduce((a, t) => a + (t.confidence_score || 0.75), 0) / hist.length * 100) + '%' : '—';
+            document.getElementById('sReports').textContent = total;
+            document.getElementById('sRepSub').textContent = total > 0 ? `${total} total record${total !== 1 ? 's' : ''}` : 'No reports yet';
+            document.getElementById('qsT').textContent = total;
+            document.getElementById('qsL').textContent = last;
+            document.getElementById('qsR').textContent = resolved;
+            document.getElementById('qsC').textContent = avgConf;
+            if (hist[0]) { const r = RISK[hist[0].risk_level] || RISK['Low']; document.getElementById('qsL').style.color = r.dot; }
         }
+
+        function submitSym() {
+            const v = document.getElementById('symInput').value.trim();
+            if (!v) return;
+            const pid = window._pid;
+            location.href = pid ? `/triage/?patient_id=${pid}&input=${encodeURIComponent(v)}` : `/triage/?input=${encodeURIComponent(v)}`;
+        }
+        window.submitSym = submitSym;
+
+        function fmtD(d) { if (!d) return '—'; return new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }); }
+        function ago(d) { if (!d) return '—'; const s = Math.floor((Date.now() - new Date(d)) / 1000); if (s < 60) return 'just now'; if (s < 3600) return Math.floor(s / 60) + 'm ago'; if (s < 86400) return Math.floor(s / 3600) + 'h ago'; return Math.floor(s / 86400) + 'd ago'; }
     </script>
 </body>
 

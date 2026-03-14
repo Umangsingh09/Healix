@@ -9,6 +9,7 @@ class UserProfile(models.Model):
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    firebase_uid = models.CharField(max_length=128, blank=True, null=True, unique=True, db_index=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='patient')
     phone = models.CharField(max_length=15, blank=True)
     address = models.TextField(blank=True)

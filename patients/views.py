@@ -36,6 +36,7 @@ def get_patients(request):
 
 # GET patients for logged-in user (For Patients)
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_my_patients(request):
     user_uid = request.query_params.get('user_uid')
     if not user_uid:

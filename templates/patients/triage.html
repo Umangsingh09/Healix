@@ -1607,7 +1607,7 @@
             <div class="nav-pill">
                 <div class="pip"></div>5 agents online
             </div>
-            <a href="/dashboard/doctor/" id="backToDash" class="nav-back">← Dashboard</a>
+            <a href="/dashboard/doctor/" class="nav-back">← Dashboard</a>
         </div>
     </nav>
 
@@ -1847,46 +1847,13 @@
             </div>
 
             <div class="action-strip">
-                <button class="abtn prim" onclick="redirectToDashboard()">✓ Save &amp; Dashboard</button>
+                <button class="abtn prim" onclick="location.href='/dashboard/doctor/'">✓ Save &amp; Dashboard</button>
                 <button class="abtn sec" onclick="resetAll()">+ New Analysis</button>
                 <button class="abtn sec" onclick="window.print()">↓ Print Report</button>
             </div>
         </div>
 
     </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyDMoNdBIWdZNKJOlR7ZV-46OfFHZPwb1Wk", authDomain: "healix-d02c4.firebaseapp.com",
-            projectId: "healix-d02c4", storageBucket: "healix-d02c4.firebasestorage.app",
-            messagingSenderId: "783527967185", appId: "1:783527967185:web:eacf3a3f785121a0ae08f0",
-            measurementId: "G-Z4TD76TGR7"
-        };
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        let userRole = 'doctor'; // fallback
-
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                const userDoc = await getDoc(doc(db, 'users', user.uid));
-                if (userDoc.exists()) {
-                    userRole = userDoc.data().role;
-                    const dashUrl = userRole === 'doctor' ? '/dashboard/doctor/' : '/dashboard/patient/';
-                    document.getElementById('backToDash').href = dashUrl;
-                }
-            }
-        });
-
-        window.redirectToDashboard = function () {
-            window.location.href = userRole === 'doctor' ? '/dashboard/doctor/' : '/dashboard/patient/';
-        };
-    </script>
 
     <script>
         /* ── BACKGROUND ── */
@@ -2129,16 +2096,6 @@
             const body = { symptoms: prompt };
             const pid = urlP.get('patient_id');
             if (pid) body.patient_id = parseInt(pid);
-
-            // Link to logged-in user if available
-            if (auth.currentUser) {
-                body.user_uid = auth.currentUser.uid;
-                // If in structured mode, grab name/age. If not, use Firestore data if possible
-                const name = document.getElementById('fName')?.value.trim();
-                const age = document.getElementById('fAge')?.value.trim();
-                if (name) body.name = name;
-                if (age) body.age = parseInt(age);
-            }
 
             const animP = animateAgents(5200);
             try {

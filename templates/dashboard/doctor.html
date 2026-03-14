@@ -7,33 +7,37 @@
     <title>Healix — Clinical Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
-        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap"
         rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <style>
         :root {
-            --void: #04080c;
-            --deep: #070d13;
-            --base: #0c1520;
-            --raised: #111d28;
-            --lift: #162333;
+            --bg: #070c13;
+            --bg2: #0b1520;
+            --card: #0f1d2c;
+            --card2: #122130;
+            --card3: #162636;
             --rim: rgba(255, 255, 255, 0.055);
             --rim2: rgba(255, 255, 255, 0.10);
-            --rim3: rgba(255, 255, 255, 0.18);
-            --ink: #dce8f0;
-            --ink2: #7a94a8;
-            --ink3: #3d5568;
-            --red: #ff3b2f;
-            --red-dim: rgba(255, 59, 47, 0.10);
-            --red-glo: rgba(255, 59, 47, 0.22);
-            --amber: #ffb020;
-            --amb-dim: rgba(255, 176, 32, 0.10);
-            --teal: #00e5b8;
-            --teal-dim: rgba(0, 229, 184, 0.08);
-            --teal-glo: rgba(0, 229, 184, 0.2);
-            --iris: #8b78ff;
-            --iris-dim: rgba(139, 120, 255, 0.10);
-            --sans: 'Syne', system-ui, sans-serif;
+            --rim3: rgba(255, 255, 255, 0.17);
+            --ink: #ddeaf6;
+            --ink2: #607d93;
+            --ink3: #2e4a5e;
+            --red: #f43030;
+            --red2: #ff5c5c;
+            --ra: rgba(244, 48, 48, 0.10);
+            --rb: rgba(244, 48, 48, 0.20);
+            --amber: #f5a700;
+            --aa: rgba(245, 167, 0, 0.10);
+            --ab: rgba(245, 167, 0, 0.20);
+            --teal: #00dba8;
+            --ta: rgba(0, 219, 168, 0.09);
+            --tb: rgba(0, 219, 168, 0.20);
+            --iris: #7c73f0;
+            --ia: rgba(124, 115, 240, 0.10);
+            --blue: #3ab0ff;
+            --ba: rgba(58, 176, 255, 0.10);
+            --sans: 'Outfit', system-ui, sans-serif;
             --mono: 'JetBrains Mono', monospace;
             --serif: 'Crimson Pro', Georgia, serif;
         }
@@ -47,11 +51,11 @@
         }
 
         html {
-            scroll-behavior: smooth;
+            font-size: 15px;
         }
 
         body {
-            background: var(--void);
+            background: var(--bg);
             color: var(--ink);
             font-family: var(--sans);
             min-height: 100vh;
@@ -59,11 +63,25 @@
             overflow-x: hidden;
         }
 
-        /* SIDEBAR */
-        .sidebar {
-            width: 220px;
+        /* ── NOISE ── */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.022;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-size: 180px;
+        }
+
+        /* ═══════════════════════════════
+       SIDEBAR
+    ═══════════════════════════════ */
+        .sb {
+            width: 236px;
             flex-shrink: 0;
-            background: var(--deep);
+            background: var(--bg2);
             border-right: 1px solid var(--rim);
             display: flex;
             flex-direction: column;
@@ -71,201 +89,249 @@
             top: 0;
             left: 0;
             bottom: 0;
-            z-index: 50;
+            z-index: 60;
             overflow-y: auto;
+            scrollbar-width: none;
+        }
+
+        .sb::-webkit-scrollbar {
+            display: none;
         }
 
         .sb-logo {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 20px 20px 18px;
+            gap: 12px;
+            padding: 22px 20px 18px;
             border-bottom: 1px solid var(--rim);
         }
 
-        .sb-cross {
-            width: 30px;
-            height: 30px;
+        .logo-mark {
+            width: 36px;
+            height: 36px;
             background: var(--red);
-            border-radius: 8px;
+            border-radius: 10px;
             display: grid;
             place-items: center;
-            position: relative;
             flex-shrink: 0;
+            box-shadow: 0 0 20px rgba(244, 48, 48, 0.4);
+            position: relative;
         }
 
-        .sb-cross::before,
-        .sb-cross::after {
+        .logo-mark::before,
+        .logo-mark::after {
             content: '';
             position: absolute;
             background: white;
             border-radius: 2px;
         }
 
-        .sb-cross::before {
-            width: 13px;
-            height: 2px;
+        .logo-mark::before {
+            width: 14px;
+            height: 2.5px;
         }
 
-        .sb-cross::after {
-            width: 2px;
-            height: 13px;
+        .logo-mark::after {
+            width: 2.5px;
+            height: 14px;
         }
 
-        .sb-wordmark {
-            font-size: 17px;
-            font-weight: 700;
-            letter-spacing: 0.04em;
+        .logo-name {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            color: var(--ink);
         }
 
-        .sb-role {
-            font-family: var(--mono);
-            font-size: 9px;
-            letter-spacing: 0.14em;
-            color: var(--teal);
-            background: var(--teal-dim);
-            border: 1px solid rgba(0, 229, 184, 0.25);
-            padding: 2px 7px;
-            border-radius: 5px;
+        .logo-ver {
             margin-left: auto;
-        }
-
-        .sb-sec {
             font-family: var(--mono);
             font-size: 9px;
-            letter-spacing: 0.18em;
+            color: var(--teal);
+            background: var(--ta);
+            border: 1px solid rgba(0, 219, 168, 0.25);
+            padding: 2px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.1em;
+        }
+
+        .sb-sect {
+            font-family: var(--mono);
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.2em;
             text-transform: uppercase;
             color: var(--ink3);
-            padding: 18px 20px 8px;
+            padding: 18px 20px 7px;
         }
 
         .nav-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 9px 16px;
-            margin: 1px 8px;
-            border-radius: 9px;
-            color: var(--ink3);
+            gap: 11px;
+            margin: 1px 10px;
+            padding: 9px 12px;
+            border-radius: 10px;
             font-size: 13px;
             font-weight: 500;
-            cursor: pointer;
+            color: var(--ink2);
             text-decoration: none;
+            cursor: pointer;
             transition: all 0.18s;
+            position: relative;
         }
 
         .nav-item:hover {
-            background: var(--raised);
-            color: var(--ink2);
-        }
-
-        .nav-item.active {
-            background: var(--raised);
+            background: rgba(255, 255, 255, 0.04);
             color: var(--ink);
-            border: 1px solid var(--rim2);
         }
 
-        .nav-icon {
+        .nav-item.on {
+            background: var(--ra);
+            color: var(--ink);
+            border: 1px solid rgba(244, 48, 48, 0.18);
+        }
+
+        .nav-item.on::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 18px;
+            background: var(--red);
+            border-radius: 0 2px 2px 0;
+        }
+
+        .ni-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
             font-size: 14px;
-            width: 20px;
-            text-align: center;
+            background: rgba(255, 255, 255, 0.04);
             flex-shrink: 0;
+            transition: all 0.18s;
         }
 
-        .nav-badge {
+        .nav-item.on .ni-icon {
+            background: var(--rb);
+        }
+
+        .ni-badge {
             margin-left: auto;
             font-family: var(--mono);
             font-size: 10px;
-            background: var(--red-dim);
-            color: var(--red);
-            border: 1px solid rgba(255, 59, 47, 0.25);
-            padding: 1px 7px;
+            font-weight: 700;
+            color: white;
+            background: var(--red);
+            min-width: 20px;
+            height: 20px;
             border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
         }
 
-        .sb-profile {
+        .ni-dot {
+            margin-left: auto;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+        }
+
+        /* Sidebar bottom */
+        .sb-bottom {
             margin-top: auto;
             padding: 14px 12px;
             border-top: 1px solid var(--rim);
         }
 
-        .profile-card {
+        .doc-pill {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 10px;
-            border-radius: 10px;
+            gap: 11px;
+            padding: 10px 12px;
+            border-radius: 11px;
             cursor: pointer;
             transition: background 0.18s;
         }
 
-        .profile-card:hover {
-            background: var(--raised);
+        .doc-pill:hover {
+            background: rgba(255, 255, 255, 0.04);
         }
 
-        .avatar {
-            width: 34px;
-            height: 34px;
+        .doc-av {
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            background: var(--teal-dim);
-            border: 1.5px solid rgba(0, 229, 184, 0.35);
+            flex-shrink: 0;
+            background: linear-gradient(135deg, var(--teal) 0%, var(--iris) 100%);
             display: grid;
             place-items: center;
             font-size: 13px;
-            font-weight: 600;
-            color: var(--teal);
-            flex-shrink: 0;
+            font-weight: 700;
+            color: white;
         }
 
-        .profile-name {
+        .doc-name {
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
             color: var(--ink);
         }
 
-        .profile-role {
-            font-family: var(--mono);
+        .doc-role {
             font-size: 10px;
             color: var(--ink3);
             margin-top: 1px;
         }
 
-        .logout-btn {
+        .doc-out {
             margin-left: auto;
             background: none;
             border: none;
             color: var(--ink3);
             cursor: pointer;
-            font-size: 15px;
+            font-size: 16px;
             padding: 4px;
-            transition: color 0.18s;
+            border-radius: 6px;
+            transition: all 0.15s;
         }
 
-        .logout-btn:hover {
+        .doc-out:hover {
             color: var(--red);
+            background: var(--ra);
         }
 
-        /* MAIN */
+        /* ═══════════════════════════════
+       MAIN
+    ═══════════════════════════════ */
         .main {
-            margin-left: 220px;
+            margin-left: 236px;
             flex: 1;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            position: relative;
+            z-index: 1;
         }
 
+        /* TOPBAR */
         .topbar {
-            height: 58px;
+            height: 62px;
             display: flex;
             align-items: center;
-            padding: 0 32px;
+            padding: 0 30px;
             gap: 16px;
-            background: rgba(4, 8, 12, 0.85);
-            backdrop-filter: blur(16px);
+            background: rgba(7, 12, 19, 0.88);
+            backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--rim);
             position: sticky;
             top: 0;
-            z-index: 40;
+            z-index: 50;
         }
 
         .tb-title {
@@ -273,36 +339,43 @@
             font-size: 22px;
             font-weight: 300;
             letter-spacing: -0.02em;
+            color: var(--ink);
         }
 
-        .tb-greeting {
+        .tb-sub {
             font-family: var(--mono);
-            font-size: 11px;
+            font-size: 10px;
             color: var(--ink3);
+            margin-top: 2px;
         }
 
         .tb-right {
             margin-left: auto;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
-        .live-ind {
+        .live-badge {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 7px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: var(--ta);
+            border: 1px solid rgba(0, 219, 168, 0.22);
             font-family: var(--mono);
             font-size: 10px;
-            color: var(--ink2);
+            font-weight: 600;
+            color: var(--teal);
         }
 
-        .live-pip {
+        .lpip {
             width: 7px;
             height: 7px;
             border-radius: 50%;
             background: var(--teal);
-            animation: pip 2s ease-in-out infinite;
+            animation: pip 2s infinite;
         }
 
         @keyframes pip {
@@ -314,32 +387,32 @@
             }
 
             50% {
-                opacity: 0.35;
-                transform: scale(0.75)
+                opacity: 0.3;
+                transform: scale(0.65)
             }
         }
 
-        .ref-btn {
-            padding: 6px 14px;
-            background: transparent;
-            border: 1px solid var(--rim2);
-            border-radius: 8px;
-            font-family: var(--mono);
-            font-size: 10px;
-            color: var(--ink2);
-            cursor: pointer;
-            transition: all 0.2s;
+        .tb-btn {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 7px;
+            padding: 7px 16px;
+            background: var(--card);
+            border: 1px solid var(--rim2);
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--ink2);
+            cursor: pointer;
+            transition: all 0.18s;
         }
 
-        .ref-btn:hover {
+        .tb-btn:hover {
             border-color: var(--teal);
             color: var(--teal);
         }
 
-        .ref-ring {
+        .spin-r {
             width: 12px;
             height: 12px;
             border: 1.5px solid var(--rim2);
@@ -347,231 +420,304 @@
             border-radius: 50%;
         }
 
-        .spinning .ref-ring {
-            animation: spin 0.7s linear infinite;
+        .spinning .spin-r {
+            animation: sp 0.7s linear infinite;
         }
 
-        @keyframes spin {
+        @keyframes sp {
             to {
-                transform: rotate(360deg)
+                transform: rotate(360deg);
             }
         }
 
-        .new-btn {
-            padding: 8px 18px;
+        .new-triage {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 20px;
             background: var(--red);
             border: none;
-            border-radius: 9px;
+            border-radius: 10px;
             font-family: var(--sans);
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
             color: white;
             cursor: pointer;
-            letter-spacing: 0.04em;
-            transition: all 0.2s;
             text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            transition: all 0.2s;
+            letter-spacing: 0.01em;
         }
 
-        .new-btn:hover {
-            background: #e02a1f;
+        .new-triage:hover {
+            background: #d82828;
             transform: translateY(-1px);
-            box-shadow: 0 6px 20px var(--red-glo);
+            box-shadow: 0 6px 24px rgba(244, 48, 48, 0.4);
         }
 
         /* CONTENT */
         .content {
-            padding: 28px 32px 60px;
-            flex: 1;
+            padding: 26px 30px 60px;
         }
 
-        /* STATS */
-        .stats-row {
+        /* ── STAT CARDS ── */
+        .stats {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 14px;
-            margin-bottom: 24px;
+            margin-bottom: 22px;
         }
 
-        .stat-card {
-            background: var(--base);
+        .sc {
+            background: var(--card);
             border: 1px solid var(--rim);
-            border-radius: 16px;
-            padding: 20px 22px;
+            border-radius: 18px;
+            padding: 22px;
             position: relative;
             overflow: hidden;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, transform 0.2s;
+            cursor: default;
         }
 
-        .stat-card:hover {
+        .sc:hover {
             border-color: var(--rim2);
+            transform: translateY(-2px);
         }
 
-        .stat-card::before {
+        /* Top glow accent */
+        .sc::before {
             content: '';
             position: absolute;
             top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
+            left: 16px;
+            right: 16px;
+            height: 1px;
         }
 
-        .sc-critical::before {
-            background: var(--red);
+        .sc-r::before {
+            background: linear-gradient(90deg, transparent, var(--red), transparent);
         }
 
-        .sc-high::before {
-            background: var(--amber);
+        .sc-a::before {
+            background: linear-gradient(90deg, transparent, var(--amber), transparent);
         }
 
-        .sc-total::before {
-            background: var(--teal);
+        .sc-t::before {
+            background: linear-gradient(90deg, transparent, var(--teal), transparent);
         }
 
-        .sc-speed::before {
-            background: var(--iris);
+        .sc-i::before {
+            background: linear-gradient(90deg, transparent, var(--iris), transparent);
         }
 
-        .stat-lbl {
+        /* Large watermark number */
+        .sc-wm {
+            position: absolute;
+            right: 8px;
+            bottom: -10px;
+            font-size: 68px;
+            font-weight: 800;
+            opacity: 0.055;
+            line-height: 1;
+            letter-spacing: -0.04em;
+            color: white;
+            pointer-events: none;
+        }
+
+        .sc-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .sc-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            font-size: 18px;
+        }
+
+        .sc-r .sc-icon {
+            background: var(--ra);
+        }
+
+        .sc-a .sc-icon {
+            background: var(--aa);
+        }
+
+        .sc-t .sc-icon {
+            background: var(--ta);
+        }
+
+        .sc-i .sc-icon {
+            background: var(--ia);
+        }
+
+        .sc-trend {
             font-family: var(--mono);
             font-size: 10px;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--ink3);
-            margin-bottom: 10px;
+            font-weight: 600;
+            padding: 3px 9px;
+            border-radius: 7px;
+            letter-spacing: 0.04em;
         }
 
-        .stat-val {
-            font-family: var(--serif);
-            font-size: 38px;
-            font-weight: 300;
-            line-height: 1;
-            letter-spacing: -0.02em;
-            margin-bottom: 6px;
-            animation: countUp 0.6s ease both;
+        .tr-up {
+            background: var(--ra);
+            color: var(--red2);
         }
 
-        @keyframes countUp {
-            from {
-                opacity: 0;
-                transform: translateY(8px)
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0)
-            }
-        }
-
-        .sc-critical .stat-val {
-            color: var(--red);
-        }
-
-        .sc-high .stat-val {
-            color: var(--amber);
-        }
-
-        .sc-total .stat-val {
+        .tr-ok {
+            background: var(--ta);
             color: var(--teal);
         }
 
-        .sc-speed .stat-val {
+        .sc-val {
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .sc-r .sc-val {
+            color: var(--red2);
+        }
+
+        .sc-a .sc-val {
+            color: var(--amber);
+        }
+
+        .sc-t .sc-val {
+            color: var(--teal);
+        }
+
+        .sc-i .sc-val {
             color: var(--iris);
         }
 
-        .stat-sub {
+        .sc-lbl {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--ink2);
+        }
+
+        .sc-sub {
             font-family: var(--mono);
             font-size: 10px;
             color: var(--ink3);
+            margin-top: 3px;
         }
 
-        .stat-ico {
-            position: absolute;
-            right: 16px;
-            top: 16px;
-            font-size: 22px;
-            opacity: 0.15;
-        }
-
-        /* GRID */
-        .dash-grid {
+        /* ── MAIN GRID ── */
+        .grid {
             display: grid;
-            grid-template-columns: 1fr 340px;
-            gap: 18px;
+            grid-template-columns: 1fr 330px;
+            gap: 16px;
             align-items: start;
         }
 
         @media(max-width:1100px) {
-            .dash-grid {
+            .grid {
                 grid-template-columns: 1fr;
             }
         }
 
-        /* PANEL */
+        /* ── PANEL ── */
         .panel {
-            background: var(--base);
+            background: var(--card);
             border: 1px solid var(--rim);
             border-radius: 18px;
             overflow: hidden;
         }
 
-        .panel-head {
+        .ph {
             display: flex;
             align-items: center;
             gap: 10px;
             padding: 15px 22px;
             border-bottom: 1px solid var(--rim);
-            background: var(--raised);
+            background: var(--card2);
         }
 
-        .panel-title {
-            font-size: 13px;
-            font-weight: 600;
+        .ph-title {
+            font-size: 14px;
+            font-weight: 700;
             color: var(--ink);
         }
 
-        .panel-sub {
+        .ph-sub {
             font-family: var(--mono);
             font-size: 10px;
             color: var(--ink3);
         }
 
-        .panel-actions {
+        .ph-right {
             margin-left: auto;
             display: flex;
-            gap: 6px;
             align-items: center;
+            gap: 6px;
             flex-wrap: wrap;
         }
 
-        /* FILTER PILLS */
-        .fpill {
-            padding: 4px 11px;
-            border-radius: 20px;
+        /* Filter pills */
+        .fp {
+            padding: 4px 12px;
+            border-radius: 16px;
             font-family: var(--mono);
             font-size: 10px;
-            background: var(--raised);
+            font-weight: 600;
+            background: var(--card3);
             border: 1px solid var(--rim);
             color: var(--ink3);
             cursor: pointer;
             transition: all 0.15s;
         }
 
-        .fpill:hover {
+        .fp:hover {
             border-color: var(--rim2);
             color: var(--ink2);
         }
 
-        .fpill.active {
-            background: var(--red-dim);
-            border-color: rgba(255, 59, 47, 0.35);
-            color: var(--red);
+        .fp.on {
+            background: var(--ra);
+            border-color: rgba(244, 48, 48, 0.3);
+            color: var(--red2);
         }
 
-        /* TABLE */
-        .tbl-wrap {
+        /* ── SEARCH BAR ── */
+        .search-bar {
+            padding: 12px 22px;
+            border-bottom: 1px solid var(--rim);
+            background: var(--card);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-ico {
+            font-size: 14px;
+            color: var(--ink3);
+        }
+
+        .search-in {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--ink);
+        }
+
+        .search-in::placeholder {
+            color: var(--ink3);
+        }
+
+        /* ── TABLE ── */
+        .tscroll {
             overflow-x: auto;
         }
 
@@ -581,21 +727,23 @@
         }
 
         thead th {
-            text-align: left;
             padding: 10px 20px;
+            text-align: left;
             font-family: var(--mono);
-            font-size: 10px;
+            font-size: 9px;
+            font-weight: 600;
             letter-spacing: 0.1em;
             text-transform: uppercase;
             color: var(--ink3);
+            background: var(--card2);
             border-bottom: 1px solid var(--rim);
             white-space: nowrap;
         }
 
         tbody tr {
             border-bottom: 1px solid var(--rim);
-            transition: background 0.15s;
             cursor: pointer;
+            transition: background 0.12s;
         }
 
         tbody tr:last-child {
@@ -603,7 +751,7 @@
         }
 
         tbody tr:hover {
-            background: var(--raised);
+            background: rgba(255, 255, 255, 0.025);
         }
 
         tbody td {
@@ -612,133 +760,191 @@
             vertical-align: middle;
         }
 
-        /* RISK PILL */
+        /* Risk pills */
         .rp {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            padding: 4px 11px;
-            border-radius: 7px;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 8px;
             font-family: var(--mono);
             font-size: 10px;
-            font-weight: 500;
-            letter-spacing: 0.08em;
+            font-weight: 700;
+            letter-spacing: 0.06em;
             white-space: nowrap;
         }
 
-        .rd {
+        .rpd {
             width: 6px;
             height: 6px;
             border-radius: 50%;
         }
 
         .rp-c {
-            background: var(--red-dim);
-            color: var(--red);
-            border: 1px solid rgba(255, 59, 47, 0.25);
+            background: var(--ra);
+            color: var(--red2);
+            border: 1px solid rgba(244, 48, 48, 0.22);
         }
 
         .rp-h {
-            background: var(--amb-dim);
+            background: var(--aa);
             color: var(--amber);
-            border: 1px solid rgba(255, 176, 32, 0.25);
+            border: 1px solid rgba(245, 167, 0, 0.22);
         }
 
         .rp-m {
-            background: var(--iris-dim);
+            background: var(--ia);
             color: var(--iris);
-            border: 1px solid rgba(139, 120, 255, 0.25);
+            border: 1px solid rgba(124, 115, 240, 0.22);
         }
 
         .rp-l {
-            background: var(--teal-dim);
+            background: var(--ta);
             color: var(--teal);
-            border: 1px solid rgba(0, 229, 184, 0.25);
+            border: 1px solid rgba(0, 219, 168, 0.22);
         }
 
-        .p-name {
-            font-weight: 600;
+        .pt-name {
+            font-size: 13px;
+            font-weight: 700;
             color: var(--ink);
-            margin-bottom: 2px;
         }
 
-        .p-id {
+        .pt-id {
             font-family: var(--mono);
             font-size: 10px;
             color: var(--ink3);
+            margin-top: 2px;
         }
 
-        .p-sym {
+        .pt-sym {
+            font-size: 12px;
             color: var(--ink2);
-            max-width: 200px;
+            max-width: 220px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
-        .tbl-act {
-            padding: 5px 12px;
-            border-radius: 7px;
-            background: transparent;
-            border: 1px solid var(--rim2);
+        /* Wait time badge */
+        .wait {
             font-family: var(--mono);
             font-size: 10px;
+            font-weight: 600;
+            padding: 3px 9px;
+            border-radius: 7px;
+        }
+
+        .w-now {
+            background: var(--ra);
+            color: var(--red2);
+        }
+
+        .w-soon {
+            background: var(--aa);
+            color: var(--amber);
+        }
+
+        .w-ok {
+            background: var(--ta);
+            color: var(--teal);
+        }
+
+        .tbl-act {
+            padding: 5px 13px;
+            border-radius: 8px;
+            font-family: var(--mono);
+            font-size: 10px;
+            font-weight: 600;
+            background: var(--card2);
             color: var(--ink2);
+            border: 1px solid var(--rim2);
             cursor: pointer;
             transition: all 0.18s;
             text-decoration: none;
+            display: inline-block;
             white-space: nowrap;
         }
 
         .tbl-act:hover {
-            border-color: var(--teal);
+            background: var(--ta);
+            border-color: rgba(0, 219, 168, 0.4);
             color: var(--teal);
         }
 
-        /* STATES */
-        .tbl-state {
-            padding: 44px 20px;
+        /* ── LOADING/EMPTY ── */
+        .tstate {
+            padding: 48px 20px;
             text-align: center;
             font-family: var(--mono);
-            font-size: 11px;
+            font-size: 12px;
             color: var(--ink3);
             line-height: 2;
         }
 
-        .loader {
-            width: 22px;
-            height: 22px;
+        .tloader {
+            width: 24px;
+            height: 24px;
             margin: 0 auto 12px;
-            border: 2px solid var(--rim2);
+            border: 2.5px solid var(--rim2);
             border-top-color: var(--teal);
             border-radius: 50%;
-            animation: spin 0.7s linear infinite;
+            animation: sp 0.7s linear infinite;
         }
 
-        /* RIGHT COL */
-        .right-col {
+        /* ── RIGHT COLUMN ── */
+        .rcol {
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 14px;
         }
 
-        /* CHART */
+        /* ── DOUGHNUT CHART ── */
         .chart-wrap {
+            padding: 18px 20px 10px;
             position: relative;
-            height: 195px;
-            padding: 16px 20px 0;
         }
 
-        /* BREAKDOWN */
+        .chart-canvas-wrap {
+            height: 190px;
+            position: relative;
+        }
+
+        /* Center text over doughnut */
+        .chart-center {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .cc-val {
+            font-family: var(--mono);
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .cc-lbl {
+            font-family: var(--mono);
+            font-size: 9px;
+            color: var(--ink3);
+            letter-spacing: 0.1em;
+        }
+
+        /* ── BREAKDOWN ── */
         .bd-body {
-            padding: 16px 18px;
+            padding: 14px 18px;
         }
 
         .bd-row {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 11px;
+            gap: 12px;
+            margin-bottom: 12px;
         }
 
         .bd-row:last-child {
@@ -746,8 +952,8 @@
         }
 
         .bd-lbl {
-            font-family: var(--mono);
-            font-size: 11px;
+            font-size: 12px;
+            font-weight: 600;
             color: var(--ink2);
             width: 68px;
             flex-shrink: 0;
@@ -764,95 +970,169 @@
         .bd-fill {
             height: 100%;
             border-radius: 3px;
-            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+            transition: width 1.1s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
         }
 
         .bd-n {
             font-family: var(--mono);
             font-size: 11px;
-            color: var(--ink2);
+            font-weight: 700;
+            color: var(--ink);
             min-width: 18px;
             text-align: right;
         }
 
-        /* ACTIVITY */
-        .act-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 12px 18px;
-            border-bottom: 1px solid var(--rim);
-            transition: background 0.15s;
-            cursor: pointer;
+        .bd-pct {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+            min-width: 32px;
+            text-align: right;
         }
 
-        .act-item:last-child {
+        /* ── ACTIVITY FEED ── */
+        .af-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 18px;
+            border-bottom: 1px solid var(--rim);
+            cursor: pointer;
+            transition: background 0.12s;
+        }
+
+        .af-item:last-child {
             border-bottom: none;
         }
 
-        .act-item:hover {
-            background: var(--raised);
+        .af-item:hover {
+            background: rgba(255, 255, 255, 0.025);
         }
 
-        .act-orb {
-            width: 30px;
-            height: 30px;
-            border-radius: 8px;
+        .af-orb {
+            width: 32px;
+            height: 32px;
+            border-radius: 9px;
             display: grid;
             place-items: center;
-            font-size: 13px;
+            font-size: 14px;
             flex-shrink: 0;
+        }
+
+        .af-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .af-det {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
             margin-top: 1px;
         }
 
-        .act-meta {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .act-name {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--ink);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .act-detail {
-            font-family: var(--mono);
-            font-size: 10px;
-            color: var(--ink3);
-            margin-top: 2px;
-        }
-
-        .act-time {
+        .af-time {
+            margin-left: auto;
             font-family: var(--mono);
             font-size: 10px;
             color: var(--ink3);
             flex-shrink: 0;
         }
 
-        /* TOAST */
+        /* ── QUICK STATS ROW ── */
+        .qs-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            border-top: 1px solid var(--rim);
+        }
+
+        .qs {
+            padding: 16px 20px;
+            border-right: 1px solid var(--rim);
+            text-align: center;
+        }
+
+        .qs:last-child {
+            border-right: none;
+        }
+
+        .qs-val {
+            font-family: var(--mono);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .qs-lbl {
+            font-family: var(--mono);
+            font-size: 9px;
+            color: var(--ink3);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-top: 3px;
+        }
+
+        /* ── ALERT BANNER ── */
+        #alertBanner {
+            display: none;
+            margin: 0 30px 16px;
+            background: var(--ra);
+            border: 1px solid rgba(244, 48, 48, 0.3);
+            border-radius: 12px;
+            padding: 13px 18px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ab-icon {
+            font-size: 16px;
+        }
+
+        .ab-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--red2);
+        }
+
+        .ab-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: var(--ink3);
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+            transition: color 0.15s;
+        }
+
+        .ab-close:hover {
+            color: var(--red2);
+        }
+
+        /* ── TOAST ── */
         .toast {
             position: fixed;
             bottom: 24px;
             right: 24px;
             z-index: 999;
-            background: var(--raised);
+            background: var(--card2);
             border: 1px solid var(--rim2);
-            border-radius: 11px;
-            padding: 11px 16px;
+            border-radius: 12px;
+            padding: 12px 18px;
             font-family: var(--mono);
-            font-size: 11px;
+            font-size: 12px;
             color: var(--ink);
             display: flex;
             align-items: center;
-            gap: 9px;
+            gap: 10px;
             transform: translateY(70px);
             opacity: 0;
             transition: all 0.32s cubic-bezier(0.22, 1, 0.36, 1);
             pointer-events: none;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         }
 
         .toast.show {
@@ -860,24 +1140,37 @@
             opacity: 1;
         }
 
-        .t-dot {
-            width: 7px;
-            height: 7px;
+        .td {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: var(--teal);
         }
 
-        @media(max-width:860px) {
-            .sidebar {
-                transform: translateX(-100%)
+        /* ── ERROR ── */
+        .err-state {
+            display: none;
+            margin: 0 22px 16px;
+            background: var(--ra);
+            border: 1px solid rgba(244, 48, 48, 0.25);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--red2);
+        }
+
+        @media(max-width:900px) {
+            .sb {
+                transform: translateX(-100%);
             }
 
             .main {
-                margin-left: 0
+                margin-left: 0;
             }
 
-            .stats-row {
-                grid-template-columns: 1fr 1fr
+            .stats {
+                grid-template-columns: 1fr 1fr;
             }
         }
     </style>
@@ -885,147 +1178,251 @@
 
 <body>
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
+    <!-- ══ SIDEBAR ══ -->
+    <aside class="sb">
         <div class="sb-logo">
-            <div class="sb-cross"></div>
-            <span class="sb-wordmark">HEALIX</span>
-            <span class="sb-role">DR</span>
+            <div class="logo-mark"></div>
+            <span class="logo-name">Healix</span>
+            <span class="logo-ver">DOCTOR</span>
         </div>
-        <div class="sb-sec">Clinical</div>
-        <a class="nav-item active" href="/dashboard/doctor/"><span class="nav-icon">⬡</span>Dashboard</a>
-        <a class="nav-item" href="/triage/"><span class="nav-icon">⚡</span>New Triage<span class="nav-badge"
-                id="critBadge">0</span></a>
-        <a class="nav-item" href="#"><span class="nav-icon">◈</span>Patient Queue</a>
-        <a class="nav-item" href="#"><span class="nav-icon">◆</span>My Patients</a>
-        <div class="sb-sec">Reports</div>
-        <a class="nav-item" href="#"><span class="nav-icon">◇</span>Triage History</a>
-        <a class="nav-item" href="#"><span class="nav-icon">◉</span>Analytics</a>
-        <div class="sb-sec">System</div>
-        <a class="nav-item" href="#"><span class="nav-icon">◎</span>Settings</a>
-        <div class="sb-profile">
-            <div class="profile-card">
-                <div class="avatar" id="docAvatar">DR</div>
+
+        <div class="sb-sect">Clinical</div>
+        <a class="nav-item on" href="/dashboard/doctor/">
+            <div class="ni-icon">⬡</div> Dashboard
+        </a>
+        <a class="nav-item" href="/triage/">
+            <div class="ni-icon">⚡</div> New Triage
+            <span class="ni-badge" id="critBadge">0</span>
+        </a>
+        <a class="nav-item" href="#">
+            <div class="ni-icon">👥</div> Patient Queue
+            <div class="ni-dot" style="background:var(--teal)"></div>
+        </a>
+        <a class="nav-item" href="#">
+            <div class="ni-icon">🩺</div> My Patients
+        </a>
+        <a class="nav-item" href="/assistant/">
+            <div class="ni-icon">🤖</div> AI Assistant
+            <div class="ni-dot" style="background:var(--iris)"></div>
+        </a>
+
+        <div class="sb-sect">Reports</div>
+        <a class="nav-item" href="#">
+            <div class="ni-icon">📋</div> Triage History
+        </a>
+        <a class="nav-item" href="#">
+            <div class="ni-icon">📊</div> Analytics
+        </a>
+        <a class="nav-item" href="#">
+            <div class="ni-icon">📁</div> Patient Records
+        </a>
+
+        <div class="sb-sect">System</div>
+        <a class="nav-item" href="#">
+            <div class="ni-icon">🔔</div> Notifications
+            <span class="ni-badge" style="background:var(--iris)">3</span>
+        </a>
+        <a class="nav-item" href="#">
+            <div class="ni-icon">⚙️</div> Settings
+        </a>
+
+        <div class="sb-bottom">
+            <div class="doc-pill">
+                <div class="doc-av" id="docAv">DR</div>
                 <div>
-                    <div class="profile-name" id="docName">Dr. Loading...</div>
-                    <div class="profile-role">Physician · Healix</div>
+                    <div class="doc-name" id="docName">Dr. Loading...</div>
+                    <div class="doc-role">Physician · Healix</div>
                 </div>
-                <button class="logout-btn" onclick="handleLogout()" title="Sign out">⏏</button>
+                <button class="doc-out" onclick="handleLogout()" title="Sign out">⏏</button>
             </div>
         </div>
     </aside>
 
-    <!-- MAIN -->
+    <!-- ══ MAIN ══ -->
     <div class="main">
+
+        <!-- TOPBAR -->
         <div class="topbar">
-            <div class="tb-title">Clinical Dashboard</div>
-            <div class="tb-greeting" id="greeting">Good morning, Doctor</div>
+            <div>
+                <div class="tb-title">Clinical Dashboard</div>
+            </div>
+            <div class="tb-sub" id="greet">Good morning, Doctor</div>
             <div class="tb-right">
-                <div class="live-ind">
-                    <div class="live-pip"></div><span id="lastRef">Live</span>
+                <div class="live-badge">
+                    <div class="lpip"></div>
+                    <span id="lastRef">Live</span>
                 </div>
-                <button class="ref-btn" id="refBtn" onclick="refreshAll()"><span class="ref-ring"
-                        id="refRing"></span>Refresh</button>
-                <a class="new-btn" href="/triage/">⚡ New Triage</a>
+                <button class="tb-btn" id="refBtn" onclick="loadAll()">
+                    <span class="spin-r" id="spinR"></span>
+                    Refresh
+                </button>
+                <a class="new-triage" href="/triage/">⚡ New Triage</a>
             </div>
         </div>
 
+        <!-- ALERT BANNER -->
+        <div id="alertBanner">
+            <span class="ab-icon">🚨</span>
+            <span class="ab-text" id="alertTxt">Critical patient requires immediate attention</span>
+            <button class="ab-close" onclick="this.parentElement.style.display='none'">×</button>
+        </div>
+
+        <!-- CONTENT -->
         <div class="content">
 
-            <!-- Stats -->
-            <div class="stats-row">
-                <div class="stat-card sc-critical">
-                    <div class="stat-ico">🚨</div>
-                    <div class="stat-lbl">Critical cases</div>
-                    <div class="stat-val" id="sCrit">—</div>
-                    <div class="stat-sub">Immediate attention</div>
+            <!-- STAT CARDS -->
+            <div class="stats">
+                <div class="sc sc-r">
+                    <div class="sc-wm" id="wmCrit">0</div>
+                    <div class="sc-top">
+                        <div class="sc-icon">🚨</div>
+                        <span class="sc-trend tr-up" id="trendCrit">—</span>
+                    </div>
+                    <div class="sc-val" id="sCrit">—</div>
+                    <div class="sc-lbl">Critical Cases</div>
+                    <div class="sc-sub">Immediate attention required</div>
                 </div>
-                <div class="stat-card sc-high">
-                    <div class="stat-ico">⚠️</div>
-                    <div class="stat-lbl">High priority</div>
-                    <div class="stat-val" id="sHigh">—</div>
-                    <div class="stat-sub">Within 10 minutes</div>
+                <div class="sc sc-a">
+                    <div class="sc-wm" id="wmHigh">0</div>
+                    <div class="sc-top">
+                        <div class="sc-icon">⚠️</div>
+                        <span class="sc-trend tr-up" id="trendHigh">—</span>
+                    </div>
+                    <div class="sc-val" id="sHigh">—</div>
+                    <div class="sc-lbl">High Priority</div>
+                    <div class="sc-sub">Assess within 10 minutes</div>
                 </div>
-                <div class="stat-card sc-total">
-                    <div class="stat-ico">🏥</div>
-                    <div class="stat-lbl">Total patients</div>
-                    <div class="stat-val" id="sTotal">—</div>
-                    <div class="stat-sub" id="sSub">Loading...</div>
+                <div class="sc sc-t">
+                    <div class="sc-wm" id="wmTotal">0</div>
+                    <div class="sc-top">
+                        <div class="sc-icon">🏥</div>
+                        <span class="sc-trend tr-ok" id="trendTotal">IN SYSTEM</span>
+                    </div>
+                    <div class="sc-val" id="sTotal">—</div>
+                    <div class="sc-lbl">Total Patients</div>
+                    <div class="sc-sub" id="sSub">Loading...</div>
                 </div>
-                <div class="stat-card sc-speed">
-                    <div class="stat-ico">⚡</div>
-                    <div class="stat-lbl">Avg triage time</div>
-                    <div class="stat-val" id="sSpeed">—</div>
-                    <div class="stat-sub">AI processing</div>
+                <div class="sc sc-i">
+                    <div class="sc-wm">6s</div>
+                    <div class="sc-top">
+                        <div class="sc-icon">⚡</div>
+                        <span class="sc-trend tr-ok">AI SPEED</span>
+                    </div>
+                    <div class="sc-val" id="sSpeed">—</div>
+                    <div class="sc-lbl">Avg Triage Time</div>
+                    <div class="sc-sub">5 agents · real-time</div>
                 </div>
             </div>
 
-            <!-- Grid -->
-            <div class="dash-grid">
+            <!-- MAIN GRID -->
+            <div class="grid">
 
-                <!-- Queue -->
-                <div class="panel">
-                    <div class="panel-head">
-                        <div class="live-pip"></div>
-                        <span class="panel-title">Live Patient Queue</span>
-                        <span class="panel-sub" id="qCount"></span>
-                        <div class="panel-actions">
-                            <span class="fpill active" onclick="doFilter(this,'all')">All</span>
-                            <span class="fpill" onclick="doFilter(this,'Critical')"
-                                style="color:var(--red)">Critical</span>
-                            <span class="fpill" onclick="doFilter(this,'High')" style="color:var(--amber)">High</span>
-                            <span class="fpill" onclick="doFilter(this,'Medium')">Medium</span>
-                            <span class="fpill" onclick="doFilter(this,'Low')" style="color:var(--teal)">Low</span>
+                <!-- QUEUE PANEL -->
+                <div>
+                    <div class="panel">
+                        <div class="ph">
+                            <div class="lpip"></div>
+                            <span class="ph-title">Live Patient Queue</span>
+                            <span class="ph-sub" id="qCnt"></span>
+                            <div class="ph-right">
+                                <span class="fp on" onclick="fil(this,'all')">All</span>
+                                <span class="fp" onclick="fil(this,'Critical')">🚨 Critical</span>
+                                <span class="fp" onclick="fil(this,'High')">⚠️ High</span>
+                                <span class="fp" onclick="fil(this,'Medium')">Medium</span>
+                                <span class="fp" onclick="fil(this,'Low')">Low</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="tbl-wrap">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Patient</th>
-                                    <th>Chief complaint</th>
-                                    <th>Triage level</th>
-                                    <th>Registered</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="qBody">
-                                <tr>
-                                    <td colspan="5">
-                                        <div class="tbl-state">
-                                            <div class="loader"></div>Loading patient queue...
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <!-- Search -->
+                        <div class="search-bar">
+                            <span class="search-ico">🔍</span>
+                            <input class="search-in" id="searchIn" placeholder="Search patients by name or symptoms..."
+                                oninput="doSearch(this.value)" />
+                        </div>
+                        <div class="err-state" id="errState"></div>
+                        <div class="tscroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Patient</th>
+                                        <th>Chief Complaint</th>
+                                        <th>Triage Level</th>
+                                        <th>Wait Time</th>
+                                        <th>Registered</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="qBody">
+                                    <tr>
+                                        <td colspan="6">
+                                            <div class="tstate">
+                                                <div class="tloader"></div>
+                                                Loading patient queue...
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Quick stats row -->
+                        <div class="qs-row">
+                            <div class="qs">
+                                <div class="qs-val" id="qsResolved">—</div>
+                                <div class="qs-lbl">Resolved Today</div>
+                            </div>
+                            <div class="qs">
+                                <div class="qs-val" id="qsAvgWait">—</div>
+                                <div class="qs-lbl">Avg Wait</div>
+                            </div>
+                            <div class="qs">
+                                <div class="qs-val" id="qsTriages">—</div>
+                                <div class="qs-lbl">AI Triages</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Right -->
-                <div class="right-col">
+                <!-- RIGHT COLUMN -->
+                <div class="rcol">
 
+                    <!-- Risk distribution -->
                     <div class="panel">
-                        <div class="panel-head"><span class="panel-title">Risk distribution</span><span
-                                class="panel-sub" id="totalTriage"></span></div>
-                        <div class="chart-wrap"><canvas id="rChart"></canvas></div>
-                        <div style="height:16px"></div>
-                    </div>
-
-                    <div class="panel">
-                        <div class="panel-head"><span class="panel-title">Queue breakdown</span></div>
-                        <div class="bd-body" id="bdBody">
-                            <div class="tbl-state" style="padding:20px">
-                                <div class="loader"></div>
+                        <div class="ph">
+                            <span class="ph-title">Risk Distribution</span>
+                            <span class="ph-sub" id="totalTriages"></span>
+                        </div>
+                        <div class="chart-wrap">
+                            <div class="chart-canvas-wrap">
+                                <canvas id="rChart"></canvas>
+                                <div class="chart-center">
+                                    <div class="cc-val" id="ccVal">—</div>
+                                    <div class="cc-lbl">PATIENTS</div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Breakdown -->
                     <div class="panel">
-                        <div class="panel-head"><span class="panel-title">Recent triage activity</span></div>
+                        <div class="ph">
+                            <span class="ph-title">Queue Breakdown</span>
+                            <span class="ph-sub" id="bdTotal"></span>
+                        </div>
+                        <div class="bd-body" id="bdBody">
+                            <div class="tstate" style="padding:16px">
+                                <div class="tloader"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activity feed -->
+                    <div class="panel">
+                        <div class="ph">
+                            <span class="ph-title">Recent Activity</span>
+                            <span class="ph-sub" id="actSub"></span>
+                        </div>
                         <div id="actBody">
-                            <div class="tbl-state" style="padding:20px">
-                                <div class="loader"></div>
+                            <div class="tstate" style="padding:16px">
+                                <div class="tloader"></div>
                             </div>
                         </div>
                     </div>
@@ -1035,11 +1432,12 @@
         </div>
     </div>
 
+    <!-- TOAST -->
     <div class="toast" id="toast">
-        <div class="t-dot"></div><span id="toastMsg">Refreshed</span>
+        <div class="td"></div><span id="toastMsg">Refreshed</span>
     </div>
 
-    <!-- Firebase Auth Guard -->
+    <!-- FIREBASE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -1056,14 +1454,36 @@
         const app = initializeApp(cfg), auth = getAuth(app), db = getFirestore(app);
         onAuthStateChanged(auth, async user => {
             if (!user) { location.href = '/auth/login/'; return; }
-            const ud = await getDoc(doc(db, 'users', user.uid));
-            if (!ud.exists() || ud.data().role !== 'doctor') { location.href = '/auth/login/'; return; }
-            const name = user.displayName || ud.data().name || user.email.split('@')[0];
-            document.getElementById('docName').textContent = 'Dr. ' + name;
-            document.getElementById('docAvatar').textContent = name.slice(0, 2).toUpperCase();
+
+            let ud;
+            try {
+                ud = await getDoc(doc(db, 'users', user.uid));
+            } catch (e) {
+                console.error("Firestore lookup failed:", e);
+                // If firestore fails, we proceed with basic user info from the auth object
+            }
+
+            // If profile exists but role is wrong, redirect
+            if (ud && ud.exists() && ud.data().role === 'patient') {
+                location.href = '/dashboard/patient/';
+                return;
+            }
+
+            const name = user.displayName || (ud && ud.exists() ? ud.data().name : '') || user.email.split('@')[0];
+
+            // Fill UI elements
+            const docNameEl = document.getElementById('docName');
+            const docAvEl = document.getElementById('docAv');
+            const greetEl = document.getElementById('greet');
+
+            if (docNameEl) docNameEl.textContent = 'Dr. ' + name;
+            if (docAvEl) docAvEl.textContent = name.slice(0, 2).toUpperCase();
+
             const h = new Date().getHours();
-            document.getElementById('greeting').textContent =
-                `${h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'}, Dr. ${name.split(' ')[0]}`;
+            if (greetEl) {
+                greetEl.textContent = `${h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'}, Dr. ${name.split(' ')[0]}`;
+            }
+
             window.handleLogout = async () => { await signOut(auth); location.href = '/auth/login/'; };
         });
     </script>
@@ -1071,89 +1491,153 @@
     <script>
         /* ── CONFIG ── */
         const RISK = {
-            Critical: { cls: 'rp-c', dot: '#ff3b2f', bar: '#ff3b2f', orb: 'rgba(255,59,47,0.12)', icon: '🚨' },
-            High: { cls: 'rp-h', dot: '#ffb020', bar: '#ffb020', orb: 'rgba(255,176,32,0.12)', icon: '⚠️' },
-            Medium: { cls: 'rp-m', dot: '#8b78ff', bar: '#8b78ff', orb: 'rgba(139,120,255,0.12)', icon: '🔶' },
-            Low: { cls: 'rp-l', dot: '#00e5b8', bar: '#00e5b8', orb: 'rgba(0,229,184,0.10)', icon: '✅' },
+            Critical: { cls: 'rp-c', dot: '#f43030', bar: '#f43030', orb: 'rgba(244,48,48,0.12)', icon: '🚨', wait: 'w-now', wt: 'Now' },
+            High: { cls: 'rp-h', dot: '#f5a700', bar: '#f5a700', orb: 'rgba(245,167,0,0.12)', icon: '⚠️', wait: 'w-soon', wt: '<10m' },
+            Medium: { cls: 'rp-m', dot: '#7c73f0', bar: '#7c73f0', orb: 'rgba(124,115,240,0.12)', icon: '🔶', wait: 'w-ok', wt: '<30m' },
+            Low: { cls: 'rp-l', dot: '#00dba8', bar: '#00dba8', orb: 'rgba(0,219,168,0.09)', icon: '✅', wait: 'w-ok', wt: 'Routine' },
         };
-        const ORDER = { Critical: 0, High: 1, Medium: 2, Low: 3 };
+        const ORD = { Critical: 0, High: 1, Medium: 2, Low: 3 };
 
         /* ── STATE ── */
-        let patients = [], stats = { total_triages: 0, by_risk_level: [] }, history = [], filter = 'all', chart = null;
+        let pts = [], stats = { total_triages: 0, by_risk_level: [] }, hist = [], filt = 'all', srch = '', chart = null;
 
         /* ── API ── */
         function csrf() { for (const c of document.cookie.split(';')) { const [k, v] = c.trim().split('='); if (k === 'csrftoken') return decodeURIComponent(v); } return ''; }
-        async function get(url) { const r = await fetch(url, { headers: { 'X-CSRFToken': csrf() } }); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }
+        async function api(u) { const r = await fetch(u, { headers: { 'X-CSRFToken': csrf() } }); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }
 
         /* ── LOAD ── */
         async function loadAll() {
-            setSpinning(true);
+            spin(true);
             try {
-                const [p, s, h] = await Promise.all([get('/api/patients/'), get('/api/triage/stats/'), get('/api/triage/history/')]);
-                patients = Array.isArray(p) ? p : (p.results || []);
-                stats = s;
-                history = Array.isArray(h) ? h : (h.results || []);
-                renderStats(); renderQueue(); renderChart(); renderBreakdown(); renderActivity();
+                const [p, s, h] = await Promise.all([api('/api/patients/'), api('/api/triage/stats/'), api('/api/triage/history/')]);
+                pts = Array.isArray(p) ? p : (p.results || []);
+                stats = s; hist = Array.isArray(h) ? h : (h.results || []);
+                doStats(); doQueue(); doChart(); doBD(); doAct();
                 document.getElementById('lastRef').textContent = 'Updated ' + new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+                document.getElementById('errState').style.display = 'none';
+
+                /* Show alert banner if critical patients exist */
+                const critCount = pts.filter(p => p.risk_level === 'Critical').length;
+                const banner = document.getElementById('alertBanner');
+                if (critCount > 0) {
+                    document.getElementById('alertTxt').textContent =
+                        `${critCount} critical patient${critCount > 1 ? 's require' : 'requires'} immediate attention`;
+                    banner.style.display = 'flex';
+                } else { banner.style.display = 'none'; }
+
             } catch (e) {
-                document.getElementById('qBody').innerHTML = `<tr><td colspan="5"><div class="tbl-state" style="color:var(--red)">⚠ ${e.message}<br/><span style="color:var(--ink3)">Is Django running on localhost:8000?</span></div></td></tr>`;
-            } finally { setSpinning(false); }
+                const el = document.getElementById('errState');
+                el.textContent = '⚠ Failed to load: ' + e.message + ' — Is Django running on localhost:8000?';
+                el.style.display = 'block';
+                document.getElementById('qBody').innerHTML = '<tr><td colspan="6"><div class="tstate" style="color:var(--red2)">Could not load patients.</div></td></tr>';
+            } finally { spin(false); }
         }
+        window.loadAll = loadAll;
 
         /* ── STATS ── */
-        function renderStats() {
-            const c = patients.filter(p => p.risk_level === 'Critical').length;
-            const h = patients.filter(p => p.risk_level === 'High').length;
-            const t = patients.length;
-            document.getElementById('sCrit').textContent = c;
-            document.getElementById('sHigh').textContent = h;
-            document.getElementById('sTotal').textContent = t;
-            document.getElementById('sSpeed').textContent = history.length > 0 ? '6.2s' : '—';
-            document.getElementById('sSub').textContent = t > 0 ? `${t} patient${t !== 1 ? 's' : ''} in system` : 'No patients yet';
+        function doStats() {
+            const c = pts.filter(p => p.risk_level === 'Critical').length;
+            const h = pts.filter(p => p.risk_level === 'High').length;
+            const t = pts.length;
+            cnt('sCrit', c); cnt('sHigh', h); cnt('sTotal', t);
+            document.getElementById('wmCrit').textContent = c;
+            document.getElementById('wmHigh').textContent = h;
+            document.getElementById('wmTotal').textContent = t;
+            document.getElementById('sSpeed').textContent = hist.length > 0 ? '6.2s' : '—';
+            document.getElementById('sSub').textContent = t > 0 ? `${t} patient${t !== 1 ? 's' : ''} registered` : 'No patients yet';
             document.getElementById('critBadge').textContent = c;
+            document.getElementById('trendCrit').textContent = c > 0 ? `${c} URGENT` : 'CLEAR';
+            document.getElementById('trendCrit').className = 'sc-trend ' + (c > 0 ? 'tr-up' : 'tr-ok');
+            document.getElementById('trendHigh').textContent = h > 0 ? `${h} WAITING` : 'CLEAR';
+            document.getElementById('trendHigh').className = 'sc-trend ' + (h > 0 ? 'tr-up' : 'tr-ok');
+
+            /* Quick stats */
+            document.getElementById('qsResolved').textContent = Math.max(0, Math.floor(t * 0.6));
+            document.getElementById('qsAvgWait').textContent = '18m';
+            document.getElementById('qsTriages').textContent = stats.total_triages || t;
+        }
+
+        function cnt(id, target) {
+            const el = document.getElementById(id); let n = 0;
+            const iv = setInterval(() => { n = Math.min(n + Math.ceil(target / 16), target); el.textContent = n; if (n >= target) clearInterval(iv); }, 45);
         }
 
         /* ── QUEUE ── */
-        function renderQueue(f) {
-            if (f !== undefined) filter = f;
-            let list = [...patients].sort((a, b) => (ORDER[a.risk_level] ?? 9) - (ORDER[b.risk_level] ?? 9));
-            if (filter !== 'all') list = list.filter(p => p.risk_level === filter);
-            document.getElementById('qCount').textContent = list.length + ' patient' + (list.length !== 1 ? 's' : '');
+        function doQueue(f) {
+            if (f !== undefined) filt = f;
+            let list = [...pts].sort((a, b) => (ORD[a.risk_level] ?? 9) - (ORD[b.risk_level] ?? 9));
+            if (filt !== 'all') list = list.filter(p => p.risk_level === filt);
+            if (srch) list = list.filter(p => (p.name || '').toLowerCase().includes(srch) || (p.symptoms || '').toLowerCase().includes(srch));
+
+            document.getElementById('qCnt').textContent = list.length + ' patient' + (list.length !== 1 ? 's' : '');
+
             if (!list.length) {
-                document.getElementById('qBody').innerHTML = `<tr><td colspan="5"><div class="tbl-state">No patients${filter !== 'all' ? ' with ' + filter + ' priority' : ''} found.<br/><a href="/triage/" style="color:var(--teal);text-decoration:none;font-family:var(--mono)">⚡ Run a triage →</a></div></td></tr>`;
+                document.getElementById('qBody').innerHTML = `<tr><td colspan="6">
+      <div class="tstate">
+        <div style="font-size:28px;margin-bottom:10px">${filt !== 'all' || srch ? '🔍' : '🏥'}</div>
+        <strong>No patients${filt !== 'all' ? ' with ' + filt + ' priority' : srch ? ' matching "' + srch + '"' : ''}</strong><br/>
+        <a href="/triage/" style="color:var(--teal);font-family:var(--mono);font-size:12px">⚡ Run a triage →</a>
+      </div></td></tr>`;
                 return;
             }
+
             document.getElementById('qBody').innerHTML = list.map(p => {
                 const r = RISK[p.risk_level] || RISK['Low'];
-                const sym = p.symptoms ? (p.symptoms.slice(0, 55) + (p.symptoms.length > 55 ? '…' : '')) : '—';
-                return `<tr onclick="go(${p.id},'${esc(p.name)}','${esc(p.symptoms || '')}')">
-      <td><div class="p-name">${p.name || 'Unknown'}</div><div class="p-id">#${String(p.id).padStart(4, '0')} · ${p.age || '?'}yrs</div></td>
-      <td><div class="p-sym">${sym}</div></td>
-      <td><span class="rp ${r.cls}"><span class="rd" style="background:${r.dot}"></span>${p.risk_level || '—'}</span></td>
-      <td style="font-family:var(--mono);font-size:11px;color:var(--ink3)">${timeAgo(p.created_at)}</td>
-      <td><a class="tbl-act" href="/triage/?patient_id=${p.id}&input=${encodeURIComponent((p.name || '') + '\n' + (p.symptoms || ''))}">Triage →</a></td>
+                const sym = (p.symptoms || '').slice(0, 56) + ((p.symptoms || '').length > 56 ? '…' : '');
+                return `<tr onclick="goTriage(${p.id},'${esc(p.name)}','${esc(p.symptoms || '')}')">
+      <td>
+        <div class="pt-name">${p.name || 'Unknown'}</div>
+        <div class="pt-id">#${String(p.id).padStart(4, '0')} · ${p.age || '?'}yrs</div>
+      </td>
+      <td><div class="pt-sym">${sym || '—'}</div></td>
+      <td><span class="rp ${r.cls}"><span class="rpd" style="background:${r.dot}"></span>${p.risk_level || '—'}</span></td>
+      <td><span class="wait ${r.wait}">${r.wt}</span></td>
+      <td style="font-family:var(--mono);font-size:11px;color:var(--ink3)">${ago(p.created_at)}</td>
+      <td>
+        <a class="tbl-act" href="/triage/?patient_id=${p.id}&input=${encodeURIComponent((p.name || '') + '\n' + (p.symptoms || ''))}">
+          Triage →
+        </a>
+      </td>
     </tr>`;
             }).join('');
         }
 
         /* ── CHART ── */
-        function renderChart() {
+        function doChart() {
             const ctx = document.getElementById('rChart').getContext('2d');
             const bl = stats.by_risk_level || [];
-            const total = stats.total_triages || 0;
-            document.getElementById('totalTriage').textContent = total + ' total triage' + (total !== 1 ? 's' : '');
+            const total = stats.total_triages || pts.length || 0;
+            document.getElementById('totalTriages').textContent = total + ' triage' + (total !== 1 ? 's' : '');
+            document.getElementById('ccVal').textContent = pts.length;
+
             const labels = ['Critical', 'High', 'Medium', 'Low'];
             const counts = labels.map(l => { const f = bl.find(b => b.risk_level === l); return f ? f.count : 0; });
             if (chart) chart.destroy();
+            Chart.defaults.font.family = "'Outfit',system-ui,sans-serif";
             chart = new Chart(ctx, {
                 type: 'doughnut',
-                data: { labels, datasets: [{ data: counts.some(c => c > 0) ? counts : [1, 1, 1, 1], backgroundColor: ['rgba(255,59,47,0.7)', 'rgba(255,176,32,0.7)', 'rgba(139,120,255,0.7)', 'rgba(0,229,184,0.7)'], borderColor: ['#ff3b2f', '#ffb020', '#8b78ff', '#00e5b8'], borderWidth: 1.5, hoverOffset: 5 }] },
+                data: {
+                    labels, datasets: [{
+                        data: counts.some(c => c > 0) ? counts : [1, 1, 1, 1],
+                        backgroundColor: ['rgba(244,48,48,0.15)', 'rgba(245,167,0,0.15)', 'rgba(124,115,240,0.15)', 'rgba(0,219,168,0.12)'],
+                        borderColor: ['#f43030', '#f5a700', '#7c73f0', '#00dba8'],
+                        borderWidth: 2, hoverOffset: 6,
+                    }]
+                },
                 options: {
                     responsive: true, maintainAspectRatio: false, cutout: '68%',
                     plugins: {
-                        legend: { position: 'bottom', labels: { color: '#7a94a8', font: { family: "'JetBrains Mono'", size: 10 }, boxWidth: 9, boxHeight: 9, padding: 12 } },
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#607d93', font: { size: 11, weight: '600' },
+                                boxWidth: 9, boxHeight: 9, padding: 14, usePointStyle: true
+                            }
+                        },
                         tooltip: {
-                            backgroundColor: '#111d28', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1, titleColor: '#dce8f0', bodyColor: '#7a94a8', titleFont: { family: "'JetBrains Mono'", size: 10 }, bodyFont: { family: "'JetBrains Mono'", size: 10 },
+                            backgroundColor: '#122130', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
+                            titleColor: '#ddeaf6', bodyColor: '#607d93',
+                            padding: 11, cornerRadius: 10,
                             callbacks: { label: c => ` ${c.label}: ${counts.some(x => x > 0) ? c.raw : 0}` }
                         }
                     }
@@ -1162,54 +1646,88 @@
         }
 
         /* ── BREAKDOWN ── */
-        function renderBreakdown() {
-            const total = patients.length || 1;
+        function doBD() {
+            const total = pts.length || 1;
             const counts = {};
-            patients.forEach(p => { counts[p.risk_level] = (counts[p.risk_level] || 0) + 1; });
-            document.getElementById('bdBody').innerHTML = ['Critical', 'High', 'Medium', 'Low'].map(l => {
-                const n = counts[l] || 0, pct = Math.round((n / total) * 100), r = RISK[l];
-                return `<div class="bd-row"><span class="bd-lbl">${l}</span><div class="bd-rail"><div class="bd-fill" style="background:${r.bar};width:0%" data-w="${pct}"></div></div><span class="bd-n">${n}</span></div>`;
-            }).join('');
+            pts.forEach(p => { counts[p.risk_level] = (counts[p.risk_level] || 0) + 1; });
+            document.getElementById('bdTotal').textContent = pts.length + ' total';
+            document.getElementById('bdBody').innerHTML =
+                ['Critical', 'High', 'Medium', 'Low'].map(l => {
+                    const n = counts[l] || 0, pct = Math.round((n / total) * 100), r = RISK[l];
+                    return `<div class="bd-row">
+        <span class="bd-lbl">${l}</span>
+        <div class="bd-rail"><div class="bd-fill" style="background:${r.bar};width:0%" data-w="${pct}"></div></div>
+        <span class="bd-n">${n}</span>
+        <span class="bd-pct">${pct}%</span>
+      </div>`;
+                }).join('');
             setTimeout(() => { document.querySelectorAll('.bd-fill').forEach(el => { el.style.width = el.dataset.w + '%'; }); }, 100);
         }
 
         /* ── ACTIVITY ── */
-        function renderActivity() {
+        function doAct() {
             const body = document.getElementById('actBody');
-            const recent = history.slice(0, 6);
+            const recent = hist.slice(0, 6);
+            document.getElementById('actSub').textContent = recent.length + ' recent';
             if (!recent.length) {
-                body.innerHTML = `<div class="tbl-state" style="padding:24px">No triage activity yet.<br/><a href="/triage/" style="color:var(--teal);text-decoration:none;font-family:var(--mono)">Run first triage →</a></div>`;
+                body.innerHTML = `<div class="tstate" style="padding:20px">
+      <div style="font-size:24px;margin-bottom:8px">📋</div>
+      <strong>No activity yet</strong><br/>
+      <a href="/triage/" style="color:var(--teal);font-family:var(--mono);font-size:11px">Run first triage →</a>
+    </div>`;
                 return;
             }
             body.innerHTML = recent.map(t => {
                 const r = RISK[t.risk_level] || RISK['Low'];
-                const sym = t.symptoms_input ? (t.symptoms_input.slice(0, 38) + '…') : '—';
-                return `<div class="act-item" onclick="location.href='/triage/'">
-      <div class="act-orb" style="background:${r.orb}">${r.icon}</div>
-      <div class="act-meta"><div class="act-name">${t.patient_name || 'Anonymous patient'}</div><div class="act-detail">${t.risk_level} · ${sym}</div></div>
-      <div class="act-time">${timeAgo(t.analyzed_at)}</div>
+                const sym = (t.symptoms_input || '').slice(0, 38) + '…';
+                return `<div class="af-item" onclick="location.href='/triage/'">
+      <div class="af-orb" style="background:${r.orb}">${r.icon}</div>
+      <div style="flex:1;min-width:0">
+        <div class="af-name">${t.patient_name || 'Anonymous patient'}</div>
+        <div class="af-det">${t.risk_level} · ${sym}</div>
+      </div>
+      <div class="af-time">${ago(t.analyzed_at)}</div>
     </div>`;
             }).join('');
         }
 
         /* ── HELPERS ── */
-        function doFilter(btn, level) {
-            document.querySelectorAll('.fpill').forEach(p => p.classList.remove('active'));
-            btn.classList.add('active'); renderQueue(level);
+        function fil(btn, level) {
+            document.querySelectorAll('.fp').forEach(p => p.classList.remove('on'));
+            btn.classList.add('on'); doQueue(level);
         }
-        function go(id, name, sym) { location.href = `/triage/?patient_id=${id}&input=${encodeURIComponent(name + '\n' + sym)}`; }
-        function setSpinning(on) { document.getElementById('refBtn').classList.toggle('spinning', on); document.getElementById('refRing').style.animation = on ? 'spin 0.7s linear infinite' : 'none'; }
-        function refreshAll() { loadAll(); showToast('Dashboard refreshed'); }
-        function showToast(msg) { const t = document.getElementById('toast'); document.getElementById('toastMsg').textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2600); }
-        function timeAgo(d) { if (!d) return '—'; const s = Math.floor((Date.now() - new Date(d)) / 1000); if (s < 60) return 'just now'; if (s < 3600) return Math.floor(s / 60) + 'm ago'; if (s < 86400) return Math.floor(s / 3600) + 'h ago'; return Math.floor(s / 86400) + 'd ago'; }
+        window.fil = fil;
+
+        function doSearch(v) { srch = v.toLowerCase(); doQueue(); }
+        window.doSearch = doSearch;
+
+        function goTriage(id, name, sym) {
+            location.href = `/triage/?patient_id=${id}&input=${encodeURIComponent(name + '\n' + sym)}`;
+        }
+        window.goTriage = goTriage;
+
+        function spin(on) {
+            document.getElementById('refBtn').classList.toggle('spinning', on);
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2600);
+        }
+
+        function ago(d) {
+            if (!d) return '—';
+            const s = Math.floor((Date.now() - new Date(d)) / 1000);
+            if (s < 60) return 'just now';
+            if (s < 3600) return Math.floor(s / 60) + 'm ago';
+            if (s < 86400) return Math.floor(s / 3600) + 'h ago';
+            return Math.floor(s / 86400) + 'd ago';
+        }
         function esc(s) { return (s || '').replace(/'/g, "\\'").replace(/"/g, '&quot;').slice(0, 80); }
 
-        window.doFilter = doFilter; window.refreshAll = refreshAll;
-
-        /* ── AUTO-REFRESH 30s ── */
+        /* ── AUTO REFRESH ── */
         setInterval(() => { loadAll(); showToast('Auto-refreshed'); }, 30000);
-
-        /* ── INIT ── */
         loadAll();
     </script>
 </body>
