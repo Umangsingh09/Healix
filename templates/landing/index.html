@@ -3,7 +3,12 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0b1016">
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="apple-touch-icon" href="/static/icon.png">
     <title>Healix — Agentic Healthcare Triage</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
@@ -1531,6 +1536,15 @@
             const ecg = document.querySelector('.hero-ecg');
             if (ecg) ecg.style.transform = `translateY(calc(-50% + ${window.scrollY * 0.15}px))`;
         });
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/static/sw.js')
+                    .then(reg => console.log('SW Registered', reg))
+                    .catch(err => console.error('SW Failed', err));
+            });
+        }
     </script>
 </body>
 

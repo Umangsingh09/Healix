@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Healix — My Health Passport</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --bg: #070c13;
+            --bg2: #0b1520;
+            --card: #0f1d2c;
+            --card2: #122130;
+            --card3: #162636;
+            --rim: rgba(255, 255, 255, 0.06);
+            --rim2: rgba(255, 255, 255, 0.11);
+            --rim3: rgba(255, 255, 255, 0.18);
+            --ink: #ddeaf6;
+            --ink2: #607d93;
+            --ink3: #2e4a5e;
+            --red: #f43030;
+            --red2: #ff5c5c;
+            --ra: rgba(244, 48, 48, 0.10);
+            --rb: rgba(244, 48, 48, 0.20);
+            --amber: #f5a700;
+            --aa: rgba(245, 167, 0, 0.10);
+            --teal: #00dba8;
+            --ta: rgba(0, 219, 168, 0.09);
+            --tb: rgba(0, 219, 168, 0.20);
+            --iris: #7c73f0;
+            --ia: rgba(124, 115, 240, 0.10);
+            --sans: 'Outfit', system-ui, sans-serif;
+            --mono: 'JetBrains Mono', monospace;
+            --serif: 'Crimson Pro', Georgia, serif;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 15px;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: var(--sans);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.02;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-size: 180px;
+        }
+
+        /* NAV */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: 62px;
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+            gap: 14px;
+            background: rgba(7, 12, 19, 0.92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--rim);
+        }
+
+        .nv-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nv-mark {
+            width: 34px;
+            height: 34px;
+            background: var(--red);
+            border-radius: 9px;
+            display: grid;
+            place-items: center;
+            box-shadow: 0 0 16px rgba(244, 48, 48, 0.35);
+        }
+
+        .nv-c {
+            position: relative;
+            width: 14px;
+            height: 14px;
+        }
+
+        .nv-c::before,
+        .nv-c::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 2px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .nv-c::before {
+            width: 14px;
+            height: 2px;
+        }
+
+        .nv-c::after {
+            width: 2px;
+            height: 14px;
+        }
+
+        .nv-word {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+        }
+
+        .nv-sep {
+            width: 1px;
+            height: 18px;
+            background: var(--rim2);
+        }
+
+        .nv-page {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink3);
+        }
+
+        .nav-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nv-chip {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 13px;
+            border-radius: 14px;
+            background: var(--ta);
+            border: 1px solid rgba(0, 219, 168, 0.22);
+            font-family: var(--mono);
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--teal);
+            letter-spacing: 0.04em;
+        }
+
+        .nv-back {
+            padding: 6px 14px;
+            background: var(--card);
+            border: 1px solid var(--rim2);
+            border-radius: 8px;
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink2);
+            text-decoration: none;
+            transition: all 0.18s;
+        }
+
+        .nv-back:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        /* PAGE */
+        .page {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 28px 80px;
+        }
+
+        /* LOADING */
+        .loading-screen {
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .ls-ring {
+            width: 44px;
+            height: 44px;
+            border: 3px solid var(--rim2);
+            border-top-color: var(--teal);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .ls-text {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--ink3);
+        }
+
+        /* ERROR */
+        .err-screen {
+            min-height: 50vh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-align: center;
+        }
+
+        .err-ico {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .err-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--red2);
+            margin-bottom: 6px;
+        }
+
+        .err-sub {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink3);
+            line-height: 1.8;
+        }
+
+        .err-btn {
+            margin-top: 12px;
+            padding: 10px 22px;
+            background: var(--card);
+            border: 1px solid var(--rim2);
+            border-radius: 9px;
+            color: var(--ink2);
+            font-family: var(--mono);
+            font-size: 11px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.18s;
+            display: inline-block;
+        }
+
+        .err-btn:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        /* PASSPORT WRAP */
+        #passportWrap {
+            display: none;
+        }
+
+        /* HERO HEADER */
+        .ph {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .ph-eye {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--teal);
+            margin-bottom: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ph-eye::before,
+        .ph-eye::after {
+            content: '';
+            width: 20px;
+            height: 1px;
+            background: var(--teal);
+            opacity: 0.4;
+        }
+
+        .ph-title {
+            font-family: var(--serif);
+            font-size: clamp(28px, 4vw, 44px);
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            line-height: 1.05;
+            margin-bottom: 10px;
+        }
+
+        .ph-title em {
+            font-style: italic;
+            color: var(--teal);
+        }
+
+        .ph-sub {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink3);
+            line-height: 1.8;
+        }
+
+        /* PASSPORT CARD — the centrepiece */
+        .passport-outer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .passport-card {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card);
+            border: 1px solid var(--rim2);
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--rim);
+            animation: cardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(24px) scale(0.97)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1)
+            }
+        }
+
+        /* Top rainbow stripe */
+        .passport-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--red) 0%, var(--amber) 35%, var(--teal) 65%, var(--iris) 100%);
+            z-index: 2;
+        }
+
+        /* Background glow */
+        .passport-card::after {
+            content: '';
+            position: absolute;
+            top: -80px;
+            right: -80px;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 219, 168, 0.07), transparent 70%);
+            pointer-events: none;
+        }
+
+        /* CARD HEADER */
+        .pc-hdr {
+            padding: 26px 28px 20px;
+            background: var(--card2);
+            border-bottom: 1px solid var(--rim);
+            position: relative;
+            z-index: 1;
+        }
+
+        .pc-issuer {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--teal);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .pc-issuer-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--teal);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.3
+            }
+        }
+
+        .pc-identity {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .pc-av {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, var(--teal) 0%, var(--iris) 100%);
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+            font-weight: 800;
+            color: white;
+            border: 2.5px solid rgba(0, 219, 168, 0.35);
+        }
+
+        .pc-name-wrap {}
+
+        .pc-name {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+
+        .pc-uid {
+            font-family: var(--mono);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--teal);
+            letter-spacing: 0.08em;
+        }
+
+        .pc-meta {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+            margin-top: 3px;
+        }
+
+        /* RISK BANNER */
+        .pc-risk {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 28px;
+            border-bottom: 1px solid var(--rim);
+        }
+
+        .risk-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 6px 16px;
+            border-radius: 9px;
+            font-family: var(--mono);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+        }
+
+        .rpd {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .rp-c {
+            background: var(--ra);
+            color: var(--red2);
+            border: 1px solid rgba(244, 48, 48, 0.3);
+        }
+
+        .rp-h {
+            background: var(--aa);
+            color: var(--amber);
+            border: 1px solid rgba(245, 167, 0, 0.3);
+        }
+
+        .rp-m {
+            background: var(--ia);
+            color: var(--iris);
+            border: 1px solid rgba(124, 115, 240, 0.3);
+        }
+
+        .rp-l {
+            background: var(--ta);
+            color: var(--teal);
+            border: 1px solid rgba(0, 219, 168, 0.3);
+        }
+
+        .risk-label {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink3);
+        }
+
+        /* QR SECTION */
+        .qr-section {
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            border-bottom: 1px solid var(--rim);
+            background: var(--card);
+            position: relative;
+            z-index: 1;
+        }
+
+        .qr-frame {
+            position: relative;
+            padding: 18px;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 0 0 1px rgba(0, 219, 168, 0.25), 0 0 30px rgba(0, 219, 168, 0.12);
+        }
+
+        /* Corner decorations */
+        .qr-frame::before,
+        .qr-frame::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-color: var(--teal);
+            border-style: solid;
+        }
+
+        .qr-frame::before {
+            top: -1px;
+            left: -1px;
+            border-width: 3px 0 0 3px;
+            border-radius: 4px 0 0 0;
+        }
+
+        .qr-frame::after {
+            bottom: -1px;
+            right: -1px;
+            border-width: 0 3px 3px 0;
+            border-radius: 0 0 4px 0;
+        }
+
+        #qrDiv {}
+
+        .qr-scan-line {
+            position: absolute;
+            left: 18px;
+            right: 18px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(0, 219, 168, 0.8), transparent);
+            animation: scanLine 2.5s ease-in-out infinite;
+            box-shadow: 0 0 8px rgba(0, 219, 168, 0.6);
+            top: 18px;
+        }
+
+        @keyframes scanLine {
+            0% {
+                top: 18px;
+                opacity: 1
+            }
+
+            48% {
+                opacity: 1
+            }
+
+            50% {
+                bottom: 18px;
+                top: auto;
+                opacity: 0.3
+            }
+
+            100% {
+                top: 18px;
+                opacity: 1
+            }
+        }
+
+        .qr-instructions {
+            text-align: center;
+        }
+
+        .qi-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+
+        .qi-sub {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+            line-height: 1.7;
+        }
+
+        /* DATA FIELDS */
+        .pc-data {
+            padding: 20px 28px;
+            border-bottom: 1px solid var(--rim);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .pd {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--rim);
+        }
+
+        .pd:nth-child(odd) {
+            padding-right: 16px;
+            border-right: 1px solid var(--rim);
+        }
+
+        .pd:nth-child(even) {
+            padding-left: 16px;
+        }
+
+        .pd:nth-last-child(-n+2) {
+            border-bottom: none;
+        }
+
+        .pd-k {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink3);
+            margin-bottom: 3px;
+        }
+
+        .pd-v {
+            font-family: var(--mono);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .pd-v.ok {
+            color: var(--teal);
+        }
+
+        .pd-v.warn {
+            color: var(--amber);
+        }
+
+        .pd-v.crit {
+            color: var(--red2);
+        }
+
+        /* CARD FOOTER */
+        .pc-foot {
+            padding: 16px 28px;
+            background: var(--card2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+        }
+
+        .pf-network {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+        }
+
+        .pf-valid {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--teal);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* ACTION BUTTONS */
+        .passport-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .pa-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            font-family: var(--sans);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            border: none;
+        }
+
+        .pa-primary {
+            background: var(--teal);
+            color: #021a14;
+            box-shadow: 0 0 0 0 rgba(0, 219, 168, 0.4);
+        }
+
+        .pa-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 219, 168, 0.35);
+        }
+
+        .pa-outline {
+            background: transparent;
+            border: 1px solid var(--rim2) !important;
+            color: var(--ink2);
+        }
+
+        .pa-outline:hover {
+            border-color: var(--iris) !important;
+            color: var(--iris);
+        }
+
+        /* HEALTH SUMMARY BELOW CARD */
+        .health-summary {
+            margin-top: 32px;
+            width: 100%;
+        }
+
+        .hs-title {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--ink3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .hs-title::before,
+        .hs-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--rim);
+        }
+
+        /* Stats row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        @media(max-width:600px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .sc {
+            background: var(--card);
+            border: 1px solid var(--rim);
+            border-radius: 14px;
+            padding: 16px 14px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        .sc:nth-child(1) {
+            animation-delay: 0.1s
+        }
+
+        .sc:nth-child(2) {
+            animation-delay: 0.15s
+        }
+
+        .sc:nth-child(3) {
+            animation-delay: 0.2s
+        }
+
+        .sc:nth-child(4) {
+            animation-delay: 0.25s
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .sc::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 10px;
+            right: 10px;
+            height: 1px;
+        }
+
+        .sc-t::before {
+            background: linear-gradient(90deg, transparent, var(--teal), transparent);
+        }
+
+        .sc-r::before {
+            background: linear-gradient(90deg, transparent, var(--red2), transparent);
+        }
+
+        .sc-i::before {
+            background: linear-gradient(90deg, transparent, var(--iris), transparent);
+        }
+
+        .sc-a::before {
+            background: linear-gradient(90deg, transparent, var(--amber), transparent);
+        }
+
+        .sc-ico {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .sc-val {
+            font-family: var(--mono);
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .tv-teal {
+            color: var(--teal);
+        }
+
+        .tv-red {
+            color: var(--red2);
+        }
+
+        .tv-iris {
+            color: var(--iris);
+        }
+
+        .tv-amber {
+            color: var(--amber);
+        }
+
+        .sc-lbl {
+            font-family: var(--mono);
+            font-size: 9px;
+            color: var(--ink3);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* Triage history */
+        .hist-panel {
+            background: var(--card);
+            border: 1px solid var(--rim);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .hp-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--rim);
+            background: var(--card2);
+        }
+
+        .hp-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .hp-sub {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+        }
+
+        .hist-list {
+            padding: 0;
+        }
+
+        .hi {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 13px 20px;
+            border-bottom: 1px solid var(--rim);
+            transition: background 0.12s;
+        }
+
+        .hi:last-child {
+            border-bottom: none;
+        }
+
+        .hi:hover {
+            background: rgba(255, 255, 255, 0.025);
+        }
+
+        .hi-orb {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            display: grid;
+            place-items: center;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .hi-date {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink3);
+            min-width: 88px;
+            flex-shrink: 0;
+        }
+
+        .hi-sym {
+            font-size: 13px;
+            color: var(--ink2);
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .hi-rp {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 9px;
+            border-radius: 6px;
+            font-family: var(--mono);
+            font-size: 9px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .hi-conf {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--iris);
+            min-width: 36px;
+            text-align: right;
+        }
+
+        .hist-empty {
+            padding: 28px;
+            text-align: center;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink3);
+            line-height: 2;
+        }
+
+        /* TOOLTIP on share */
+        .share-tip {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(60px);
+            background: var(--card2);
+            border: 1px solid var(--rim2);
+            border-radius: 11px;
+            padding: 11px 20px;
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            pointer-events: none;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .share-tip.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .st-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--teal);
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--rim2);
+            border-radius: 2px;
+        }
+
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+
+            .nav,
+            .health-summary,
+            .passport-actions,
+            .nv-back {
+                display: none !important;
+            }
+
+            #passportWrap {
+                display: block !important;
+            }
+
+            .passport-card {
+                max-width: 100%;
+                border: 2px solid #ddd;
+                box-shadow: none;
+                border-radius: 12px;
+            }
+        }
+
+        /* PROFILE MODAL (Slide-over) */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(4, 10, 18, 0.92);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.on {
+            display: block;
+            opacity: 1;
+        }
+
+        .modal-side {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            max-width: 500px;
+            background: var(--bg2);
+            border-left: 1px solid var(--rim2);
+            z-index: 2001;
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            overflow-y: auto;
+            padding: 40px;
+        }
+
+        .modal-overlay.on+.modal-side,
+        .modal-side.on {
+            transform: translateX(0);
+        }
+
+        .m-hdr {
+            margin-bottom: 40px;
+        }
+
+        .m-eye {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--teal);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 8px;
+        }
+
+        .m-title {
+            font-family: var(--serif);
+            font-size: 32px;
+            font-weight: 300;
+            line-height: 1.1;
+            margin-bottom: 12px;
+        }
+
+        .m-sub {
+            color: var(--ink3);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .m-form {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .mf-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mf-lbl {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .mf-in {
+            background: var(--bg);
+            border: 1px solid var(--rim2);
+            border-radius: 12px;
+            padding: 14px 18px;
+            color: var(--ink);
+            font-family: var(--sans);
+            font-size: 15px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .mf-in:focus {
+            border-color: var(--teal);
+            box-shadow: 0 0 15px rgba(0, 219, 168, 0.1);
+        }
+
+        .mf-ta {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .m-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: var(--teal);
+            color: #021a14;
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 20px;
+        }
+
+        .m-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 219, 168, 0.3);
+        }
+
+        .m-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .m-close {
+            position: absolute;
+            top: 32px;
+            right: 32px;
+            font-size: 24px;
+            color: var(--ink3);
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .m-close:hover {
+            color: var(--ink);
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="nav">
+        <a class="nv-logo" href="/">
+            <div class="nv-mark">
+                <div class="nv-c"></div>
+            </div>
+            <span class="nv-word">Healix</span>
+        </a>
+        <div class="nv-sep"></div>
+        <span class="nv-page">my_health_passport.py</span>
+        <div class="nav-right">
+            <div id="userProfileLink" onclick="openEditProfile()"
+                style="display:none; align-items:center; gap:10px; cursor:pointer; margin-right:8px;">
+                <span id="navUserName" style="font-family:var(--mono); font-size:11px; color:var(--ink2);">User</span>
+                <div class="nv-chip"
+                    style="background:var(--ia); border-color:var(--iris); color:var(--iris); border-radius:8px;">Edit
+                    Profile</div>
+            </div>
+            <a href="/dashboard/patient/" class="nv-back" style="margin-right:8px;">← My Dashboard</a>
+            <button class="nv-back" onclick="handleLogout()"
+                style="background:var(--ra); border-color:var(--red); color:var(--red2); cursor:pointer;">⏏
+                Exit</button>
+        </div>
+    </nav>
+
+    <div class="page">
+
+        <!-- LOADING -->
+        <div class="loading-screen" id="loadScreen">
+            <div class="ls-ring"></div>
+            <div class="ls-text">Generating your health passport...</div>
+        </div>
+
+        <!-- ERROR -->
+        <div class="err-screen" id="errScreen">
+            <div class="err-ico">🔒</div>
+            <div class="err-title">Passport Unavailable</div>
+            <div class="err-sub" id="errMsg">Your health passport could not be generated.<br />Please log in and try
+                again.</div>
+            <a href="/dashboard/patient/" class="err-btn">← Return to Dashboard</a>
+        </div>
+
+        <!-- PASSPORT -->
+        <div id="passportWrap">
+            <div class="ph">
+                <div class="ph-eye">Digital Health Identity</div>
+                <h1 class="ph-title">My <em>Health Passport</em></h1>
+                <p class="ph-sub">Show this QR to your doctor — they scan it to instantly access<br />your complete
+                    health record, triage history and risk level.</p>
+            </div>
+
+            <div class="passport-outer">
+                <!-- THE PASSPORT CARD -->
+                <div class="passport-card">
+
+                    <!-- Header -->
+                    <div class="pc-hdr">
+                        <div class="pc-issuer">
+                            <div class="pc-issuer-dot"></div>
+                            Healix Health Network · Digital Passport
+                        </div>
+                        <div class="pc-identity">
+                            <div class="pc-av" id="pcAv">—</div>
+                            <div class="pc-name-wrap">
+                                <div class="pc-name" id="pcName">Loading...</div>
+                                <div class="pc-uid" id="pcUID">HLX-000000</div>
+                                <div class="pc-meta" id="pcMeta">—</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Risk banner -->
+                    <div class="pc-risk">
+                        <span class="risk-pill" id="riskPill">
+                            <span class="rpd" id="riskDot"></span>
+                            <span id="riskTxt">—</span>
+                        </span>
+                        <span class="risk-label">Current triage risk level</span>
+                    </div>
+
+                    <!-- QR code -->
+                    <div class="qr-section">
+                        <div class="qr-frame">
+                            <div id="qrDiv"></div>
+                            <div class="qr-scan-line"></div>
+                        </div>
+                        <div class="qr-instructions">
+                            <div class="qi-title">Show to your doctor</div>
+                            <div class="qi-sub">Doctor scans this from their dashboard<br />to view your complete health
+                                history instantly</div>
+                        </div>
+                    </div>
+
+                    <!-- Data fields -->
+                    <div class="pc-data" id="pcData"></div>
+
+                    <!-- Footer -->
+                    <div class="pc-foot">
+                        <span class="pf-network">Healix Health Network</span>
+                        <span class="pf-valid">
+                            <span
+                                style="width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite;display:inline-block;"></span>
+                            Valid · Active
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="passport-actions">
+                    <button class="pa-btn pa-primary" onclick="downloadQR()">↓ Save QR</button>
+                    <button class="pa-btn pa-outline" onclick="sharePassport()">⤴ Share</button>
+                    <button class="pa-btn pa-outline" onclick="window.print()">🖨 Print</button>
+                </div>
+            </div>
+
+            <!-- HEALTH SUMMARY -->
+            <div class="health-summary">
+                <div class="hs-title">Health Overview</div>
+
+                <div class="stats-row">
+                    <div class="sc sc-r">
+                        <div class="sc-ico">🩺</div>
+                        <div class="sc-val tv-teal" id="smRisk">—</div>
+                        <div class="sc-lbl">Risk Level</div>
+                    </div>
+                    <div class="sc sc-i">
+                        <div class="sc-ico">📋</div>
+                        <div class="sc-val tv-iris" id="smTriages">—</div>
+                        <div class="sc-lbl">Triages</div>
+                    </div>
+                    <div class="sc sc-t">
+                        <div class="sc-ico">⚕️</div>
+                        <div class="sc-val tv-teal" id="smConds">—</div>
+                        <div class="sc-lbl">Conditions</div>
+                    </div>
+                    <div class="sc sc-a">
+                        <div class="sc-ico">🏥</div>
+                        <div class="sc-val tv-teal">Active</div>
+                        <div class="sc-lbl">Status</div>
+                    </div>
+                </div>
+
+                <div class="hist-panel">
+                    <div class="hp-head">
+                        <span class="hp-title">Triage History</span>
+                        <span class="hp-sub" id="histCount">Loading...</span>
+                    </div>
+                    <div id="histBody">
+                        <div class="hist-empty">Loading history...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share tip -->
+    <div class="share-tip" id="shareTip">
+        <div class="st-dot"></div>
+        <span id="shareTipTxt">Link copied to clipboard!</span>
+    </div>
+
+    <!-- Firebase -->
+    <!-- PROFILE / ONBOARDING MODAL -->
+    <div id="modalOverlay" class="modal-overlay" onclick="closeEditProfile()"></div>
+    <div id="profileModal" class="modal-side">
+        <button class="m-close" onclick="closeEditProfile()">×</button>
+        <div class="m-hdr">
+            <div class="m-eye">Clinical Ledger</div>
+            <h2 class="m-title" id="mTitle">Generate Your <em>Passport</em></h2>
+            <p class="m-sub" id="mSub">We need a few medical details to activate your secure health passport and link
+                your clinical history.</p>
+        </div>
+
+        <div class="m-form">
+            <div class="mf-group">
+                <label class="mf-lbl">Legal Full Name</label>
+                <input type="text" id="mfName" class="mf-in" placeholder="e.g. Johnathan Doe">
+            </div>
+            <div class="mf-group">
+                <label class="mf-lbl">Age</label>
+                <input type="number" id="mfAge" class="mf-in" placeholder="e.g. 28">
+            </div>
+            <div class="mf-group">
+                <label class="mf-lbl">Health History / Current Symptoms</label>
+                <textarea id="mfSym" class="mf-in mf-ta"
+                    placeholder="Describe any chronic conditions or recent health concerns..."></textarea>
+            </div>
+            <button class="m-btn" id="mSaveBtn" onclick="saveProfile()">
+                <span id="mBtnText">Activate Identity 🪪</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toastContainer" style="position:fixed; bottom:30px; right:30px; z-index:9999;"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const cfg = {
+            apiKey: "AIzaSyDMoNdBIWdZNKJOlR7ZV-46OfFHZPwb1Wk", authDomain: "healix-d02c4.firebaseapp.com",
+            projectId: "healix-d02c4", storageBucket: "healix-d02c4.firebasestorage.app",
+            messagingSenderId: "783527967185", appId: "1:783527967185:web:eacf3a3f785121a0ae08f0",
+            measurementId: "G-Z4TD76TGR7"
+        };
+        const app = initializeApp(cfg), auth = getAuth(app), db = getFirestore(app);
+        window.auth = auth; // Expose for get() function
+
+        onAuthStateChanged(auth, async user => {
+            if (!user) {
+                // If not logged in, show demo passport instead of error block
+                window._patientName = 'Demo User';
+                buildPassportFromName('Demo User', 'demo@example.com');
+                return;
+            }
+            const ud = await getDoc(doc(db, 'users', user.uid));
+            if (!ud.exists() || ud.data().role !== 'patient') {
+                window._patientName = 'Demo User';
+                buildPassportFromName('Demo User', 'demo@example.com');
+                return;
+            }
+            const name = user.displayName || ud.data().name || user.email.split('@')[0];
+            const pid = ud.data().django_patient_id;
+            console.log("[Healix] Passport Auth:", user.email, "PID:", pid);
+
+            // Update Nav
+            document.getElementById('navUserName').textContent = name;
+            document.getElementById('userProfileLink').style.display = 'flex';
+
+            if (pid && pid !== "undefined") {
+                window._patientName = name;
+                window._patientId = pid;
+                buildPassport(name, pid);
+            } else {
+                console.warn("[Healix] No clinical PID found. Showing pending state.");
+                buildPassportFromName(name, user.email);
+            }
+        });
+
+        async function handleLogout() {
+            try {
+                const { getAuth, signOut } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
+                await signOut(getAuth());
+                location.href = '/auth/login/';
+            } catch (e) { console.error(e); }
+        }
+        window.handleLogout = handleLogout;
+    </script>
+
+    <script>
+        const RCLS = { Critical: 'rp-c', High: 'rp-h', Medium: 'rp-m', Low: 'rp-l' };
+        const RDOT = { Critical: '#f43030', High: '#f5a700', Medium: '#7c73f0', Low: '#00dba8' };
+        const RICO = { Critical: '🚨', High: '⚠️', Medium: '🔶', Low: '✅' };
+        const RORA = { Critical: 'rgba(244,48,48,0.12)', High: 'rgba(245,167,0,0.12)', Medium: 'rgba(124,115,240,0.12)', Low: 'rgba(0,219,168,0.09)' };
+
+        function csrf() { for (const c of document.cookie.split(';')) { const [k, v] = c.trim().split('='); if (k === 'csrftoken') return decodeURIComponent(v); } return ''; }
+        async function get(u) {
+            let headers = { 'X-CSRFToken': csrf(), 'Content-Type': 'application/json' };
+            if (window.auth && window.auth.currentUser) {
+                const token = await window.auth.currentUser.getIdToken(true);
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            const r = await fetch(u, { headers });
+            if (!r.ok) throw new Error(r.status);
+            return r.json();
+        }
+
+        /* ── BUILD PASSPORT WITH DJANGO PATIENT ID ── */
+        async function buildPassport(name, pid) {
+            try {
+                const ptData = await get(`/api/patients/${pid}/`);
+                let hist = [];
+                try {
+                    const histData = await get(`/api/patients/${pid}/triage-history/`);
+                    hist = Array.isArray(histData) ? histData : (histData.results || []);
+                } catch (he) {
+                    console.log("[Healix] Triage history unavailable or empty.");
+                }
+                renderPassport(ptData, hist, name);
+            } catch (e) {
+                console.error("[Healix] Failed to build passport:", e);
+                showToast("Clinical Sync Error: Using local fallback", 5000);
+                buildPassportFromName(name, '');
+            }
+        }
+        window.buildPassport = buildPassport;
+
+        /* ── FALLBACK: no patient ID in Firestore ── */
+        function buildPassportFromName(name, email) {
+            const mockPt = {
+                id: 0,
+                name: name || 'Pending Setup',
+                age: '—',
+                risk_level: 'Low',
+                symptoms: 'Complete clinical setup on the dashboard to activate your passport.'
+            };
+            renderPassport(mockPt, [], name);
+
+            // Override the QR container to show a pending message instead of a broken QR
+            const qrContainer = document.getElementById('qrDiv');
+            if (qrContainer) {
+                qrContainer.innerHTML = `
+                    <div style="font-family:var(--font-mono); font-size:11px; color:var(--ink3); padding:40px 20px; text-align:center; border:1px dashed var(--rim2); border-radius:12px;">
+                        <div style="font-size:24px; margin-bottom:12px;">⏳</div>
+                        PASSPORT INACTIVE<br/>
+                        <button onclick="openEditProfile()" style="margin-top:16px; background:var(--teal); color:#021a14; border:none; padding:8px 16px; border-radius:8px; font-weight:700; cursor:pointer;">
+                            Complete Setup Now
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        window.buildPassportFromName = buildPassportFromName;
+
+        /* ── RENDER ── */
+        function renderPassport(pt, hist, displayName) {
+            document.getElementById('loadScreen').style.display = 'none';
+            document.getElementById('passportWrap').style.display = 'block';
+
+            const uid = 'HLX-' + String(pt.id).padStart(6, '0');
+            const initials = (pt.name || '?').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+            const risk = pt.risk_level || 'Low';
+            const riskCls = risk === 'Critical' ? 'crit' : risk === 'High' ? 'warn' : 'ok';
+            const latest = hist[0];
+            const conds = latest ? (latest.possible_conditions || []).slice(0, 3) : [];
+
+            /* Header */
+            document.getElementById('pcAv').textContent = initials;
+            document.getElementById('pcName').textContent = pt.name || displayName || 'Patient';
+            document.getElementById('pcUID').textContent = uid;
+            document.getElementById('pcMeta').textContent =
+                `Age ${pt.age || '—'} · Registered with Healix Network`;
+
+            /* Risk pill */
+            const pillEl = document.getElementById('riskPill');
+            pillEl.className = `risk-pill ${RCLS[risk] || 'rp-l'}`;
+            document.getElementById('riskDot').style.background = RDOT[risk] || RDOT.Low;
+            document.getElementById('riskTxt').textContent = risk + ' Priority';
+
+            /* Data fields */
+            const issued = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+            document.getElementById('pcData').innerHTML = `
+    <div class="pd"><div class="pd-k">Patient ID</div><div class="pd-v">${uid}</div></div>
+    <div class="pd"><div class="pd-k">Full Name</div><div class="pd-v">${pt.name || '—'}</div></div>
+    <div class="pd"><div class="pd-k">Age</div><div class="pd-v">${pt.age || '—'} years</div></div>
+    <div class="pd"><div class="pd-k">Risk Level</div><div class="pd-v ${riskCls}">● ${risk}</div></div>
+    <div class="pd"><div class="pd-k">Triage Records</div><div class="pd-v ok">${hist.length} total</div></div>
+    <div class="pd"><div class="pd-k">Last Triage</div><div class="pd-v">${latest ? fmtD(latest.analyzed_at) : 'Not triaged'}</div></div>
+    <div class="pd"><div class="pd-k">Chief Complaint</div><div class="pd-v">${(pt.symptoms || '—').slice(0, 30)}</div></div>
+    <div class="pd"><div class="pd-k">Issued</div><div class="pd-v">${issued}</div></div>
+  `;
+
+            /* Generate QR */
+            const qrContainer = document.getElementById('qrDiv');
+            qrContainer.innerHTML = '';
+
+            const BASE_URL = window.location.origin; // Dynamically use ngrok/localhost
+            const qrData = `${BASE_URL}/passport/view/${uid}`;
+            console.log("[Healix] Generating QR for:", qrData);
+
+            try {
+                if (typeof QRCode !== 'undefined') {
+                    new QRCode(qrContainer, {
+                        text: qrData,          // short URL, not JSON blob
+                        width: 200, height: 200,
+                        colorDark: '#0b1520', colorLight: '#ffffff',
+                        correctLevel: QRCode.CorrectLevel.H  // H for better scan reliability
+                    });
+                } else {
+                    throw new Error("QRCode library not loaded");
+                }
+            } catch (err) {
+                console.warn('Local QRCode failed, using fallback API', err);
+                const img = document.createElement('img');
+                img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrData)}&color=0b1520&bgcolor=ffffff`;
+                img.width = 200;
+                img.height = 200;
+                img.style.display = 'block';
+                img.style.borderRadius = '8px';
+                qrContainer.appendChild(img);
+            }
+
+            /* Stats */
+            document.getElementById('smRisk').textContent = risk;
+            document.getElementById('smRisk').className = 'sc-val tv-' + (risk === 'Critical' ? 'red' : risk === 'High' ? 'amber' : 'teal');
+            document.getElementById('smTriages').textContent = hist.length;
+            document.getElementById('smConds').textContent = conds.length;
+            document.getElementById('histCount').textContent = hist.length + ' record' + (hist.length !== 1 ? 's' : '');
+
+            /* History */
+            const hb = document.getElementById('histBody');
+            if (!hist.length) {
+                hb.innerHTML = '<div class="hist-empty">No triage history yet.<br/>Visit the triage page to get your first analysis.</div>';
+            } else {
+                hb.innerHTML = hist.slice(0, 6).map(t => {
+                    const r = t.risk_level || 'Low';
+                    const conf = t.confidence_score ? Math.round(t.confidence_score * 100) + '%' : '—';
+                    return `<div class="hi">
+        <div class="hi-orb" style="background:${RORA[r]}">${RICO[r] || '📋'}</div>
+        <div class="hi-date">${fmtD(t.analyzed_at)}</div>
+        <div class="hi-sym">${(t.symptoms_input || '').slice(0, 55)}…</div>
+        <span class="hi-rp ${RCLS[r] || 'rp-l'}">${r}</span>
+        <span class="hi-conf">${conf}</span>
+      </div>`;
+                }).join('');
+            }
+        }
+
+        /* ── DOWNLOAD ── */
+        function downloadQR() {
+            const canvas = document.querySelector('#qrDiv canvas');
+            if (!canvas) { alert('QR not ready yet'); return; }
+            const uid = document.getElementById('pcUID').textContent;
+            const a = document.createElement('a');
+            a.download = `healix-passport-${uid}.png`;
+            a.href = canvas.toDataURL('image/png');
+            a.click();
+        }
+        window.downloadQR = downloadQR;
+
+        /* ── SHARE ── */
+        function sharePassport() {
+            const uid = document.getElementById('pcUID').textContent;
+            const BASE_URL = window.location.origin;
+            const url = `${BASE_URL}/passport/view/${uid}`;
+            if (navigator.share) {
+                navigator.share({ title: 'My Health Passport', text: 'My Healix Health Passport', url });
+            } else {
+                navigator.clipboard.writeText(url).then(() => showTip('Passport link copied!'));
+            }
+        }
+        window.sharePassport = sharePassport;
+
+        function showErr(msg) {
+            document.getElementById('loadScreen').style.display = 'none';
+            document.getElementById('errScreen').style.display = 'flex';
+            document.getElementById('errMsg').textContent = msg;
+        }
+
+        function showTip(msg) {
+            const t = document.getElementById('shareTip');
+            document.getElementById('shareTipTxt').textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2600);
+        }
+
+        function fmtD(d) { if (!d) return '—'; return new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }); }
+
+        /* ── PROFILE MODAL LOGIC ── */
+        async function openEditProfile() {
+            const overlay = document.getElementById('modalOverlay');
+            const modal = document.getElementById('profileModal');
+
+            // If editing existing, pre-fill
+            if (window._patientId) {
+                document.getElementById('mTitle').innerHTML = 'Update Your <em>Health Profile</em>';
+                document.getElementById('mSub').textContent = 'Modify your details below. Changes will reflect on your public clinical passport.';
+                document.getElementById('mBtnText').textContent = 'Update Profile';
+
+                try {
+                    const data = await get(`/api/patients/${window._patientId}/`);
+                    document.getElementById('mfName').value = data.name || '';
+                    document.getElementById('mfAge').value = data.age || '';
+                    document.getElementById('mfSym').value = data.symptoms || '';
+                } catch (e) { console.warn("Could not pre-fill profile data"); }
+            }
+
+            overlay.classList.add('on');
+            modal.classList.add('on');
+        }
+        window.openEditProfile = openEditProfile;
+
+        function closeEditProfile() {
+            document.getElementById('modalOverlay').classList.remove('on');
+            document.getElementById('profileModal').classList.remove('on');
+        }
+        window.closeEditProfile = closeEditProfile;
+
+        async function saveProfile() {
+            const name = document.getElementById('mfName').value.trim();
+            const age = document.getElementById('mfAge').value.trim();
+            const symptoms = document.getElementById('mfSym').value.trim();
+
+            if (!name || !age || !symptoms) {
+                alert("Please fill in all details.");
+                return;
+            }
+
+            const btn = document.getElementById('mSaveBtn');
+            const btnText = document.getElementById('mBtnText');
+            const originalText = btnText.textContent;
+
+            btnText.textContent = "Processing... ⏳";
+            btn.disabled = true;
+
+            try {
+                const user = window.auth.currentUser;
+                const token = await user.getIdToken(true);
+
+                let url = '/api/patients/create/';
+                let method = 'POST';
+
+                if (window._patientId) {
+                    url = `/api/patients/update/${window._patientId}/`;
+                    method = 'PATCH'; // Use PATCH for partial updates
+                }
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                        'X-CSRFToken': csrf()
+                    },
+                    body: JSON.stringify({
+                        name, age: parseInt(age), symptoms, user_uid: user.uid
+                    })
+                });
+
+                if (!response.ok) {
+                    const errBody = await response.json().catch(() => ({}));
+                    throw new Error(errBody.error || errBody.detail || `API Failure (${response.status})`);
+                }
+
+                const resData = await response.json();
+                const djangoPid = resData.patient_id || window._patientId;
+
+                // Update Firestore profile (Always sync name)
+                const { getFirestore, doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+                const db = getFirestore();
+                const updatePayload = { name: name };
+                if (!window._patientId) {
+                    updatePayload.django_patient_id = djangoPid;
+                }
+                await updateDoc(doc(db, 'users', user.uid), updatePayload);
+
+                // Sync Firebase Auth Profile Name
+                try {
+                    await updateProfile(user, { displayName: name });
+                } catch (pe) { console.warn("Firebase Profile Sync Failed", pe); }
+
+                closeEditProfile();
+                showToast("Profile updated successfully!");
+                setTimeout(() => location.reload(), 1500);
+
+            } catch (err) {
+                console.error("[Healix] Save Profile Failed:", err);
+                alert("Identity Verification Failed: " + err.message + "\n\n(Tip: If you see 'Token used too early', please wait 10 seconds and try again.)");
+                btnText.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+        window.saveProfile = saveProfile;
+
+        function showToast(msg) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.style = "background:rgba(20,32,48,0.95); backdrop-filter:blur(10px); border:1px solid var(--rim2); color:var(--ink); padding:14px 24px; border-radius:12px; font-size:14px; margin-bottom:12px; animation:slideIn 0.4s forwards; box-shadow:0 10px 30px rgba(0,0,0,0.3);";
+            toast.innerHTML = `<span>● ${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.4s reverse forwards';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // Add slideIn animation
+        const style = document.createElement('style');
+        style.innerHTML = `@keyframes slideIn { from { transform:translateX(120%); opacity:0; } to { transform:translateX(0); opacity:1; } }`;
+        document.head.appendChild(style);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1749 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Healix — QR Scanner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
+    <style>
+        :root {
+            --bg: #070c13;
+            --bg2: #0b1520;
+            --card: #0f1d2c;
+            --card2: #122130;
+            --card3: #162636;
+            --rim: rgba(255, 255, 255, 0.06);
+            --rim2: rgba(255, 255, 255, 0.11);
+            --rim3: rgba(255, 255, 255, 0.18);
+            --ink: #ddeaf6;
+            --ink2: #607d93;
+            --ink3: #2e4a5e;
+            --red: #f43030;
+            --red2: #ff5c5c;
+            --ra: rgba(244, 48, 48, 0.10);
+            --rb: rgba(244, 48, 48, 0.20);
+            --amber: #f5a700;
+            --aa: rgba(245, 167, 0, 0.10);
+            --teal: #00dba8;
+            --ta: rgba(0, 219, 168, 0.09);
+            --tb: rgba(0, 219, 168, 0.20);
+            --iris: #7c73f0;
+            --ia: rgba(124, 115, 240, 0.10);
+            --sans: 'Outfit', system-ui, sans-serif;
+            --mono: 'JetBrains Mono', monospace;
+            --serif: 'Crimson Pro', Georgia, serif;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: var(--sans);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.02;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-size: 180px;
+        }
+
+        /* NAV */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: 62px;
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+            gap: 14px;
+            background: rgba(7, 12, 19, 0.92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--rim);
+        }
+
+        .nv-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nv-mark {
+            width: 34px;
+            height: 34px;
+            background: var(--red);
+            border-radius: 9px;
+            display: grid;
+            place-items: center;
+            box-shadow: 0 0 16px rgba(244, 48, 48, 0.35);
+        }
+
+        .nv-c {
+            position: relative;
+            width: 14px;
+            height: 14px;
+        }
+
+        .nv-c::before,
+        .nv-c::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 2px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .nv-c::before {
+            width: 14px;
+            height: 2px;
+        }
+
+        .nv-c::after {
+            width: 2px;
+            height: 14px;
+        }
+
+        .nv-word {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+        }
+
+        .nv-sep {
+            width: 1px;
+            height: 18px;
+            background: var(--rim2);
+        }
+
+        .nv-page {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink3);
+        }
+
+        .nav-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nv-chip {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 13px;
+            border-radius: 14px;
+            background: var(--ta);
+            border: 1px solid rgba(0, 219, 168, 0.22);
+            font-family: var(--mono);
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--teal);
+        }
+
+        .nv-back {
+            padding: 6px 14px;
+            background: var(--card);
+            border: 1px solid var(--rim2);
+            border-radius: 8px;
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink2);
+            text-decoration: none;
+            transition: all 0.18s;
+        }
+
+        .nv-back:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+            max-width: 1060px;
+            margin: 0 auto;
+            padding: 36px 28px 80px;
+        }
+
+        /* HERO */
+        .hero {
+            margin-bottom: 32px;
+        }
+
+        .hero-eye {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--teal);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hero-eye::before {
+            content: '';
+            width: 20px;
+            height: 1px;
+            background: var(--teal);
+            opacity: 0.5;
+        }
+
+        .hero-title {
+            font-family: var(--serif);
+            font-size: clamp(26px, 4vw, 42px);
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            line-height: 1.06;
+            margin-bottom: 10px;
+        }
+
+        .hero-title em {
+            font-style: italic;
+            color: var(--teal);
+        }
+
+        .hero-sub {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink3);
+            line-height: 1.8;
+        }
+
+        /* MAIN LAYOUT */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        @media(max-width:900px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ── SCANNER PANEL ── */
+        .scanner-panel {
+            background: var(--card);
+            border: 1px solid var(--rim);
+            border-radius: 18px;
+            overflow: hidden;
+            position: sticky;
+            top: 80px;
+        }
+
+        .sp-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 22px;
+            border-bottom: 1px solid var(--rim);
+            background: var(--card2);
+        }
+
+        .sp-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .sp-status {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--mono);
+            font-size: 10px;
+        }
+
+        .sp-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--ink3);
+            transition: background 0.3s;
+        }
+
+        .sp-dot.active {
+            background: var(--teal);
+            animation: pip 1s ease-in-out infinite;
+        }
+
+        .sp-dot.success {
+            background: var(--teal);
+            animation: none;
+        }
+
+        @keyframes pip {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.3
+            }
+        }
+
+        .sp-body {
+            padding: 20px;
+        }
+
+        /* VIEWFINDER */
+        .viewfinder {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1;
+            background: #020810;
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        #scanVid {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        #scanCvs {
+            display: none;
+        }
+
+        /* Corner brackets */
+        .vf-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .vf-corner {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+        }
+
+        .vf-corner.tl {
+            top: 16px;
+            left: 16px;
+            border-top: 3px solid var(--teal);
+            border-left: 3px solid var(--teal);
+            border-radius: 4px 0 0 0;
+        }
+
+        .vf-corner.tr {
+            top: 16px;
+            right: 16px;
+            border-top: 3px solid var(--teal);
+            border-right: 3px solid var(--teal);
+            border-radius: 0 4px 0 0;
+        }
+
+        .vf-corner.bl {
+            bottom: 16px;
+            left: 16px;
+            border-bottom: 3px solid var(--teal);
+            border-left: 3px solid var(--teal);
+            border-radius: 0 0 0 4px;
+        }
+
+        .vf-corner.br {
+            bottom: 16px;
+            right: 16px;
+            border-bottom: 3px solid var(--teal);
+            border-right: 3px solid var(--teal);
+            border-radius: 0 0 4px 0;
+        }
+
+        /* Scan line */
+        .scan-line {
+            position: absolute;
+            left: 16px;
+            right: 16px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(0, 219, 168, 0.9), transparent);
+            box-shadow: 0 0 8px rgba(0, 219, 168, 0.6);
+            display: none;
+            animation: scanMove 2s ease-in-out infinite;
+        }
+
+        @keyframes scanMove {
+            0% {
+                top: 16px;
+                opacity: 0.8
+            }
+
+            50% {
+                top: calc(100% - 16px);
+                opacity: 1
+            }
+
+            100% {
+                top: 16px;
+                opacity: 0.8
+            }
+        }
+
+        /* Idle state */
+        .vf-idle {
+            position: absolute;
+            inset: 0;
+            background: rgba(7, 12, 19, 0.88);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .vi-ico {
+            font-size: 44px;
+            opacity: 0.5;
+        }
+
+        .vi-txt {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink3);
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        /* Success flash */
+        .vf-success {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 219, 168, 0.15);
+            border: 3px solid var(--teal);
+            border-radius: 14px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .vs-ico {
+            font-size: 60px;
+            animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0);
+                opacity: 0
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1
+            }
+        }
+
+        /* DEBUG BAR — shows what was scanned */
+        .debug-bar {
+            background: var(--bg2);
+            border: 1px solid var(--rim);
+            border-radius: 10px;
+            padding: 10px 13px;
+            margin-bottom: 14px;
+            display: none;
+        }
+
+        .db-lbl {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink3);
+            margin-bottom: 5px;
+        }
+
+        .db-val {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--teal);
+            word-break: break-all;
+            line-height: 1.6;
+        }
+
+        .db-type {
+            font-family: var(--mono);
+            font-size: 9px;
+            color: var(--iris);
+            margin-top: 4px;
+        }
+
+        /* BUTTONS */
+        .scan-btn {
+            width: 100%;
+            padding: 13px;
+            background: var(--red);
+            border: none;
+            border-radius: 12px;
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 800;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            margin-bottom: 12px;
+            box-shadow: 0 0 0 0 rgba(244, 48, 48, 0.4);
+        }
+
+        .scan-btn:hover {
+            background: #d82828;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(244, 48, 48, 0.4);
+        }
+
+        .scan-btn.running {
+            background: var(--card2);
+            border: 1px solid var(--rim2);
+            color: var(--ink2);
+            box-shadow: none;
+        }
+
+        .scan-btn.running:hover {
+            border-color: var(--red2);
+            color: var(--red2);
+            transform: none;
+        }
+
+        /* Open URL button — appears after scan */
+        .open-btn {
+            width: 100%;
+            padding: 13px;
+            background: var(--teal);
+            border: none;
+            border-radius: 12px;
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 800;
+            color: #021a14;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            margin-bottom: 12px;
+            box-shadow: 0 0 20px rgba(0, 219, 168, 0.3);
+        }
+
+        .open-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 28px rgba(0, 219, 168, 0.4);
+        }
+
+        /* Manual input */
+        .ms-lbl {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .ms-lbl::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--rim);
+        }
+
+        .ms-in {
+            width: 100%;
+            background: var(--bg2);
+            border: 1px solid var(--rim2);
+            border-radius: 9px;
+            padding: 10px 14px;
+            color: var(--ink);
+            font-family: var(--mono);
+            font-size: 12px;
+            outline: none;
+            transition: border-color 0.2s;
+            margin-bottom: 8px;
+        }
+
+        .ms-in:focus {
+            border-color: rgba(0, 219, 168, 0.45);
+        }
+
+        .ms-in::placeholder {
+            color: var(--ink3);
+        }
+
+        .ms-btn {
+            width: 100%;
+            padding: 10px;
+            background: var(--card2);
+            border: 1px solid var(--rim2);
+            border-radius: 9px;
+            font-family: var(--mono);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--ink2);
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+
+        .ms-btn:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        /* Tips */
+        .tips {
+            margin-top: 14px;
+            background: var(--card2);
+            border: 1px solid var(--rim);
+            border-radius: 10px;
+            padding: 12px 14px;
+        }
+
+        .tip {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+            display: flex;
+            gap: 7px;
+            margin-bottom: 6px;
+            line-height: 1.5;
+        }
+
+        .tip:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ── PROFILE SIDE ── */
+        .profile-idle {
+            background: var(--card);
+            border: 1px solid var(--rim);
+            border-radius: 18px;
+            padding: 48px 32px;
+            text-align: center;
+        }
+
+        .pi-ico {
+            font-size: 44px;
+            margin-bottom: 16px;
+            opacity: 0.35;
+        }
+
+        .pi-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--ink2);
+            margin-bottom: 8px;
+        }
+
+        .pi-sub {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink3);
+            line-height: 1.8;
+        }
+
+        /* Patient profile */
+        .profile-card {
+            background: var(--card);
+            border: 1px solid var(--rim2);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .profile-card::before {
+            content: '';
+            display: block;
+            height: 3px;
+            background: linear-gradient(90deg, var(--red), var(--amber), var(--teal), var(--iris));
+        }
+
+        .pc-hdr {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 22px 24px;
+            background: var(--card2);
+            border-bottom: 1px solid var(--rim);
+        }
+
+        .pc-av {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, var(--teal), var(--iris));
+            display: grid;
+            place-items: center;
+            font-size: 20px;
+            font-weight: 800;
+            color: white;
+            border: 2.5px solid rgba(0, 219, 168, 0.3);
+        }
+
+        .pc-name {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
+        }
+
+        .pc-uid {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--teal);
+            letter-spacing: 0.06em;
+            margin-bottom: 3px;
+        }
+
+        .pc-meta {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+        }
+
+        .pc-risk {
+            margin-left: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 6px;
+        }
+
+        .rp {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 16px;
+            border-radius: 9px;
+            font-family: var(--mono);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .rpd {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .rp-c {
+            background: var(--ra);
+            color: var(--red2);
+            border: 1px solid rgba(244, 48, 48, 0.3);
+        }
+
+        .rp-h {
+            background: var(--aa);
+            color: var(--amber);
+            border: 1px solid rgba(245, 167, 0, 0.3);
+        }
+
+        .rp-m {
+            background: var(--ia);
+            color: var(--iris);
+            border: 1px solid rgba(124, 115, 240, 0.3);
+        }
+
+        .rp-l {
+            background: var(--ta);
+            color: var(--teal);
+            border: 1px solid rgba(0, 219, 168, 0.3);
+        }
+
+        .verified {
+            font-family: var(--mono);
+            font-size: 9px;
+            color: var(--teal);
+        }
+
+        /* Data grid */
+        .pc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            padding: 0 24px;
+        }
+
+        .pg {
+            padding: 11px 0;
+            border-bottom: 1px solid var(--rim);
+        }
+
+        .pg:nth-child(odd) {
+            padding-right: 18px;
+            border-right: 1px solid var(--rim);
+        }
+
+        .pg:nth-child(even) {
+            padding-left: 18px;
+        }
+
+        .pg:nth-last-child(-n+2) {
+            border-bottom: none;
+        }
+
+        .pg-k {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink3);
+            margin-bottom: 3px;
+        }
+
+        .pg-v {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .pg-v.ok {
+            color: var(--teal);
+        }
+
+        .pg-v.warn {
+            color: var(--amber);
+        }
+
+        .pg-v.crit {
+            color: var(--red2);
+        }
+
+        /* Actions */
+        .pc-acts {
+            display: flex;
+            gap: 10px;
+            padding: 16px 24px;
+            background: var(--card2);
+            border-top: 1px solid var(--rim);
+        }
+
+        .pca {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            font-family: var(--sans);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            border: none;
+            text-decoration: none;
+            display: block;
+        }
+
+        .pca-red {
+            background: var(--red);
+            color: white;
+        }
+
+        .pca-red:hover {
+            background: #d82828;
+            transform: translateY(-1px);
+        }
+
+        .pca-out {
+            background: transparent;
+            border: 1px solid var(--rim2) !important;
+            color: var(--ink2);
+        }
+
+        .pca-out:hover {
+            border-color: var(--teal) !important;
+            color: var(--teal);
+        }
+
+        /* Stats */
+        .stat-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+            animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
+        }
+
+        .st {
+            background: var(--card);
+            border: 1px solid var(--rim);
+            border-radius: 13px;
+            padding: 15px 12px;
+            text-align: center;
+        }
+
+        .st::before {
+            content: '';
+            display: block;
+            height: 1px;
+            margin-bottom: 12px;
+        }
+
+        .st-t::before {
+            background: linear-gradient(90deg, transparent, var(--teal), transparent);
+        }
+
+        .st-r::before {
+            background: linear-gradient(90deg, transparent, var(--red2), transparent);
+        }
+
+        .st-i::before {
+            background: linear-gradient(90deg, transparent, var(--iris), transparent);
+        }
+
+        .st-ico {
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .st-val {
+            font-family: var(--mono);
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .tv-t {
+            color: var(--teal);
+        }
+
+        .tv-r {
+            color: var(--red2);
+        }
+
+        .tv-i {
+            color: var(--iris);
+        }
+
+        .st-lbl {
+            font-family: var(--mono);
+            font-size: 9px;
+            color: var(--ink3);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* Latest triage */
+        .lat-card {
+            background: var(--card);
+            border: 1px solid var(--rim);
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.14s both;
+        }
+
+        .lc-hd {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 12px 18px;
+            border-bottom: 1px solid var(--rim);
+            background: var(--card2);
+        }
+
+        .lc-t {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .lc-body {
+            padding: 16px 18px;
+        }
+
+        .lc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .lc-cell {
+            background: var(--card2);
+            border: 1px solid var(--rim);
+            border-radius: 10px;
+            padding: 12px 13px;
+        }
+
+        .lcc-l {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink3);
+            margin-bottom: 5px;
+        }
+
+        .lcc-v {
+            font-size: 13px;
+            color: var(--ink);
+            line-height: 1.5;
+        }
+
+        .lcc-v.it {
+            color: var(--ink2);
+            font-style: italic;
+            font-family: var(--serif);
+        }
+
+        .cond-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .ctag {
+            padding: 4px 11px;
+            border-radius: 7px;
+            font-family: var(--mono);
+            font-size: 10px;
+            background: var(--ra);
+            color: var(--red2);
+            border: 1px solid rgba(244, 48, 48, 0.2);
+        }
+
+        /* History */
+        .hist-card {
+            background: var(--card);
+            border: 1px solid var(--rim);
+            border-radius: 14px;
+            overflow: hidden;
+            animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+        }
+
+        .hc-hd {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 12px 18px;
+            border-bottom: 1px solid var(--rim);
+            background: var(--card2);
+        }
+
+        .hc-t {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .hc-s {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+            margin-left: auto;
+        }
+
+        .hi {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 12px 18px;
+            border-bottom: 1px solid var(--rim);
+            transition: background 0.12s;
+        }
+
+        .hi:last-child {
+            border-bottom: none;
+        }
+
+        .hi:hover {
+            background: rgba(255, 255, 255, 0.025);
+        }
+
+        .hi-orb {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .hi-date {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink3);
+            min-width: 84px;
+            flex-shrink: 0;
+        }
+
+        .hi-sym {
+            font-size: 12px;
+            color: var(--ink2);
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .hi-rp {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-family: var(--mono);
+            font-size: 9px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .hi-conf {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--iris);
+            min-width: 34px;
+            text-align: right;
+        }
+
+        .hist-empty {
+            padding: 22px;
+            text-align: center;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink3);
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(70px);
+            background: var(--card2);
+            border: 1px solid var(--rim2);
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            z-index: 999;
+            transition: all 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+            pointer-events: none;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .td-teal {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--teal);
+            flex-shrink: 0;
+        }
+
+        .td-red {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--red2);
+            flex-shrink: 0;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--rim2);
+            border-radius: 2px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="nav">
+        <a class="nv-logo" href="/">
+            <div class="nv-mark">
+                <div class="nv-c"></div>
+            </div>
+            <span class="nv-word">Healix</span>
+        </a>
+        <div class="nv-sep"></div>
+        <span class="nv-page">qr_scanner.py</span>
+        <div class="nav-right">
+            <div class="nv-chip">📷 QR Scanner</div>
+            <a href="/dashboard/doctor/" class="nv-back">← Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="page">
+        <div class="hero">
+            <div class="hero-eye">Health Passport Scanner</div>
+            <h1 class="hero-title">Scan Patient <em>Health Passport</em></h1>
+            <p class="hero-sub">Point camera at patient's QR → full health profile loads instantly on the right.<br />
+                Works with Healix URL passports and JSON passports.</p>
+        </div>
+
+        <div class="main-layout">
+
+            <!-- SCANNER -->
+            <div class="scanner-panel">
+                <div class="sp-head">
+                    <span class="sp-title">📷 QR Scanner</span>
+                    <div class="sp-status">
+                        <div class="sp-dot" id="spDot"></div>
+                        <span id="spTxt" style="font-family:var(--mono);font-size:10px;color:var(--ink3)">Ready</span>
+                    </div>
+                </div>
+                <div class="sp-body">
+
+                    <!-- Viewfinder -->
+                    <div class="viewfinder">
+                        <video id="scanVid" autoplay playsinline muted></video>
+                        <canvas id="scanCvs"></canvas>
+                        <div class="vf-overlay">
+                            <div class="vf-corner tl"></div>
+                            <div class="vf-corner tr"></div>
+                            <div class="vf-corner bl"></div>
+                            <div class="vf-corner br"></div>
+                            <div class="scan-line" id="scanLine"></div>
+                        </div>
+                        <div class="vf-idle" id="vfIdle">
+                            <div class="vi-ico">📷</div>
+                            <div class="vi-txt">Press button below<br />to start camera</div>
+                        </div>
+                        <div class="vf-success" id="vfSuccess">
+                            <div class="vs-ico">✅</div>
+                        </div>
+                    </div>
+
+                    <!-- Debug: shows what was scanned -->
+                    <div class="debug-bar" id="debugBar">
+                        <div class="db-lbl">QR Content Detected</div>
+                        <div class="db-val" id="dbVal"></div>
+                        <div class="db-type" id="dbType"></div>
+                    </div>
+
+                    <!-- Open URL button — shown after scan -->
+                    <button class="open-btn" id="openBtn" onclick="openScannedURL()">
+                        🔗 Open Patient Profile
+                    </button>
+
+                    <!-- Start/stop camera -->
+                    <button class="scan-btn" id="scanBtn" onclick="toggleCamera()">
+                        📷 Start Camera
+                    </button>
+
+                    <!-- Manual input -->
+                    <div class="ms-lbl">Or paste URL / QR text manually</div>
+                    <input class="ms-in" id="msIn" placeholder="Paste QR content or patient URL here..."
+                        onkeydown="if(event.key==='Enter')processManual()" />
+                    <button class="ms-btn" onclick="processManual()">→ Load from paste</button>
+
+                    <div class="tips">
+                        <div class="tip">💡 <span>Ask patient: Healix app → My Passport → show QR</span></div>
+                        <div class="tip">📱 <span>Raise phone brightness before scanning</span></div>
+                        <div class="tip">🔗 <span>QR opens a URL — profile loads on the right</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROFILE PANEL -->
+            <div id="profileSide">
+                <div class="profile-idle" id="profileIdle">
+                    <div class="pi-ico">🏥</div>
+                    <div class="pi-title">Scan a passport QR</div>
+                    <div class="pi-sub">Patient profile appears here<br />the moment QR is detected.</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <div class="td-teal" id="toastDot"></div>
+        <span id="toastMsg">Scanned</span>
+    </div>
+
+    <!-- Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        const cfg = {
+            apiKey: "AIzaSyDMoNdBIWdZNKJOlR7ZV-46OfFHZPwb1Wk", authDomain: "healix-d02c4.firebaseapp.com",
+            projectId: "healix-d02c4", storageBucket: "healix-d02c4.firebasestorage.app",
+            messagingSenderId: "783527967185", appId: "1:783527967185:web:eacf3a3f785121a0ae08f0",
+            measurementId: "G-Z4TD76TGR7"
+        };
+        const app = initializeApp(cfg), auth = getAuth(app);
+        window.auth = auth;
+        onAuthStateChanged(auth, user => {
+            if (!user) { location.href = '/auth/login/'; return; }
+        });
+    </script>
+
+    <script>
+        /* ── STATE ── */
+        let camStream = null, scanning = false, scanInterval = null;
+        let lastScanned = '', scannedURL = '';
+        let cooldown = false;
+
+        const RCLS = { Critical: 'rp-c', High: 'rp-h', Medium: 'rp-m', Low: 'rp-l' };
+        const RDOT = { Critical: '#f43030', High: '#f5a700', Medium: '#7c73f0', Low: '#00dba8' };
+        const RICO = { Critical: '🚨', High: '⚠️', Medium: '🔶', Low: '✅' };
+        const RORA = { Critical: 'rgba(244,48,48,0.12)', High: 'rgba(245,167,0,0.12)', Medium: 'rgba(124,115,240,0.12)', Low: 'rgba(0,219,168,0.09)' };
+
+        /* ── CSRF + AUTH FETCH ── */
+        function csrf() { for (const c of document.cookie.split(';')) { const [k, v] = c.trim().split('='); if (k === 'csrftoken') return decodeURIComponent(v); } return ''; }
+        async function apiFetch(u) {
+            let headers = { 'X-CSRFToken': csrf() };
+            if (window.auth && window.auth.currentUser) {
+                const token = await window.auth.currentUser.getIdToken(true);
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            const r = await fetch(u, { headers });
+            if (!r.ok) throw new Error(r.status);
+            return r.json();
+        }
+
+        /* ══════════════════════════════
+           CAMERA
+        ══════════════════════════════ */
+        async function toggleCamera() {
+            if (scanning) { stopCamera(); return; }
+
+            const btn = document.getElementById('scanBtn');
+            btn.textContent = '⏳ Starting camera...';
+            btn.disabled = true;
+
+            try {
+                camStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+                });
+                const vid = document.getElementById('scanVid');
+                vid.srcObject = camStream;
+                await vid.play();
+
+                scanning = true;
+                document.getElementById('vfIdle').style.display = 'none';
+                document.getElementById('scanLine').style.display = 'block';
+                btn.textContent = '⏹ Stop Camera';
+                btn.className = 'scan-btn running';
+                btn.disabled = false;
+                setStatus(true, 'Scanning...');
+                startScanLoop();
+            } catch (e) {
+                btn.textContent = '📷 Start Camera';
+                btn.className = 'scan-btn';
+                btn.disabled = false;
+                if (e.name === 'NotAllowedError') {
+                    showToast('Camera permission denied — use manual paste below', 'red');
+                } else {
+                    showToast('Camera error: ' + e.message, 'red');
+                }
+            }
+        }
+        window.toggleCamera = toggleCamera;
+
+        function stopCamera() {
+            scanning = false;
+            clearInterval(scanInterval);
+            if (camStream) { camStream.getTracks().forEach(t => t.stop()); camStream = null; }
+            const vid = document.getElementById('scanVid');
+            vid.srcObject = null;
+            document.getElementById('vfIdle').style.display = 'flex';
+            document.getElementById('scanLine').style.display = 'none';
+            const btn = document.getElementById('scanBtn');
+            btn.textContent = '📷 Start Camera';
+            btn.className = 'scan-btn';
+            setStatus(false, 'Stopped');
+        }
+
+        /* ── SCAN LOOP ── */
+        function startScanLoop() {
+            const vid = document.getElementById('scanVid');
+            const cvs = document.getElementById('scanCvs');
+            const ctx = cvs.getContext('2d', { willReadFrequently: true });
+
+            scanInterval = setInterval(() => {
+                if (!scanning || vid.readyState !== 4 || vid.videoWidth === 0) return;
+                cvs.width = vid.videoWidth;
+                cvs.height = vid.videoHeight;
+                ctx.drawImage(vid, 0, 0);
+                const img = ctx.getImageData(0, 0, cvs.width, cvs.height);
+                const code = jsQR(img.data, img.width, img.height, { inversionAttempts: 'dontInvert' });
+                if (code && code.data && code.data !== lastScanned && !cooldown) {
+                    lastScanned = code.data;
+                    onQRDetected(code.data);
+                }
+            }, 150);
+        }
+
+        /* ══════════════════════════════
+           QR DETECTED — THE KEY FUNCTION
+        ══════════════════════════════ */
+        function onQRDetected(raw) {
+            /* Prevent duplicate scans */
+            cooldown = true;
+            setTimeout(() => { cooldown = false; lastScanned = ''; }, 3000);
+
+            /* Flash success */
+            const succ = document.getElementById('vfSuccess');
+            succ.style.display = 'flex';
+            setTimeout(() => { succ.style.display = 'none'; }, 1500);
+
+            setStatus(true, 'QR Detected!');
+            showDebug(raw);
+
+            /* ── STEP 1: Is it a URL? ── */
+            if (isURL(raw)) {
+                scannedURL = raw;
+                showToast('✓ QR scanned — URL detected!', 'teal');
+
+                /* Show "Open Patient Profile" button */
+                const ob = document.getElementById('openBtn');
+                ob.style.display = 'flex';
+
+                /* Auto-fetch if it's our own domain */
+                if (raw.includes('/passport/') || raw.includes('/api/passport/')) {
+                    fetchAndRenderPassport(raw);
+                } else {
+                    /* External URL — just show the open button */
+                    setStatus(false, 'URL scanned — tap Open');
+                }
+                return;
+            }
+
+            /* ── STEP 2: Is it JSON? ── */
+            let data = tryParseJSON(raw);
+            if (data) {
+                showToast('✓ QR scanned — loading profile...', 'teal');
+                processPassportData(data);
+                return;
+            }
+
+            /* ── STEP 3: Is it a patient UID? (HLX-000042) ── */
+            if (raw.match(/^HLX-\d+$/i)) {
+                showToast('✓ UID scanned — fetching patient...', 'teal');
+                fetchByUID(raw);
+                return;
+            }
+
+            /* ── STEP 4: Unknown QR ── */
+            showToast('QR scanned but not a Healix passport. Content shown below.', 'red');
+            setStatus(false, 'Unknown QR');
+        }
+
+        /* ── OPEN URL button ── */
+        function openScannedURL() {
+            if (scannedURL) window.open(scannedURL, '_blank');
+        }
+        window.openScannedURL = openScannedURL;
+
+        /* ── FETCH PASSPORT BY URL ── */
+        async function fetchAndRenderPassport(url) {
+            showProfileLoading();
+            try {
+                /* Convert view URL to API URL if needed */
+                let apiUrl = url;
+                if (url.includes('/passport/view/')) {
+                    const uid = url.split('/passport/view/')[1].replace(/\//, '');
+                    apiUrl = `/api/passport/${uid}/`;
+                }
+                const data = await apiFetch(apiUrl);
+                processPassportData(data);
+            } catch (e) {
+                /* If API fails, try to extract patient ID from URL and fetch directly */
+                const uidMatch = url.match(/HLX-(\d+)/i);
+                if (uidMatch) {
+                    await fetchByUID('HLX-' + uidMatch[1].padStart(6, '0'));
+                } else {
+                    showProfileError('Could not fetch patient data. Patient profile may not be set up yet.');
+                }
+            }
+        }
+
+        /* ── FETCH BY UID ── */
+        async function fetchByUID(uid) {
+            showProfileLoading();
+            const idNum = parseInt(uid.replace(/[^0-9]/g, ''), 10);
+            try {
+                const [pt, hist] = await Promise.all([
+                    apiFetch(`/api/patients/${idNum}/`),
+                    apiFetch(`/api/triage/patient/${idNum}/history/`),
+                ]);
+                const history = Array.isArray(hist) ? hist : (hist.results || []);
+                renderProfile(pt, history, uid);
+            } catch (e) {
+                showProfileError(`Patient ${uid} not found in database. Run seed_demo_data first.`);
+            }
+        }
+
+        /* ── PROCESS PASSPORT DATA (from JSON QR) ── */
+        async function processPassportData(data) {
+            showProfileLoading();
+            const pid = data.patient?.id || data.id;
+            if (pid) {
+                try {
+                    const [pt, hist] = await Promise.all([
+                        apiFetch(`/api/patients/${pid}/`),
+                        apiFetch(`/api/triage/patient/${pid}/history/`),
+                    ]);
+                    const history = Array.isArray(hist) ? hist : (hist.results || []);
+                    renderProfile(pt, history, data.uid || `HLX-${String(pid).padStart(6, '0')}`);
+                } catch {
+                    /* Fallback: render from QR data only */
+                    renderFromQRData(data);
+                }
+            } else {
+                renderFromQRData(data);
+            }
+        }
+
+        /* ── RENDER FROM LIVE DATA ── */
+        function renderProfile(pt, history, uid) {
+            const risk = pt.risk_level || 'Low';
+            const riskCls = risk === 'Critical' ? 'crit' : risk === 'High' ? 'warn' : 'ok';
+            const initials = (pt.name || '?').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+            const latest = history[0];
+            const conds = latest ? (latest.possible_conditions || []).slice(0, 4) : [];
+            const histCount = history.length;
+
+            document.getElementById('profileIdle').style.display = 'none';
+
+            document.getElementById('profileSide').innerHTML = `
+    <div class="profile-card">
+      <div class="pc-hdr">
+        <div class="pc-av">${initials}</div>
+        <div>
+          <div class="pc-name">${pt.name || 'Unknown'}</div>
+          <div class="pc-uid">${uid || 'HLX-000000'}</div>
+          <div class="pc-meta">Scanned ${new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</div>
+        </div>
+        <div class="pc-risk">
+          <span class="rp ${RCLS[risk] || 'rp-l'}">
+            <span class="rpd" style="background:${RDOT[risk] || RDOT.Low}"></span>
+            ${risk} Risk
+          </span>
+          <span class="verified">✓ Passport verified</span>
+        </div>
+      </div>
+      <div class="pc-grid">
+        <div class="pg"><div class="pg-k">Patient ID</div><div class="pg-v">${uid || '—'}</div></div>
+        <div class="pg"><div class="pg-k">Full Name</div><div class="pg-v">${pt.name || '—'}</div></div>
+        <div class="pg"><div class="pg-k">Age</div><div class="pg-v">${pt.age || '—'} years</div></div>
+        <div class="pg"><div class="pg-k">Risk Level</div><div class="pg-v ${riskCls}">● ${risk}</div></div>
+        <div class="pg"><div class="pg-k">Chief Complaint</div><div class="pg-v">${(pt.symptoms || '—').slice(0, 34)}</div></div>
+        <div class="pg"><div class="pg-k">Triage Records</div><div class="pg-v ok">${histCount} total</div></div>
+        <div class="pg"><div class="pg-k">Last Triage</div><div class="pg-v">${latest ? fmtD(latest.analyzed_at) : 'Not triaged'}</div></div>
+        <div class="pg"><div class="pg-k">Status</div><div class="pg-v ok">● Active</div></div>
+      </div>
+      <div class="pc-acts">
+        <a class="pca pca-red" href="/triage/?patient_id=${pt.id}&input=${encodeURIComponent((pt.name || '') + '\n' + (pt.symptoms || ''))}">⚡ Triage Now</a>
+        <button class="pca pca-out" onclick="resetProfile()">✕ Clear</button>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="st st-r">
+        <div class="st-ico">🩺</div>
+        <div class="st-val tv-${riskCls === 'crit' ? 'r' : riskCls === 'warn' ? 'r' : 't'}">${risk}</div>
+        <div class="st-lbl">Risk</div>
+      </div>
+      <div class="st st-i">
+        <div class="st-ico">📋</div>
+        <div class="st-val tv-i">${histCount}</div>
+        <div class="st-lbl">Triages</div>
+      </div>
+      <div class="st st-t">
+        <div class="st-ico">⚕️</div>
+        <div class="st-val tv-t">${conds.length}</div>
+        <div class="st-lbl">Conditions</div>
+      </div>
+    </div>
+
+    ${latest ? `
+    <div class="lat-card">
+      <div class="lc-hd"><span style="font-size:13px">🔬</span><span class="lc-t">Latest Triage</span>
+        <span style="margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--ink3)">${fmtD(latest.analyzed_at)}</span></div>
+      <div class="lc-body">
+        <div class="lc-grid">
+          <div class="lc-cell"><div class="lcc-l">Symptoms</div><div class="lcc-v">${(latest.symptoms_input || pt.symptoms || '—').slice(0, 80)}</div></div>
+          <div class="lc-cell"><div class="lcc-l">Conditions</div>
+            <div class="cond-cloud">${conds.length ? conds.map(c => `<span class="ctag">${c}</span>`).join('') : '<span style="font-family:var(--mono);font-size:10px;color:var(--ink3)">None flagged</span>'}</div>
+          </div>
+          <div class="lc-cell" style="grid-column:1/-1"><div class="lcc-l">Recommendation</div>
+            <div class="lcc-v it">${(latest.recommendation || 'Pending review').slice(0, 130)}…</div></div>
+        </div>
+      </div>
+    </div>`: ''}
+
+    <div class="hist-card">
+      <div class="hc-hd"><span style="font-size:13px">📅</span><span class="hc-t">Full History</span>
+        <span class="hc-s">${histCount} record${histCount !== 1 ? 's' : ''}</span></div>
+      ${!histCount
+                    ? '<div class="hist-empty">No triage history yet</div>'
+                    : history.slice(0, 7).map(t => {
+                        const r = t.risk_level || 'Low';
+                        const conf = t.confidence_score ? Math.round(t.confidence_score * 100) + '%' : '—';
+                        return `<div class="hi">
+            <div class="hi-orb" style="background:${RORA[r]}">${RICO[r] || '📋'}</div>
+            <div class="hi-date">${fmtD(t.analyzed_at)}</div>
+            <div class="hi-sym">${(t.symptoms_input || '').slice(0, 48)}…</div>
+            <span class="hi-rp ${RCLS[r] || 'rp-l'}">${r}</span>
+            <span class="hi-conf">${conf}</span>
+          </div>`;
+                    }).join('')
+                }
+    </div>
+  `;
+
+            setStatus(false, 'Profile loaded');
+        }
+
+        /* ── RENDER FROM QR DATA (offline fallback) ── */
+        function renderFromQRData(data) {
+            const pt = data.patient || { name: data.name, age: data.age, risk_level: data.risk, symptoms: '' };
+            const hist = data.latest_triage ? [{ ...data.latest_triage, symptoms_input: pt.symptoms }] : [];
+            renderProfile(pt, hist, data.uid || 'HLX-000000');
+        }
+
+        /* ── PROFILE STATES ── */
+        function showProfileLoading() {
+            document.getElementById('profileSide').innerHTML = `
+    <div class="profile-idle">
+      <div style="width:28px;height:28px;border:3px solid rgba(255,255,255,0.1);border-top-color:var(--teal);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 16px;"></div>
+      <div class="pi-title" style="color:var(--teal)">Loading patient profile...</div>
+      <div class="pi-sub">Fetching live data from Django</div>
+    </div>`;
+        }
+        function showProfileError(msg) {
+            document.getElementById('profileSide').innerHTML = `
+    <div class="profile-idle">
+      <div class="pi-ico">⚠️</div>
+      <div class="pi-title" style="color:var(--red2)">Could not load profile</div>
+      <div class="pi-sub">${msg}</div>
+    </div>`;
+        }
+        function resetProfile() {
+            document.getElementById('profileSide').innerHTML = `
+    <div class="profile-idle" id="profileIdle">
+      <div class="pi-ico">🏥</div>
+      <div class="pi-title">Scan a passport QR</div>
+      <div class="pi-sub">Patient profile appears here<br/>the moment QR is detected.</div>
+    </div>`;
+            document.getElementById('openBtn').style.display = 'none';
+            document.getElementById('debugBar').style.display = 'none';
+            setStatus(false, 'Ready');
+            scannedURL = '';
+        }
+        window.resetProfile = resetProfile;
+
+        /* ── MANUAL INPUT ── */
+        function processManual() {
+            const v = document.getElementById('msIn').value.trim();
+            if (!v) { showToast('Paste something first', 'red'); return; }
+            onQRDetected(v);
+        }
+        window.processManual = processManual;
+
+        /* ── HELPERS ── */
+        function isURL(str) {
+            try { new URL(str); return str.startsWith('http://') || str.startsWith('https://'); } catch { return false; }
+        }
+        function tryParseJSON(str) {
+            try { return JSON.parse(str); } catch { }
+            const m = str.match(/\{[\s\S]*\}/);
+            if (m) try { return JSON.parse(m[0]); } catch { }
+            return null;
+        }
+        function showDebug(raw) {
+            const bar = document.getElementById('debugBar');
+            const val = document.getElementById('dbVal');
+            const typ = document.getElementById('dbType');
+            val.textContent = raw.length > 120 ? raw.slice(0, 120) + '…' : raw;
+            typ.textContent = isURL(raw) ? 'Type: URL — will open passport page' :
+                tryParseJSON(raw) ? 'Type: JSON passport data' :
+                    raw.match(/^HLX-/i) ? 'Type: Healix UID' : 'Type: Unknown';
+            bar.style.display = 'block';
+        }
+        function setStatus(active, label) {
+            const dot = document.getElementById('spDot');
+            const txt = document.getElementById('spTxt');
+            dot.className = 'sp-dot' + (active ? ' active' : '');
+            txt.textContent = label;
+            txt.style.color = active ? 'var(--teal)' : 'var(--ink3)';
+        }
+        function showToast(msg, type = 'teal') {
+            const t = document.getElementById('toast');
+            const dot = document.getElementById('toastDot');
+            document.getElementById('toastMsg').textContent = msg;
+            dot.className = type === 'red' ? 'td-red' : 'td-teal';
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+        function fmtD(d) { if (!d) return '—'; return new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }); }
+
+        window.addEventListener('pagehide', () => { if (scanning) stopCamera(); });
+    </script>
+</body>
+
+</html>

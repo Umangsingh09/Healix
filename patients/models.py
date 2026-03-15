@@ -15,3 +15,14 @@ class Patient(models.Model):
 
     def __str__(self):
         return self.name
+
+class HealthPassport(models.Model):
+    patient     = models.OneToOneField(Patient, on_delete=models.CASCADE, related_name='passport')
+    uid         = models.CharField(max_length=20, unique=True)  # HLX-000042
+    created_at  = models.DateTimeField(auto_now_add=True)
+    updated_at  = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if not self.uid and self.patient_id:
+            self.uid = f'HLX-{str(self.patient_id).zfill(6)}'
+        super().save(*args, **kwargs)

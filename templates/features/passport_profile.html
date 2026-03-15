@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Patient Health Passport</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b1520;
+            --card: #142232;
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --brand: #38bdf8;
+            --teal: #2dd4bf;
+            --red: #f43f5e;
+            --amber: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--text);
+            padding-bottom: 40px;
+        }
+
+        .header {
+            background: var(--card);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--teal), var(--brand));
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .passport-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--brand), var(--teal));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .patient-info h1 {
+            margin: 0 0 4px 0;
+            font-size: 20px;
+        }
+
+        .patient-info p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .uid-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--brand);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        .data-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .data-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .data-label {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .data-value {
+            font-weight: 500;
+            font-size: 15px;
+            text-align: right;
+            max-width: 60%;
+            line-height: 1.4;
+        }
+
+        .risk-Critical {
+            color: var(--red);
+            font-weight: 700;
+        }
+
+        .risk-High {
+            color: var(--amber);
+            font-weight: 600;
+        }
+
+        .risk-Medium {
+            color: var(--brand);
+            font-weight: 600;
+        }
+
+        .risk-Low {
+            color: var(--teal);
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 0 16px 0;
+            color: var(--brand);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .loader {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--muted);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--brand);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px auto;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--red);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="logo">Healix Passport</div>
+    </div>
+
+    <div class="container" id="app">
+        <div class="loader">
+            <div class="spinner"></div>
+            <div>Verifying Passport ID: {{ uid }}...</div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/passport/data/{{ uid }}/';
+
+        async function fetchPassport() {
+            try {
+                const res = await fetch(API_URL);
+                if (!res.ok) throw new Error('Passport not found or Invalid ID');
+                const data = await res.json();
+                renderPassport(data);
+            } catch (err) {
+                document.getElementById('app').innerHTML = `
+                    <div class="card error">
+                        <h2>⚠️ Verification Failed</h2>
+                        <p>${err.message}</p>
+                    </div>`;
+            }
+        }
+
+        function formatDate(iso) {
+            if (!iso) return 'N/A';
+            return new Date(iso).toLocaleDateString('en-IN', {
+                year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+            });
+        }
+
+        function renderPassport(data) {
+            const p = data.patient;
+            const t = data.latest_triage || {};
+            const initials = p.name ? p.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : '??';
+
+            const html = `
+                <div class="card">
+                    <div class="passport-header">
+                        <div class="avatar">${initials}</div>
+                        <div class="patient-info">
+                            <h1>${p.name || 'Unknown Patient'}</h1>
+                            <p>${p.age} Y/O · Healix Network</p>
+                            <div class="uid-badge">${data.uid}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="data-grid">
+                        <div class="data-row">
+                            <div class="data-label">Global Risk Level</div>
+                            <div class="data-value risk-${p.risk_level}">${p.risk_level || 'Pending'}</div>
+                        </div>
+                        <div class="data-row">
+                            <div class="data-label">Primary Symptoms</div>
+                            <div class="data-value" style="color:var(--muted)">${p.symptoms || 'None recorded'}</div>
+                        </div>
+                        <div class="data-row">
+                            <div class="data-label">Passport Issued</div>
+                            <div class="data-value">${formatDate(data.issued)}</div>
+                        </div>
+                    </div>
+                </div>
+
+                ${data.latest_triage ? `
+                <div class="card">
+                    <h2 class="section-title">Latest AI Triage</h2>
+                    <div class="data-grid">
+                        <div class="data-row">
+                            <div class="data-label">Analyzed On</div>
+                            <div class="data-value">${formatDate(t.date)}</div>
+                        </div>
+                        <div class="data-row">
+                            <div class="data-label">Triage Urgency</div>
+                            <div class="data-value risk-${t.risk_level}">🚨 ${t.risk_level} Level</div>
+                        </div>
+                        <div class="data-row">
+                            <div class="data-label">Suspected Conditions</div>
+                            <div class="data-value">${t.conditions ? t.conditions.join(', ') : 'None'}</div>
+                        </div>
+                        <div class="data-row">
+                            <div class="data-label">Confidence</div>
+                            <div class="data-value">${t.confidence_score ? Math.round(t.confidence_score * 100) + '%' : 'N/A'}</div>
+                        </div>
+                        <div class="data-row">
+                            <div class="data-label">Recommendation</div>
+                            <div class="data-value" style="color:var(--brand)">${t.recommendation || ''}</div>
+                        </div>
+                    </div>
+                </div>` : `
+                <div class="card" style="text-align:center; color:var(--muted)">
+                    No triage history recorded for this patient yet.
+                </div>
+                `}
+            `;
+            document.getElementById('app').innerHTML = html;
+        }
+
+        fetchPassport();
+    </script>
+</body>
+
+</html>

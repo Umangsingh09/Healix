@@ -15,6 +15,11 @@
             --bg2: #0d1825;
             --card: #101e2e;
             --card2: #132234;
+            --acid: #bfff00;
+            --acid-soft: rgba(191, 255, 0, 0.1);
+            --magenta: #ff00ff;
+            --magenta-soft: rgba(255, 0, 255, 0.1);
+            --electric-yellow: #ffff00;
             --rim: rgba(255, 255, 255, 0.06);
             --rim2: rgba(255, 255, 255, 0.11);
             --ink: #e2edf7;
@@ -877,10 +882,244 @@
             border-radius: 50%;
             background: var(--teal);
         }
+
+        /* DIGITAL TWIN STYLES */
+        .twin-pulse {
+            width: 6px;
+            height: 6px;
+            background: var(--acid);
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+            box-shadow: 0 0 8px var(--acid);
+            animation: twinPulse 1.5s infinite;
+        }
+
+        @keyframes twinPulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.5);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .twin-view {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(8, 15, 23, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .twin-close {
+            position: absolute;
+            top: 32px;
+            right: 40px;
+            background: none;
+            border: 1px solid var(--rim2);
+            color: var(--ink2);
+            padding: 8px 16px;
+            border-radius: 9px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .twin-header {
+            margin-bottom: 48px;
+        }
+
+        .twin-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--acid);
+            letter-spacing: -0.04em;
+        }
+
+        .twin-layout {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 60px;
+        }
+
+        /* RADIAL HEATMAP */
+        .heatmap-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--card) 0%, transparent 80%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--rim);
+        }
+
+        .heatmap-svg {
+            transform: rotate(-90deg);
+        }
+
+        .heatmap-ring {
+            fill: none;
+            stroke-width: 8;
+            stroke-dasharray: 283;
+            transition: stroke-dashoffset 1s ease;
+        }
+
+        .vibe-center {
+            text-align: center;
+        }
+
+        .vibe-value {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--acid);
+            line-height: 1;
+        }
+
+        .vibe-lbl {
+            font-size: 12px;
+            color: var(--ink2);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 4px;
+        }
+
+        /* TIMELINE OF TRUTH */
+        .timeline-of-truth {
+            position: relative;
+            padding-left: 32px;
+            border-left: 1px solid var(--rim2);
+            margin-left: 12px;
+        }
+
+        .truth-node {
+            position: relative;
+            margin-bottom: 48px;
+        }
+
+        .truth-node::before {
+            content: '';
+            position: absolute;
+            left: -37px;
+            top: 4px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--ink3);
+            border: 2px solid var(--bg);
+        }
+
+        .truth-node.active::before {
+            background: var(--acid);
+            box-shadow: 0 0 12px var(--acid);
+        }
+
+        .truth-node.conflict::before {
+            background: var(--electric-yellow);
+            box-shadow: 0 0 12px var(--electric-yellow);
+        }
+
+        .truth-date {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink3);
+            margin-bottom: 8px;
+        }
+
+        .truth-card {
+            background: var(--card);
+            border: 1px solid var(--rim);
+            border-radius: 12px;
+            padding: 16px;
+            transition: transform 0.2s;
+        }
+
+        .truth-card:hover {
+            transform: scale(1.02);
+        }
+
+        .truth-text {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .conflict-alert {
+            background: rgba(255, 255, 0, 0.1);
+            border: 1px solid var(--electric-yellow);
+            color: var(--electric-yellow);
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* TOAST */
+        #toastContainer {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .toast {
+            background: rgba(20, 32, 48, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--rim2);
+            color: var(--ink);
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: toastSlide 0.4s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        }
+
+        @keyframes toastSlide {
+            from {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast-ico {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--teal);
+            box-shadow: 0 0 10px var(--teal);
+        }
     </style>
 </head>
 
 <body>
+    <div id="toastContainer"></div>
 
     <nav class="nav">
         <a class="nav-logo" href="/">
@@ -892,14 +1131,58 @@
         </a>
         <div class="nav-links">
             <a class="nla on" href="/dashboard/patient/">My Health</a>
+            <a class="nla" href="/my-passport/">🪪 My Passport</a>
+            <a class="nla" href="/scan/">📸 Scan QR</a>
+            <a class="nla" href="javascript:void(0)" onclick="openTwin()">
+                <span class="twin-pulse" id="twinPulse" style="display:none"></span>
+                Digital Twin
+            </a>
             <a class="nla" href="#">My Reports</a>
             <a class="nla" href="#">Appointments</a>
         </div>
         <div class="nav-right">
+            <div id="userProfileLink" onclick="openEditProfile()"
+                style="display:none; align-items:center; gap:8px; cursor:pointer; margin-right:12px;">
+                <span id="navUserName" style="font-family:var(--mono); font-size:11px; color:var(--ink2);">User</span>
+                <span
+                    style="font-size:10px; background:var(--ia); border:1px solid var(--iris); color:var(--iris); padding:2px 8px; border-radius:6px;">Edit</span>
+            </div>
             <div class="pat-av" id="patAv">P</div>
             <button class="nav-out" onclick="handleLogout()">Sign out ↩</button>
         </div>
     </nav>
+
+    <!-- ONBOARDING / PROFILE MODAL -->
+    <div id="onboardingModal" class="twin-view" style="display:none; background:rgba(8, 15, 23, 0.99);">
+        <button onclick="closeEditProfile()"
+            style="position:absolute; top:30px; right:30px; background:none; border:none; color:var(--ink3); font-size:30px; cursor:pointer;"
+            id="modalCloseBtn">×</button>
+        <div class="page" style="max-width:500px; padding-top:100px;">
+            <div class="banner" style="display:block; text-align:center;">
+                <div class="b-eye" id="mEye">First Time Setup</div>
+                <div class="b-name" id="mName">Generate Your <span>Health Passport</span></div>
+                <p class="b-sub" id="mSub">We need a few details to create your secure clinical ledger and unique
+                    passport UID.</p>
+            </div>
+
+            <div class="panel" style="padding:32px;">
+                <div class="sf-lbl">What is your legal name?</div>
+                <input type="text" id="obName" class="sf-ta" style="min-height:45px; margin-bottom:20px;"
+                    placeholder="e.g. John Doe">
+
+                <div class="sf-lbl">How old are you?</div>
+                <input type="number" id="obAge" class="sf-ta" style="min-height:45px; margin-bottom:20px;"
+                    placeholder="e.g. 28">
+
+                <div class="sf-lbl">Initial Symptoms / Health History</div>
+                <textarea id="obSymptoms" class="sf-ta" style="margin-bottom:24px;"
+                    placeholder="Describe any chronic conditions or recent symptoms..."></textarea>
+
+                <button class="b-btn" id="mSaveBtn" style="width:100%; height:50px; font-size:16px;"
+                    onclick="savePassport()">Generate My Passport 🪪</button>
+            </div>
+        </div>
+    </div>
 
     <div class="page">
 
@@ -1028,10 +1311,44 @@
         <div class="tdot"></div><span id="tMsg">Updated</span>
     </div>
 
+    <!-- DIGITAL TWIN OVERLAY -->
+    <div id="twinView" class="twin-view">
+        <button class="twin-close" onclick="closeTwin()">✕ Escape</button>
+        <div class="twin-header">
+            <div class="twin-title">LIVE HEALTH VIBE</div>
+            <p class="b-sub">Reactive synthesis of your fragmented medical reality.</p>
+        </div>
+
+        <div class="twin-layout">
+            <div class="vibe-panel">
+                <div class="heatmap-container">
+                    <svg class="heatmap-svg" width="200" height="200" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" class="heatmap-ring" id="vibeRing" stroke="var(--acid)" />
+                    </svg>
+                    <div class="vibe-center" style="position:absolute">
+                        <div class="vibe-value" id="vibeScore">98</div>
+                        <div class="vibe-lbl">STABILITY</div>
+                    </div>
+                </div>
+
+                <div style="margin-top:40px; color:var(--ink3); font-size:12px; line-height:2">
+                    <div id="vibeInsight">Synthesis complete. No immediate clinical dissonance detected.</div>
+                </div>
+            </div>
+
+            <div class="timeline-panel">
+                <div class="b-eye" style="margin-bottom:24px">Timeline of Truth</div>
+                <div class="timeline-of-truth" id="truthTimeline">
+                    <!-- Nodes generated via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
         const cfg = {
             apiKey: "AIzaSyDMoNdBIWdZNKJOlR7ZV-46OfFHZPwb1Wk", authDomain: "healix-d02c4.firebaseapp.com",
@@ -1048,8 +1365,27 @@
             const name = user.displayName || ud.data().name || user.email.split('@')[0];
             document.getElementById('patName').textContent = name.split(' ')[0];
             document.getElementById('patAv').textContent = name.slice(0, 1).toUpperCase();
+
+            // Show Profile in Nav
+            document.getElementById('navUserName').textContent = name;
+            document.getElementById('userProfileLink').style.display = 'flex';
+
             const pid = ud.data().django_patient_id;
-            if (pid) { window._pid = pid; loadData(pid); } else { loadGeneric(); }
+            console.log("[Healix] Login detected. Django PID:", pid);
+
+            if (pid) {
+                console.log("[Healix] Existing clinical record found. Loading dashboard...");
+                window._patientId = pid;
+                loadData(pid);
+            } else {
+                console.log("[Healix] No clinical record found. Showing setup modal.");
+                const modal = document.getElementById('onboardingModal');
+                if (modal) {
+                    modal.style.setProperty('display', 'block', 'important');
+                    document.getElementById('obName').value = name;
+                    document.getElementById('modalCloseBtn').style.display = 'none'; // Force setup
+                }
+            }
             window.handleLogout = async () => { await signOut(auth); location.href = '/auth/login/'; };
         });
     </script>
@@ -1073,22 +1409,79 @@
 
         async function loadData(pid) {
             try {
-                const [p, h] = await Promise.all([get(`/api/patients/${pid}/`), get(`/api/triage/patient/${pid}/history/`)]);
-                const hist = Array.isArray(h) ? h : (h.results || []);
-                renderBanner(p, hist); renderHistory(hist); renderStats(hist);
-            } catch (e) { loadGeneric(); }
+                const p = await get(`/api/patients/${pid}/`);
+                let hist = [];
+                try {
+                    const h = await get(`/api/patients/${pid}/triage-history/`);
+                    hist = Array.isArray(h) ? h : (h.results || []);
+                } catch (he) {
+                    console.log("[Healix] Triage history unavailable or empty.");
+                }
+
+                renderBanner(p, hist);
+                window._latestHist = hist;
+                if (hist.length > 0) document.getElementById('twinPulse').style.display = 'inline-block';
+
+                renderHistory(hist);
+                renderStats(hist);
+            } catch (e) {
+                console.error("[Healix] Core dashboard load failed:", e);
+                loadGeneric();
+            }
+        }
+
+        function getDummyHistory() {
+            return [
+                {
+                    analyzed_at: new Date().toISOString(),
+                    risk_level: 'Low',
+                    symptoms_input: 'Mild headache and slightly tired after working all day.',
+                    possible_conditions: ['Tension Headache', 'Fatigue'],
+                    recommendation: 'Rest for 30 minutes in a quiet, dark room, drink a glass of water, and avoid screens.',
+                    explanation: 'The symptoms are consistent with eye strain or mild tension headache. No serious red flags detected.',
+                    confidence_score: 0.92
+                },
+                {
+                    analyzed_at: new Date(Date.now() - 86400000 * 5).toISOString(),
+                    risk_level: 'Medium',
+                    symptoms_input: 'Sore throat and mild cough started yesterday, feeling feverish.',
+                    possible_conditions: ['Viral Pharyngitis', 'Common Cold'],
+                    recommendation: 'Gargle with warm salt water 3 times a day. Stay hydrated and rest. Monitor temperature.',
+                    explanation: 'Classic presentation of early viral upper respiratory tract infection. Follow up if fever worsens.',
+                    confidence_score: 0.88
+                },
+                {
+                    analyzed_at: new Date(Date.now() - 86400000 * 18).toISOString(),
+                    risk_level: 'Low',
+                    symptoms_input: 'Skin rash on left arm, slightly itchy. Started after hiking in the woods.',
+                    possible_conditions: ['Mild Contact Dermatitis', 'Insect Bite'],
+                    recommendation: 'Wash area gently with soap. Apply hydrocortisone cream to reduce itching. Avoid scratching.',
+                    explanation: 'Symptoms consistent with minor localized allergic reaction from recent outdoor activity.',
+                    confidence_score: 0.95
+                }
+            ];
         }
 
         async function loadGeneric() {
+            let hist = [];
             try {
                 const h = await get('/api/triage/history/');
-                const hist = Array.isArray(h) ? h : (h.results || []);
-                renderHistory(hist.slice(0, 5)); renderStats(hist.slice(0, 5));
-                emptyLatest();
+                hist = Array.isArray(h) ? h : (h.results || []);
             } catch (e) {
-                emptyLatest();
-                document.getElementById('hBody').innerHTML = `<div class="tstate">No history found.<br/><a href="/triage/" style="color:var(--teal)">Submit symptoms →</a></div>`;
+                console.log("Failed to load real history, using fallback data.");
             }
+
+            if (hist.length === 0) {
+                hist = getDummyHistory();
+                renderBanner({ risk_level: 'Low' }, hist);
+            } else {
+                renderBanner({}, hist);
+            }
+            window._latestHist = hist; // Store for Digital Twin
+            if (hist.length > 0) document.getElementById('twinPulse').style.display = 'inline-block';
+
+            renderHistory(hist.slice(0, 5));
+            renderStats(hist);
         }
 
         function renderBanner(p, hist) {
@@ -1184,13 +1577,220 @@
         function submitSym() {
             const v = document.getElementById('symInput').value.trim();
             if (!v) return;
-            const pid = window._pid;
+            const pid = window._patientId;
             location.href = pid ? `/triage/?patient_id=${pid}&input=${encodeURIComponent(v)}` : `/triage/?input=${encodeURIComponent(v)}`;
         }
         window.submitSym = submitSym;
 
         function fmtD(d) { if (!d) return '—'; return new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }); }
         function ago(d) { if (!d) return '—'; const s = Math.floor((Date.now() - new Date(d)) / 1000); if (s < 60) return 'just now'; if (s < 3600) return Math.floor(s / 60) + 'm ago'; if (s < 86400) return Math.floor(s / 3600) + 'h ago'; return Math.floor(s / 86400) + 'd ago'; }
+
+        /* ── DIGITAL TWIN LOGIC ── */
+        window.openTwin = () => {
+            document.getElementById('twinView').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            generateTwinLedger();
+        };
+        window.closeTwin = () => {
+            document.getElementById('twinView').style.display = 'none';
+            document.body.style.overflow = '';
+        };
+
+        function generateTwinLedger() {
+            const hist = window._latestHist || [];
+            const timeline = document.getElementById('truthTimeline');
+            const scoreEl = document.getElementById('vibeScore');
+            const ringEl = document.getElementById('vibeRing');
+            const insightEl = document.getElementById('vibeInsight');
+
+            timeline.innerHTML = '';
+
+            if (hist.length === 0) {
+                timeline.innerHTML = `
+                    <div class="truth-node active">
+                        <div class="truth-date">VOID SEQUENCE</div>
+                        <div class="truth-card">
+                            <div class="truth-text">No disparate health reports detected in the current clinical ledger. The Twin remains in a state of architectural purity.</div>
+                        </div>
+                    </div>
+                `;
+                scoreEl.textContent = "100";
+                ringEl.style.strokeDashoffset = 0;
+                insightEl.textContent = "No data points to synthesize.";
+                return;
+            }
+
+            // Context Aggregator & Conflict Detection
+            let conditions = new Set();
+            let score = 100;
+            let conflicts = [];
+
+            hist.forEach((t, i) => {
+                const node = document.createElement('div');
+                node.className = 'truth-node' + (i === 0 ? ' active' : '');
+
+                const reportConditions = t.possible_conditions || [];
+                const reportSymptoms = t.symptoms_input || '';
+
+                // Real Conflict Detection: Check for medications (mock) vs conditions
+                // For demo, we detect "pain" symptoms after a "hypertension" diagnosis
+                let conflictFound = false;
+                if (conditions.has('Hypertension') && reportSymptoms.toLowerCase().includes('pain')) {
+                    conflictFound = true;
+                    node.classList.add('conflict');
+                    conflicts.push(`⚠️ Condition Conflict: Triage on ${fmtD(t.analyzed_at)} notes pain which may elevate BP from your known Hypertension.`);
+                    score -= 15;
+                }
+
+                reportConditions.forEach(c => conditions.add(c));
+                if (t.risk_level === 'Critical') score -= 20;
+                else if (t.risk_level === 'High') score -= 10;
+
+                node.innerHTML = `
+                    <div class="truth-date">${fmtD(t.analyzed_at)} · PRIORITY: ${t.risk_level.toUpperCase()}</div>
+                    <div class="truth-card">
+                        <div class="truth-text">${reportSymptoms.slice(0, 100)}...</div>
+                        ${conflictFound ? `
+                            <div class="conflict-alert">
+                                <span>⚡</span>
+                                <div>${conflicts[conflicts.length - 1]}</div>
+                            </div>
+                        ` : ''}
+                        <div style="margin-top:12px; display:flex; gap:8px">
+                            ${reportConditions.map(c => `<span class="sc-badge bok" style="background:var(--rim); color:var(--ink2)">${c}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+                timeline.appendChild(node);
+            });
+
+            // Update Vibe UI
+            score = Math.max(5, Math.min(100, score));
+            scoreEl.textContent = score;
+            const offset = 283 - (283 * (score / 100));
+            ringEl.style.strokeDashoffset = offset;
+
+            if (score < 50) {
+                scoreEl.style.color = 'var(--magenta)';
+                ringEl.style.stroke = 'var(--magenta)';
+                insightEl.textContent = "High Clinical Dissonance. The Twin suggests immediate physician review of disparate report flags.";
+            } else {
+                scoreEl.style.color = 'var(--acid)';
+                ringEl.style.stroke = 'var(--acid)';
+                insightEl.textContent = score === 100 ? "Pure Symmetry. All fragmented data points align." : "Minor Dissonance detected. Monitoring lifestyle shift.";
+            }
+        }
+
+        /* Edit Profile */
+        async function openEditProfile() {
+            const modal = document.getElementById('onboardingModal');
+
+            if (window._patientId) {
+                document.getElementById('mEye').textContent = 'Clinical Record';
+                document.getElementById('mName').innerHTML = 'Update Your <span>Profile</span>';
+                document.getElementById('mSub').textContent = 'Update your clinical details below to sync with your health passport.';
+                document.getElementById('mSaveBtn').textContent = 'Update Profile';
+
+                try {
+                    const data = await get(`/api/patients/${window._patientId}/`);
+                    document.getElementById('obName').value = data.name || '';
+                    document.getElementById('obAge').value = data.age || '';
+                    document.getElementById('obSymptoms').value = data.symptoms || '';
+                } catch (e) { console.warn("Pre-fill error"); }
+            }
+            modal.style.display = 'block';
+        }
+        window.openEditProfile = openEditProfile;
+
+        function closeEditProfile() {
+            document.getElementById('onboardingModal').style.display = 'none';
+        }
+        window.closeEditProfile = closeEditProfile;
+
+        async function savePassport() {
+            const name = document.getElementById('obName').value.trim();
+            const age = document.getElementById('obAge').value.trim();
+            const symptoms = document.getElementById('obSymptoms').value.trim();
+
+            if (!name || !age || !symptoms) {
+                alert("Please fill in all details.");
+                return;
+            }
+
+            const btn = document.getElementById('mSaveBtn');
+            const originalText = btn.textContent;
+            btn.textContent = "Processing... ⏳";
+            btn.disabled = true;
+
+            try {
+                const user = window.auth.currentUser;
+                const token = await user.getIdToken(true);
+
+                let url = '/api/patients/create/';
+                let method = 'POST';
+
+                if (window._patientId) {
+                    url = `/api/patients/update/${window._patientId}/`;
+                    method = 'PATCH';
+                }
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                        'X-CSRFToken': csrf()
+                    },
+                    body: JSON.stringify({
+                        name, age: parseInt(age), symptoms, user_uid: user.uid
+                    })
+                });
+
+                if (!response.ok) {
+                    const errBody = await response.json().catch(() => ({}));
+                    throw new Error(errBody.error || errBody.detail || `API Failure (${response.status})`);
+                }
+                const resData = await response.json();
+                const djangoPid = resData.patient_id || window._patientId;
+
+                // Update Firestore profile (Always sync name)
+                const { getFirestore, doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+                const db = getFirestore();
+                const updatePayload = { name: name };
+                if (!window._patientId) {
+                    updatePayload.django_patient_id = djangoPid;
+                    updatePayload.has_passport = true;
+                }
+                await updateDoc(doc(db, 'users', user.uid), updatePayload);
+
+                // Sync Firebase Auth Profile Name
+                try {
+                    await updateProfile(user, { displayName: name });
+                } catch (pe) { console.warn("Firebase Profile Sync Failed", pe); }
+
+                showToast("Profile Updated Successfully! 🪪");
+                setTimeout(() => location.reload(), 1500);
+
+            } catch (err) {
+                alert("Error: " + err.message);
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+        window.savePassport = savePassport;
+
+        function showToast(msg, dur = 4000) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<div class="toast-ico"></div><span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'toastSlide 0.4s reverse forwards';
+                setTimeout(() => toast.remove(), 400);
+            }, dur);
+        }
+        window.showToast = showToast;
     </script>
 </body>
 

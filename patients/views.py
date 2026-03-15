@@ -52,13 +52,28 @@ def health_agent(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_patient(request):
+    logger.info(f"Attempting to create patient: {request.data.get('name')}")
     serializer = PatientSerializer(data=request.data)
 
     if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
+        try:
+            patient = serializer.save()
+            # Create passport automatically
+            from .models import HealthPassport
+            HealthPassport.objects.get_or_create(patient=patient)
+            
+            logger.info(f"Successfully created patient {patient.name} (ID: {patient.id}) and generated passport.")
+            return Response({
+                "status": "success",
+                "patient_id": patient.id,
+                "data": serializer.data
+            }, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            logger.error(f"Error during patient creation process: {str(e)}")
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    return Response(serializer.errors)
+    logger.warning(f"Patient creation failed: {serializer.errors}")
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # GET single patient
@@ -79,8 +94,8 @@ def get_patient(request, pk):
     return Response(serializer.data)
 
 
-# PUT update patient
-@api_view(['PUT'])
+# PUT/PATCH update patient
+@api_view(['PUT', 'PATCH'])
 @permission_classes([IsAuthenticated])
 def update_patient(request, pk):
     try:
@@ -92,7 +107,10 @@ def update_patient(request, pk):
         logger.error(f"Error retrieving patient {pk} for update: {str(e)}")
         return Response({"error": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-    serializer = PatientSerializer(instance=patient, data=request.data)
+    # Enable partial updates for PATCH requests
+    partial = request.method == 'PATCH'
+    serializer = PatientSerializer(instance=patient, data=request.data, partial=partial)
+    
     if serializer.is_valid():
         serializer.save()
         logger.info(f"Updated patient: {patient.name} (ID: {pk})")

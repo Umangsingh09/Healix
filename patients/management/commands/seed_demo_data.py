@@ -211,6 +211,11 @@ class Command(BaseCommand):
                 if t_created:
                     created_triage += 1
 
+        from patients.models import HealthPassport
+        for patient in Patient.objects.all():
+            HealthPassport.objects.get_or_create(patient=patient)
+        self.stdout.write(self.style.SUCCESS('[OK] Passports created for all patients'))
+
         self.stdout.write('')
         self.stdout.write(self.style.SUCCESS(f'[OK] Created {created_patients} patients, {created_triage} triage records'))
         self.stdout.write(self.style.SUCCESS('[OK] Dashboard is now populated and ready for demo'))
@@ -221,4 +226,4 @@ class Command(BaseCommand):
         self.stdout.write('    [-] Medium   : 2 patients')
         self.stdout.write('    [+] Low      : 2 patients')
         self.stdout.write('')
-        self.stdout.write(self.style.MIGRATE_HEADING('  → Open http://127.0.0.1:8000/dashboard/doctor/ to see it live\n'))
+        self.stdout.write(self.style.MIGRATE_HEADING('  -> Open http://127.0.0.1:8000/dashboard/doctor/ to see it live\n'))

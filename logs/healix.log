@@ -1,0 +1,240 @@
+INFO 2026-03-15 03:04:56,380 autoreload 9848 23820 Watching for file changes with StatReloader
+INFO 2026-03-15 03:05:35,711 log 9848 29320 "GET /auth/login/ HTTP/1.1" 200 33806
+INFO 2026-03-15 03:05:36,393 log 9848 3976 "GET /auth/login/ HTTP/1.1" 200 33806
+INFO 2026-03-15 03:05:53,975 log 9848 3976 "GET /dashboard/doctor/ HTTP/1.1" 200 53165
+WARNING 2026-03-15 03:05:54,100 log 9848 3976 Forbidden: /api/patients/
+WARNING 2026-03-15 03:05:54,102 log 9848 6044 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:05:54,104 log 9848 3976 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:05:54,105 log 9848 6044 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:05:54,109 log 9848 3976 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:05:54,110 log 9848 3976 "GET /api/triage/history/ HTTP/1.1" 403 58
+INFO 2026-03-15 03:06:12,306 log 9848 18128 "GET / HTTP/1.1" 200 50755
+INFO 2026-03-15 03:06:15,670 basehttp 9848 18128 - Broken pipe from ('127.0.0.1', 62770)
+INFO 2026-03-15 03:06:23,946 log 9848 2332 "GET /dashboard/doctor/ HTTP/1.1" 200 53165
+WARNING 2026-03-15 03:06:25,426 log 9848 13560 Forbidden: /api/patients/
+WARNING 2026-03-15 03:06:25,428 log 9848 13560 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:06:25,433 log 9848 13560 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:06:25,434 log 9848 13560 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:06:25,441 log 9848 2912 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:06:25,442 log 9848 2912 "GET /api/triage/history/ HTTP/1.1" 403 58
+INFO 2026-03-15 03:06:26,055 basehttp 9848 2332 - Broken pipe from ('127.0.0.1', 53339)
+INFO 2026-03-15 03:06:33,440 log 9848 23840 "GET /triage/ HTTP/1.1" 200 71471
+INFO 2026-03-15 03:06:36,458 basehttp 9848 23840 - Broken pipe from ('127.0.0.1', 57840)
+WARNING 2026-03-15 03:06:55,099 log 9848 2912 Forbidden: /api/patients/
+WARNING 2026-03-15 03:06:55,101 log 9848 2912 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:06:55,105 log 9848 2912 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:06:55,107 log 9848 2912 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:06:55,115 log 9848 2912 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:06:55,117 log 9848 2912 "GET /api/triage/history/ HTTP/1.1" 403 58
+INFO 2026-03-15 03:07:02,556 log 9848 18172 "GET /dashboard/doctor/ HTTP/1.1" 200 53165
+INFO 2026-03-15 03:07:02,799 basehttp 9848 18172 - Broken pipe from ('127.0.0.1', 55803)
+WARNING 2026-03-15 03:07:25,107 log 9848 2912 Forbidden: /api/patients/
+WARNING 2026-03-15 03:07:25,110 log 9848 13560 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:07:25,115 log 9848 2168 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:07:25,117 log 9848 13560 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:07:25,118 log 9848 2912 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:07:25,119 log 9848 2168 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:07:55,102 log 9848 2168 Forbidden: /api/patients/
+WARNING 2026-03-15 03:07:55,106 log 9848 13560 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:07:55,109 log 9848 2912 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:07:55,111 log 9848 2168 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:07:55,112 log 9848 2912 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:07:55,114 log 9848 13560 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:08:25,106 log 9848 13560 Forbidden: /api/patients/
+WARNING 2026-03-15 03:08:25,110 log 9848 2912 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:08:25,113 log 9848 2168 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:08:25,115 log 9848 13560 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:08:25,116 log 9848 2912 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:08:25,117 log 9848 2168 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:08:55,107 log 9848 2168 Forbidden: /api/patients/
+WARNING 2026-03-15 03:08:55,111 log 9848 2912 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:08:55,113 log 9848 2168 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:08:55,116 log 9848 13560 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:08:55,118 log 9848 2912 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:08:55,120 log 9848 13560 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:09:39,008 log 9848 13560 Forbidden: /api/patients/
+WARNING 2026-03-15 03:09:39,013 log 9848 2168 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:09:39,016 log 9848 2912 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:09:39,019 log 9848 13560 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:09:39,020 log 9848 2168 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:09:39,022 log 9848 2912 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:09:55,190 log 9848 2912 Forbidden: /api/patients/
+WARNING 2026-03-15 03:09:55,193 log 9848 2168 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:09:55,195 log 9848 2168 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:09:55,199 log 9848 13560 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:09:55,206 log 9848 2912 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:09:55,220 log 9848 13560 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:10:25,708 log 9848 13560 Forbidden: /api/patients/
+WARNING 2026-03-15 03:10:25,709 log 9848 13560 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:10:25,726 log 9848 2912 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:10:25,729 log 9848 2168 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:10:25,731 log 9848 2912 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:10:25,731 log 9848 2168 "GET /api/triage/history/ HTTP/1.1" 403 58
+INFO 2026-03-15 03:10:30,032 log 9848 2168 "GET /triage/ HTTP/1.1" 200 71471
+INFO 2026-03-15 03:10:38,783 log 9848 2168 "GET /dashboard/doctor/ HTTP/1.1" 200 53165
+WARNING 2026-03-15 03:10:38,837 log 9848 2168 Forbidden: /api/patients/
+WARNING 2026-03-15 03:10:38,840 log 9848 2912 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:10:38,843 log 9848 13560 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:10:38,846 log 9848 2168 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:10:38,847 log 9848 2912 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:10:38,848 log 9848 13560 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:11:09,104 log 9848 13560 Forbidden: /api/patients/
+WARNING 2026-03-15 03:11:09,108 log 9848 2168 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:11:09,110 log 9848 2912 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:11:09,112 log 9848 13560 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:11:09,113 log 9848 2168 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:11:09,115 log 9848 2912 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:11:38,824 log 9848 2912 Forbidden: /api/patients/
+WARNING 2026-03-15 03:11:38,827 log 9848 2168 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:11:38,829 log 9848 13560 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:11:38,831 log 9848 2168 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:11:38,833 log 9848 13560 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:11:38,832 log 9848 2912 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:12:11,937 log 9848 13560 Forbidden: /api/patients/
+WARNING 2026-03-15 03:12:11,940 log 9848 2168 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:12:11,943 log 9848 2912 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:12:11,945 log 9848 2168 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:12:11,946 log 9848 2912 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:12:11,946 log 9848 13560 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:12:42,173 log 9848 13560 Forbidden: /api/patients/
+WARNING 2026-03-15 03:12:42,176 log 9848 2912 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:12:42,183 log 9848 2168 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:12:42,209 log 9848 2912 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:12:42,209 log 9848 2168 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:12:42,211 log 9848 13560 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:13:12,530 log 9848 13560 Forbidden: /api/patients/
+WARNING 2026-03-15 03:13:12,532 log 9848 13560 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:13:12,543 log 9848 2168 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:13:12,545 log 9848 2168 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:13:13,369 log 9848 2168 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:13:13,371 log 9848 2168 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:13:42,129 log 9848 2168 Forbidden: /api/patients/
+WARNING 2026-03-15 03:13:42,131 log 9848 2168 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:13:42,227 log 9848 2168 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:13:42,230 log 9848 13560 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:13:42,231 log 9848 2168 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:13:42,233 log 9848 13560 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:14:12,113 log 9848 13560 Forbidden: /api/patients/
+WARNING 2026-03-15 03:14:12,116 log 9848 2168 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:14:12,119 log 9848 2168 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:14:12,119 log 9848 13560 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:14:12,133 log 9848 13560 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:14:12,134 log 9848 13560 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:15:40,025 log 9848 13560 Forbidden: /api/patients/
+WARNING 2026-03-15 03:15:40,028 log 9848 2168 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:15:40,031 log 9848 2912 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:15:40,034 log 9848 2168 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:15:40,035 log 9848 13560 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:15:40,037 log 9848 2912 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:16:06,842 log 9848 2912 Forbidden: /api/patients/
+WARNING 2026-03-15 03:16:06,844 log 9848 2912 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:16:06,854 log 9848 2912 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:16:06,856 log 9848 2912 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:16:06,860 log 9848 13560 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:16:06,861 log 9848 13560 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:17:06,100 log 9848 13560 Forbidden: /api/patients/
+WARNING 2026-03-15 03:17:06,103 log 9848 2168 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:17:06,106 log 9848 2912 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:17:06,108 log 9848 13560 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:17:06,108 log 9848 2168 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:17:06,111 log 9848 2912 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:18:06,103 log 9848 2912 Forbidden: /api/patients/
+WARNING 2026-03-15 03:18:06,106 log 9848 2168 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:18:06,110 log 9848 13560 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:18:06,112 log 9848 2168 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:18:06,113 log 9848 2912 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:18:06,115 log 9848 13560 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:19:06,153 log 9848 13560 Forbidden: /api/patients/
+WARNING 2026-03-15 03:19:06,156 log 9848 2168 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:19:06,158 log 9848 2912 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:19:06,161 log 9848 2168 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:19:06,163 log 9848 2912 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:19:06,164 log 9848 13560 "GET /api/patients/ HTTP/1.1" 403 58
+INFO 2026-03-15 03:19:07,023 log 9848 18064 "GET /dashboard/doctor/ HTTP/1.1" 200 58086
+INFO 2026-03-15 03:19:07,029 log 9848 18064 "GET /dashboard/doctor/ HTTP/1.1" 200 58086
+WARNING 2026-03-15 03:19:07,500 log 9848 18064 Forbidden: /api/patients/
+WARNING 2026-03-15 03:19:07,501 log 9848 18064 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:19:07,505 log 9848 18064 Forbidden: /api/patients/
+WARNING 2026-03-15 03:19:07,511 log 9848 5964 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:19:07,515 log 9848 27580 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:19:07,518 log 9848 27580 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:19:07,517 log 9848 5964 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:19:07,516 log 9848 18064 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:19:07,522 log 9848 5964 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:19:07,525 log 9848 27580 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:19:07,527 log 9848 5964 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:19:07,527 log 9848 27580 "GET /api/triage/history/ HTTP/1.1" 403 58
+INFO 2026-03-15 03:19:09,195 log 9848 5964 "GET /auth/login/ HTTP/1.1" 200 33806
+INFO 2026-03-15 03:19:09,200 log 9848 27580 "GET /auth/login/ HTTP/1.1" 200 33806
+INFO 2026-03-15 03:19:09,292 log 9848 13560 "GET /auth/login/ HTTP/1.1" 200 33806
+INFO 2026-03-15 03:19:09,297 log 9848 13560 "GET /auth/login/ HTTP/1.1" 200 33806
+INFO 2026-03-15 03:19:22,540 log 9848 13560 "GET /dashboard/doctor/ HTTP/1.1" 200 58086
+WARNING 2026-03-15 03:19:22,644 log 9848 13560 Forbidden: /api/patients/
+WARNING 2026-03-15 03:19:22,647 log 9848 2912 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:19:22,650 log 9848 2168 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:19:22,653 log 9848 13560 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:19:22,655 log 9848 2912 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:19:22,654 log 9848 2168 "GET /api/triage/history/ HTTP/1.1" 403 58
+INFO 2026-03-15 03:19:37,730 log 9848 13560 "GET /triage/ HTTP/1.1" 200 71471
+WARNING 2026-03-15 03:19:53,097 log 9848 13560 Forbidden: /api/patients/
+WARNING 2026-03-15 03:19:53,100 log 9848 2912 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:19:53,103 log 9848 13560 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:19:53,104 log 9848 2912 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:19:53,107 log 9848 2168 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:19:53,110 log 9848 2168 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:20:06,126 log 9848 2168 Forbidden: /api/patients/
+WARNING 2026-03-15 03:20:06,130 log 9848 2912 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:20:06,133 log 9848 2168 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:20:06,134 log 9848 2912 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:20:06,151 log 9848 2912 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:20:06,155 log 9848 2912 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:20:42,324 log 9848 2912 Forbidden: /api/patients/
+WARNING 2026-03-15 03:20:42,326 log 9848 2912 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:20:42,369 log 9848 2912 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:20:42,372 log 9848 2912 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:20:42,414 log 9848 2912 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:20:42,416 log 9848 2912 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:20:45,499 log 9848 2912 Forbidden: /api/patients/
+WARNING 2026-03-15 03:20:45,502 log 9848 2168 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:20:45,505 log 9848 13560 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:20:45,508 log 9848 2168 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:20:45,509 log 9848 2912 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:20:45,510 log 9848 13560 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:20:53,129 log 9848 13560 Forbidden: /api/patients/
+WARNING 2026-03-15 03:20:53,130 log 9848 13560 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:20:53,149 log 9848 13560 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:20:53,151 log 9848 13560 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:20:53,163 log 9848 13560 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:20:53,165 log 9848 13560 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:21:12,095 log 9848 13560 Forbidden: /api/patients/
+WARNING 2026-03-15 03:21:12,097 log 9848 2912 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:21:12,100 log 9848 2168 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:21:12,103 log 9848 2168 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:21:12,104 log 9848 13560 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:21:12,105 log 9848 2912 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:21:23,100 log 9848 2912 Forbidden: /api/patients/
+WARNING 2026-03-15 03:21:23,103 log 9848 2168 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:21:23,106 log 9848 13560 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:21:23,109 log 9848 2912 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:21:23,110 log 9848 2168 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:21:23,111 log 9848 13560 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:21:42,091 log 9848 13560 Forbidden: /api/patients/
+WARNING 2026-03-15 03:21:42,096 log 9848 2912 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:21:42,100 log 9848 2168 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:21:42,103 log 9848 2168 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:21:42,104 log 9848 13560 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:21:42,105 log 9848 2912 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:21:53,101 log 9848 2168 Forbidden: /api/patients/
+WARNING 2026-03-15 03:21:53,104 log 9848 2912 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:21:53,107 log 9848 13560 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:21:53,110 log 9848 13560 "GET /api/triage/history/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:21:53,111 log 9848 2168 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:21:53,112 log 9848 2912 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:22:23,097 log 9848 2912 Forbidden: /api/patients/
+WARNING 2026-03-15 03:22:23,099 log 9848 2912 "GET /api/patients/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:22:23,109 log 9848 2912 Forbidden: /api/triage/stats/
+WARNING 2026-03-15 03:22:23,111 log 9848 2912 "GET /api/triage/stats/ HTTP/1.1" 403 58
+WARNING 2026-03-15 03:22:23,121 log 9848 2912 Forbidden: /api/triage/history/
+WARNING 2026-03-15 03:22:23,123 log 9848 2912 "GET /api/triage/history/ HTTP/1.1" 403 58
+INFO 2026-03-15 03:35:51,981 autoreload 2512 628 Watching for file changes with StatReloader
+INFO 2026-03-15 03:36:33,773 autoreload 2512 628 C:\Users\Rexxon\Desktop\Healix\Healix\healix\settings.py changed, reloading.

@@ -11,6 +11,10 @@ class FirebaseAuthentication(authentication.BaseAuthentication):
         if not auth_header:
             return None
 
+        import logging
+        auth_logger = logging.getLogger('accounts.authentication')
+        auth_logger.info(f"Authenticate called for {auth_header[:20]}...")
+
         id_token_str = None
         if auth_header.startswith('Bearer '):
             id_token_str = auth_header.split('Bearer ')[1]
@@ -18,16 +22,35 @@ class FirebaseAuthentication(authentication.BaseAuthentication):
         if not id_token_str:
             return None
 
+        decoded_token = None
+
         try:
-            # Verify the Firebase ID token
-            # Note: audience should be your Firebase Project ID
-            decoded_token = id_token.verify_firebase_token(
-                id_token_str, 
-                requests.Request(), 
-                audience="healix-d02c4"
-            )
+            import firebase_admin
+            from firebase_admin import auth as firebase_auth
+            
+            # Initialize Firebase Admin if not already
+            try:
+                firebase_admin.get_app()
+            except ValueError:
+                firebase_admin.initialize_app(options={'projectId': 'healix-d02c4'})
+            
+            try:
+                # verify_id_token is the recommended way for Firebase tokens
+                decoded_token = firebase_auth.verify_id_token(id_token_str, check_revoked=False)
+                auth_logger.info(f"Firebase Admin verified token for: {decoded_token.get('email')}")
+            except Exception as admin_err:
+                auth_logger.warning(f"Firebase Admin verification failed: {str(admin_err)}. Trying google-auth fallback...")
+                decoded_token = id_token.verify_firebase_token(
+                    id_token_str, 
+                    requests.Request(), 
+                    audience="healix-d02c4",
+                    clock_skew_in_seconds=600 # 10 minutes tolerance
+                )
+                auth_logger.info("google-auth fallback successful.")
+                
         except Exception as e:
-            raise exceptions.AuthenticationFailed(f'Invalid Firebase token: {str(e)}')
+            auth_logger.error(f"AUTHENTICATION FAILURE: {str(e)}")
+            raise exceptions.AuthenticationFailed(f'Token Verification Failed: {str(e)}')
 
         if not decoded_token:
             raise exceptions.AuthenticationFailed('Invalid Firebase token')

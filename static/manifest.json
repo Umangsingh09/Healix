@@ -1,0 +1,17 @@
+{
+  "name": "Healix Clinical",
+  "short_name": "Healix",
+  "description": "Premium AI-Powered Clinical Triage & Dashboard",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#070c13",
+  "theme_color": "#070c13",
+  "icons": [
+    {
+      "src": "/static/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
