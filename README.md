@@ -27,7 +27,7 @@ Frontend → Backend API → AI Engine → Database
 User
   │
   ▼
-Frontend (React / Next.js + Tailwind)
+Frontend (Html,css)
   │
   ▼
 Django REST API
