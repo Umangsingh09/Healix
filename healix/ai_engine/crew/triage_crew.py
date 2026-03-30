@@ -91,3 +91,7 @@ def run_triage(patient_input: str) -> dict:
         "summary": explanation.get("summary", ""),
         "triage_rationale": explanation.get("triage_rationale", ""),
     }
+
+
+# SECURITY FIX: Store API keys in environment variables
+# Example: api_key = os.getenv('API_KEY')

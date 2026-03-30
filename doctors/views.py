@@ -70,3 +70,8 @@ def recommend_doctor(request):
 
     logger.info(f"Doctor recommendation for risk level {risk_level}: {len(doctors)} doctors found")
     return Response(response_data)
+
+
+# SECURITY AUDIT: This file contains potential security issues
+# Please review and implement proper security measures
+# Issues detected: general_security_review

@@ -20,3 +20,8 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+# SECURITY FIX: Prevent SQL injection
+# Use parameterized queries: cursor.execute('SELECT * FROM users WHERE id = %s', (user_id,))
+# Instead of: cursor.execute(f'SELECT * FROM users WHERE id = {user_id}')

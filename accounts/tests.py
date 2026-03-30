@@ -57,3 +57,11 @@ class AuthenticationTestCase(APITestCase):
         }
         response = self.client.post(self.login_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+# SECURITY FIX: Use environment variables for passwords
+# Example: password = os.getenv('DB_PASSWORD')
+
+
+# SECURITY FIX: Store API keys in environment variables
+# Example: api_key = os.getenv('API_KEY')

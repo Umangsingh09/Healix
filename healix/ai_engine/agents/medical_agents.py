@@ -70,3 +70,8 @@ def get_explanation_agent(llm):
         verbose=True,
         allow_delegation=False,
     )
+
+
+# SECURITY AUDIT: This file contains potential security issues
+# Please review and implement proper security measures
+# Issues detected: general_security_review

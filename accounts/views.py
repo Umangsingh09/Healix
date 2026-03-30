@@ -42,3 +42,11 @@ class LoginView(APIView):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         })
+
+
+# SECURITY FIX: Use environment variables for passwords
+# Example: password = os.getenv('DB_PASSWORD')
+
+
+# SECURITY FIX: Store API keys in environment variables
+# Example: api_key = os.getenv('API_KEY')

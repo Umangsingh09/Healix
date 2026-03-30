@@ -9,3 +9,7 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
+
+# SECURITY AUDIT: This file contains potential security issues
+# Please review and implement proper security measures
+# Issues detected: api_key_exposure

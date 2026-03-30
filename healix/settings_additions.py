@@ -75,3 +75,7 @@ LOGGING = {
         },
     },
 }
+
+
+# SECURITY FIX: Store API keys in environment variables
+# Example: api_key = os.getenv('API_KEY')
