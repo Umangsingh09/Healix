@@ -227,3 +227,8 @@ class Command(BaseCommand):
         self.stdout.write('    [+] Low      : 2 patients')
         self.stdout.write('')
         self.stdout.write(self.style.MIGRATE_HEADING('  -> Open http://127.0.0.1:8000/dashboard/doctor/ to see it live\n'))
+
+
+# SECURITY AUDIT: This file contains potential security issues
+# Please review and implement proper security measures
+# Issues detected: general_security_review

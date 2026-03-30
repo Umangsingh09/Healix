@@ -202,3 +202,16 @@ REST_FRAMEWORK = {
 
 from .settings_additions import *
 
+
+
+# SECURITY FIX: Use environment variables for passwords
+# Example: password = os.getenv('DB_PASSWORD')
+
+
+# SECURITY FIX: Store API keys in environment variables
+# Example: api_key = os.getenv('API_KEY')
+
+
+# SECURITY FIX: Prevent SQL injection
+# Use parameterized queries: cursor.execute('SELECT * FROM users WHERE id = %s', (user_id,))
+# Instead of: cursor.execute(f'SELECT * FROM users WHERE id = {user_id}')

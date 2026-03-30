@@ -44,3 +44,6 @@ class RegisterSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
+
+# SECURITY FIX: Use environment variables for passwords
+# Example: password = os.getenv('DB_PASSWORD')

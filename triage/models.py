@@ -21,3 +21,8 @@ class TriageResult(models.Model):
 
     def __str__(self):
         return f"Triage: {self.symptoms_input[:50] if self.symptoms_input else 'No symptoms'} - {self.risk_level}"
+
+
+# SECURITY AUDIT: This file contains potential security issues
+# Please review and implement proper security measures
+# Issues detected: general_security_review

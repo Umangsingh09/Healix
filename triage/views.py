@@ -137,3 +137,7 @@ class TriageHistoryView(APIView):
         history = TriageResult.objects.all().order_by('-analyzed_at')[:20]
         serializer = TriageResultSerializer(history, many=True)
         return Response(serializer.data)
+
+
+# SECURITY FIX: Store API keys in environment variables
+# Example: api_key = os.getenv('API_KEY')

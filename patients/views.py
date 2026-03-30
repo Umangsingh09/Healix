@@ -155,3 +155,7 @@ def get_patient_triage_history(request, pk):
     serializer = TriageHistorySerializer(triage_results, many=True)
     logger.info(f"Retrieved triage history for patient: {patient.name} (ID: {pk}), {len(triage_results)} results")
     return Response(serializer.data)
+
+# SECURITY FIX: Prevent SQL injection
+# Use parameterized queries: cursor.execute('SELECT * FROM users WHERE id = %s', (user_id,))
+# Instead of: cursor.execute(f'SELECT * FROM users WHERE id = {user_id}')

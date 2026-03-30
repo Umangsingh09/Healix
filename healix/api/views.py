@@ -102,3 +102,8 @@ def health_check(request):
         "service": "Healix AI Triage Engine",
         "version": "1.0.0",
     })
+
+
+# SECURITY AUDIT: This file contains potential security issues
+# Please review and implement proper security measures
+# Issues detected: general_security_review

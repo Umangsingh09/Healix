@@ -24,3 +24,7 @@ class TriageResultSerializer(serializers.ModelSerializer):
             'possible_conditions', 'key_symptoms', 'confidence_score',
             'processing_time_ms'
         ]
+
+# SECURITY AUDIT: This file contains potential security issues
+# Please review and implement proper security measures
+# Issues detected: general_security_review

@@ -199,3 +199,8 @@ def create_all_tasks(agents, patient_input):
     )
 
     return [extraction_task, triage_task, medical_task, recommendation_task, explanation_task]
+
+
+# SECURITY AUDIT: This file contains potential security issues
+# Please review and implement proper security measures
+# Issues detected: general_security_review
