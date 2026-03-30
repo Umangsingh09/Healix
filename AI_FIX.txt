@@ -1,0 +1,9 @@
+
+AI Fix for: Potential hardcoded password in serializers.py
+
+- Use input validation
+- Use parameterized queries
+- Sanitize inputs
+
+Example:
+cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
